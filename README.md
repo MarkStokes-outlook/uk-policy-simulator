@@ -15,9 +15,31 @@ An interactive Streamlit app for modelling simplified UK fiscal reform scenarios
   - optimism penalty
   - delayed policy effects
 
+## How the feedback model works (honest description)
+
+The dynamic feedback is deliberately simple and you should read it as such:
+
+- Feedback is modelled as an **annual** effect proportional to the **current
+  annual investment level** — not as a cumulative capital stock.
+- It is **linearly ramped in** after the configured lag (no effect during the
+  lag period, then a straight-line ramp to full effect).
+- It is therefore **not** cumulative capital-stock / lifecycle modelling.
+
+> **TODO:** replace the flat annual-investment feedback with cumulative
+> capital-stock / lifecycle modelling — depreciation and compounding returns on
+> the accumulated stock rather than on the current-year flow.
+
 ## Important caveat
 
 This is not an official macroeconomic model. It is a transparent scenario sandbox for exploring assumptions.
+
+## Baseline source of truth
+
+`baseline.csv` is the **canonical source** for baseline fiscal values. It is
+loaded and validated at app startup; the required metrics are **Total
+receipts**, **Total spending**, and **Implied GDP**. If the file is missing or
+invalid, the app fails clearly in the UI rather than falling back to hidden
+constants.
 
 ## Baseline sources
 
@@ -27,10 +49,20 @@ This is not an official macroeconomic model. It is a transparent scenario sandbo
 ## Run locally
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
+# Create a virtual environment (use whichever Python launcher you have):
+python3 -m venv .venv      # macOS / Linux
+python -m venv .venv       # Windows, or where `python` is Python 3
+
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 streamlit run app.py
+```
+
+## Run the tests
+
+```bash
+pip install -r requirements-dev.txt
+pytest
 ```
 
 ## Suggested next improvements

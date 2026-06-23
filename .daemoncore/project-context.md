@@ -1,19 +1,30 @@
 # Project Context
 
 ## Project Name
-daemon-core
+uk_policy_simulator
 
 ## Description
-<!-- Add a brief description of this repository -->
+An interactive Streamlit app ("UK Policy Sandbox") for modelling simplified UK
+fiscal reform scenarios. Users adjust revenue and investment levers plus dynamic
+feedback assumptions, and the app projects receipts, spending, deficit and
+deficit-as-percent-of-GDP over a configurable horizon. It is a transparent
+scenario sandbox, not an official macroeconomic model.
 
 ## Workspace Ownership & Authority
-- Owner: <!-- Add owner or team name -->
+- Owner: Mark Stokes (MarkStokes-outlook)
 - This workspace is subordinate to the DaemonCore kernel safety rules.
 - Do not assume authority outside this repository without explicit human instruction.
 
 ## Tech Stack
-- <!-- Add language / framework -->
-- <!-- Add infrastructure / services -->
+- Python 3.13
+- Streamlit (UI), pandas (data), altair (charts)
+- pytest (tests)
+
+## Key Files
+- `app.py` — Streamlit UI: controls and rendering only.
+- `model/fiscal_model.py` — pure, testable fiscal calculations and baseline loading.
+- `baseline.csv` — canonical baseline fiscal values (loaded at startup).
+- `tests/test_fiscal_model.py` — pytest suite for the model.
 
 ## Purpose of This Workspace
 - Define how agents should treat this codebase.

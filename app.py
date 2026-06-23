@@ -1,7 +1,16 @@
 
+from pathlib import Path
+
 import streamlit as st
 import pandas as pd
 import altair as alt
+
+from model import (
+    BaselineError,
+    FeedbackAssumptions,
+    compute_fiscal,
+    load_baseline,
+)
 
 st.set_page_config(
     page_title="UK Policy Sandbox",
@@ -9,12 +18,7 @@ st.set_page_config(
     layout="wide",
 )
 
-BASELINE = {
-    "year": "2025/26-ish baseline",
-    "receipts": 1232.0,
-    "spending": 1368.0,
-    "gdp": 3054.0,
-}
+BASELINE_PATH = Path(__file__).parent / "baseline.csv"
 
 st.title("🇬🇧 UK Policy Sandbox")
 st.caption(
@@ -22,21 +26,49 @@ st.caption(
     "It is designed for scenario exploration, not official forecasting."
 )
 
-with st.expander("Model notes", expanded=False):
-    st.markdown("""
-**Baseline defaults**
+# baseline.csv is the canonical source of truth for baseline fiscal values.
+# Fail clearly in the UI if it is missing or invalid rather than falling back
+# to silent hardcoded constants.
+try:
+    baseline = load_baseline(BASELINE_PATH)
+except BaselineError as exc:
+    st.error(
+        f"Could not load baseline data from `{BASELINE_PATH.name}`.\n\n"
+        f"**{exc}**\n\n"
+        "The baseline file is the canonical source for receipts, spending and "
+        "implied GDP. Fix the file and reload."
+    )
+    st.stop()
 
-- Total receipts: £1,232bn.
-- Total public spending: £1,368bn.
-- Baseline deficit: £136bn.
-- GDP is inferred from £1,368bn being 44.8% of national income.
+with st.expander("Model notes", expanded=False):
+    st.markdown(
+        f"""
+**Baseline defaults** (loaded from `baseline.csv`, the canonical source)
+
+- Total receipts: £{baseline.receipts:,.0f}bn.
+- Total public spending: £{baseline.spending:,.0f}bn.
+- Baseline deficit: £{baseline.deficit:,.0f}bn.
+- Implied GDP: £{baseline.gdp:,.0f}bn.
+
+**How the feedback model works (be honest)**
+
+- Feedback is modelled as an **annual** effect proportional to the **current
+  annual investment level** — not as a cumulative capital stock.
+- It is **linearly ramped in** after the configured lag (no effect during the
+  lag period, then a straight-line ramp to full effect).
+- It is therefore **not** cumulative capital-stock / lifecycle modelling.
+- _TODO:_ replace the flat annual-investment feedback with cumulative
+  capital-stock / lifecycle modelling (depreciation and compounding returns on
+  the accumulated stock rather than the current-year flow).
 
 **Important limitations**
 
 - This is a transparent model, not an OBR-grade macroeconomic model.
 - Feedback effects are user-defined assumptions.
-- Behavioural responses, inflation, migration, global shocks, interest-rate effects and distributional detail are not yet fully modelled.
-""")
+- Behavioural responses, inflation, migration, global shocks, interest-rate
+  effects and distributional detail are not yet fully modelled.
+"""
+    )
 
 st.sidebar.header("Scenario controls")
 
@@ -66,63 +98,49 @@ lag_years = st.sidebar.slider("Feedback lag years", 0, 10, 3, 1)
 implementation_quality = st.sidebar.slider("Implementation quality", 0.0, 100.0, 70.0, 1.0) / 100
 optimism_penalty = st.sidebar.slider("Optimism penalty", 0.0, 50.0, 15.0, 1.0) / 100
 
-revenue_static = sum([
-    income_tax_ni_reform,
-    wealth_tax_reform,
-    passive_income_reform,
-    corporate_tax_reform,
-    carbon_resource_tax,
-    anti_avoidance,
-])
+# Lever values keyed by their display label so the same mapping drives both the
+# calculation and the lever breakdown table below.
+revenue_levers = {
+    "Income tax / NI reform": income_tax_ni_reform,
+    "Wealth / land / property reform": wealth_tax_reform,
+    "Passive income equalisation": passive_income_reform,
+    "Corporate / rent-seeking tax": corporate_tax_reform,
+    "Carbon / resource / windfall taxes": carbon_resource_tax,
+    "Compliance / anti-avoidance": anti_avoidance,
+}
 
-investment_static = sum([
-    childcare,
-    social_care,
-    housing,
-    nhs_prevention,
-    education_training,
-    welfare_floor,
-    transport_energy,
-])
+investment_levers = {
+    "Childcare expansion": childcare,
+    "Social care settlement": social_care,
+    "Housing / social build": housing,
+    "NHS prevention + capacity": nhs_prevention,
+    "Higher education / adult training": education_training,
+    "Welfare floor / taper smoothing": welfare_floor,
+    "Transport / energy infrastructure": transport_energy,
+}
 
-baseline_deficit = BASELINE["spending"] - BASELINE["receipts"]
-static_receipts = BASELINE["receipts"] + revenue_static
-static_spending = BASELINE["spending"] + investment_static
-static_deficit = static_spending - static_receipts
+assumptions = FeedbackAssumptions(
+    years=years,
+    growth_baseline=growth_baseline,
+    revenue_feedback_rate=revenue_feedback_rate,
+    cost_reduction_rate=cost_reduction_rate,
+    lag_years=lag_years,
+    implementation_quality=implementation_quality,
+    optimism_penalty=optimism_penalty,
+)
 
-investment_productive = investment_static
-quality_adjusted_return = implementation_quality * (1 - optimism_penalty)
-
-rows = []
-for year in range(0, years + 1):
-    gdp = BASELINE["gdp"] * ((1 + growth_baseline) ** year)
-    lag_factor = 0 if year <= lag_years else min(1, (year - lag_years) / max(1, years - lag_years))
-
-    annual_revenue_feedback = investment_productive * revenue_feedback_rate * quality_adjusted_return * lag_factor
-    annual_cost_reduction = investment_productive * cost_reduction_rate * quality_adjusted_return * lag_factor
-
-    receipts = static_receipts + annual_revenue_feedback
-    spending = static_spending - annual_cost_reduction
-    deficit = spending - receipts
-
-    rows.append({
-        "Year": year,
-        "GDP (£bn)": gdp,
-        "Receipts (£bn)": receipts,
-        "Spending (£bn)": spending,
-        "Deficit (£bn)": deficit,
-        "Deficit % GDP": deficit / gdp * 100,
-        "Revenue feedback (£bn)": annual_revenue_feedback,
-        "Cost reduction (£bn)": annual_cost_reduction,
-    })
-
-projection = pd.DataFrame(rows)
+result = compute_fiscal(baseline, revenue_levers, investment_levers, assumptions)
+projection = pd.DataFrame(result.projection)
 
 c1, c2, c3, c4 = st.columns(4)
-c1.metric("Baseline deficit", f"£{baseline_deficit:,.0f}bn")
-c2.metric("Static reform revenue", f"£{revenue_static:,.0f}bn")
-c3.metric("New investment/spend", f"£{investment_static:,.0f}bn")
-c4.metric("Static deficit", f"£{static_deficit:,.0f}bn", delta=f"{static_deficit - baseline_deficit:+.0f}bn vs baseline")
+c1.metric("Baseline deficit", f"£{baseline.deficit:,.0f}bn")
+c2.metric("Static reform revenue", f"£{result.revenue_static:,.0f}bn")
+c3.metric("New investment/spend", f"£{result.investment_static:,.0f}bn")
+c4.metric(
+    "Static deficit",
+    f"£{result.static_deficit:,.0f}bn",
+    delta=f"{result.static_deficit - baseline.deficit:+.0f}bn vs baseline",
+)
 
 last = projection.iloc[-1]
 d1, d2, d3, d4 = st.columns(4)
@@ -138,9 +156,9 @@ left, right = st.columns([1, 1])
 with left:
     st.subheader("Today vs static reform")
     compare = pd.DataFrame([
-        {"Metric": "Receipts", "Baseline": BASELINE["receipts"], "Scenario": static_receipts},
-        {"Metric": "Spending", "Baseline": BASELINE["spending"], "Scenario": static_spending},
-        {"Metric": "Deficit", "Baseline": baseline_deficit, "Scenario": static_deficit},
+        {"Metric": "Receipts", "Baseline": baseline.receipts, "Scenario": result.static_receipts},
+        {"Metric": "Spending", "Baseline": baseline.spending, "Scenario": result.static_spending},
+        {"Metric": "Deficit", "Baseline": baseline.deficit, "Scenario": result.static_deficit},
     ])
     melted = compare.melt("Metric", var_name="Case", value_name="£bn")
     chart = alt.Chart(melted).mark_bar().encode(
@@ -171,21 +189,8 @@ st.subheader("Fiscal projection table")
 st.dataframe(projection, use_container_width=True)
 
 st.subheader("Policy lever breakdown")
-lever_rows = [
-    ("Revenue", "Income tax / NI reform", income_tax_ni_reform),
-    ("Revenue", "Wealth / land / property reform", wealth_tax_reform),
-    ("Revenue", "Passive income equalisation", passive_income_reform),
-    ("Revenue", "Corporate / rent-seeking tax", corporate_tax_reform),
-    ("Revenue", "Carbon / resource / windfall taxes", carbon_resource_tax),
-    ("Revenue", "Compliance / anti-avoidance", anti_avoidance),
-    ("Investment", "Childcare expansion", childcare),
-    ("Investment", "Social care settlement", social_care),
-    ("Investment", "Housing / social build", housing),
-    ("Investment", "NHS prevention + capacity", nhs_prevention),
-    ("Investment", "Higher education / adult training", education_training),
-    ("Investment", "Welfare floor / taper smoothing", welfare_floor),
-    ("Investment", "Transport / energy infrastructure", transport_energy),
-]
+lever_rows = [("Revenue", name, value) for name, value in revenue_levers.items()]
+lever_rows += [("Investment", name, value) for name, value in investment_levers.items()]
 lever_df = pd.DataFrame(lever_rows, columns=["Type", "Lever", "£bn"])
 st.dataframe(lever_df, use_container_width=True)
 

@@ -1,0 +1,74 @@
+# DaemonCore runtime state
+.daemoncore/kernel/state.md
+.daemoncore/exchange/session-lock.md
+.daemoncore/exchange/active-session.md
+.daemoncore/exchange/system/boot-logs/*
+!.daemoncore/exchange/system/boot-logs/README.md
+!.daemoncore/exchange/system/boot-logs/.gitkeep
+
+# MAX bus runtime messages
+.daemoncore/exchange/queues/**/pending/*
+.daemoncore/exchange/queues/**/processing/*
+.daemoncore/exchange/queues/**/processed/*
+.daemoncore/exchange/queues/**/failed/*
+!.daemoncore/exchange/queues/**/.gitkeep
+
+.daemoncore/exchange/dead-letter/*
+.daemoncore/exchange/messages/*
+!.daemoncore/exchange/**/README.md
+!.daemoncore/exchange/**/.gitkeep
+
+# Generated agent artefacts
+.daemoncore/cache/*
+.daemoncore/logs/*
+.daemoncore/outbox/*
+.daemoncore/code-review/review-notes/*
+!.daemoncore/cache/README.md
+!.daemoncore/cache/.gitkeep
+!.daemoncore/logs/README.md
+!.daemoncore/logs/.gitkeep
+!.daemoncore/outbox/README.md
+!.daemoncore/outbox/.gitkeep
+!.daemoncore/code-review/README.md
+!.daemoncore/code-review/.gitkeep
+
+# Local environment files
+.daemoncore/.env
+
+# --- Python / tooling / OS hygiene ---
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python caches / bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Test / type / lint / coverage caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Streamlit local config / secrets
+.streamlit/
+
+# Environment / secrets (keep templates tracked)
+.env
+.env.local
+.env.*.local
+!.env.template
+!.env.example
+
+# Build / distribution
+build/
+dist/
+*.egg-info/
+
+# OS / editor noise
+.DS_Store
