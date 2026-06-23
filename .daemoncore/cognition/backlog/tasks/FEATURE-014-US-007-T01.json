@@ -1,0 +1,32 @@
+{
+  "id": "FEATURE-014-US-007-T01",
+  "title": "Implement: Dataset versioning",
+  "user_story_id": "FEATURE-014-US-007",
+  "description": "As a researcher, I want versioned datasets so old analyses remain reproducible.",
+  "priority": "P3",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "work-endpoints",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Datasets carry versions",
+    "Runs/exports pin a dataset version",
+    "Switching versions is explicit and recorded"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-014-US-007-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.764201+00:00"
+}

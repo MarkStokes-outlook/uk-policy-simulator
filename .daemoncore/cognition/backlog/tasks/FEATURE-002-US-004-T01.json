@@ -1,0 +1,32 @@
+{
+  "id": "FEATURE-002-US-004-T01",
+  "title": "Implement: Scenario selector (UI)",
+  "user_story_id": "FEATURE-002-US-004",
+  "description": "As a user, I want to pick a scenario from a dropdown so sliders pre-fill.",
+  "priority": "P1",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Selecting a preset sets every lever and assumption",
+    "A 'Custom' state appears once the user edits any slider",
+    "Switching presets is deterministic and repeatable"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-002-US-004-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.722228+00:00"
+}

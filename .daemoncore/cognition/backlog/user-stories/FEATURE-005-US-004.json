@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-005-US-004",
+  "title": "Login / logout",
+  "feature_id": "FEATURE-005",
+  "story": "As a user, I want to log in and out so my session is controlled.",
+  "description": "Let a user log in and out with controlled sessions.",
+  "priority": "P2",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-005-US-004-T01",
+    "FEATURE-005-US-004-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.999693+00:00",
+  "acceptance_criteria": [
+    "Valid credentials start a session",
+    "Logout ends the session",
+    "Invalid attempts handled safely (no user enumeration)"
+  ]
+}

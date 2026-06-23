@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-013-US-001",
+  "title": "Distributional data model & sources",
+  "feature_id": "FEATURE-013",
+  "story": "As a developer, I want a data model and sourced reference data so breakdowns are grounded.",
+  "description": "Define a distributional data model and sourced reference data.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-013-US-001-T01",
+    "FEATURE-013-US-001-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.983551+00:00",
+  "acceptance_criteria": [
+    "Schema for decile/cohort/region/household reference data",
+    "Sources documented"
+  ]
+}

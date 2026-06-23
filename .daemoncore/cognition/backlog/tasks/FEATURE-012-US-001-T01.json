@@ -1,0 +1,32 @@
+{
+  "id": "FEATURE-012-US-001-T01",
+  "title": "Implement: Engine interface for pluggable models",
+  "user_story_id": "FEATURE-012-US-001",
+  "description": "As an architect, I want the engine to accept swappable models so the simple one can be replaced safely.",
+  "priority": "P3",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "A feedback-strategy interface exists",
+    "The current model is one implementation",
+    "Callers are unaffected by the swap"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-012-US-001-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.754837+00:00"
+}

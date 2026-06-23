@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-014-US-008",
+  "title": "Async job execution",
+  "feature_id": "FEATURE-014",
+  "story": "As a user, I want heavy simulations to run in the background so the UI stays responsive.",
+  "description": "Run heavy simulations as background jobs.",
+  "priority": "P3",
+  "size": "L",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "work-endpoints",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-014-US-008-T01",
+    "FEATURE-014-US-008-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.988362+00:00",
+  "acceptance_criteria": [
+    "Long-running analyses execute as tracked async jobs",
+    "Progress is reported and results retrievable"
+  ]
+}

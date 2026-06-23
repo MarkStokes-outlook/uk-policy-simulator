@@ -1,0 +1,47 @@
+# Task FEATURE-006-US-006-T01 — Implement: Sharing access tests
+
+> **DaemonCore coding-agent prompt.** Work type: `feature` · Size: `M` · Priority: `P2` · Status: `todo`
+
+## Where this fits
+- **Epic EPIC-006 — Sharing Platform.** Allow users to share models with controlled visibility (public, private, unlisted), shareable URLs and clean read-only public views.
+- **Feature FEATURE-006 — Sharing Platform — implementation.**
+- **Story FEATURE-006-US-006 — Sharing access tests.** _As a maintainer, I want tests asserting private data never leaks so sharing is safe._
+
+## Objective
+Implement the tests for: Sharing access tests.
+
+## What to do
+Write **deterministic automated tests** that cover each acceptance criterion of the parent story:
+- Assert: Tests prove private is inaccessible to non-owners
+- Assert: Unlisted requires the URL; public is read-only
+Use fixed, hand-computed numbers (see `tests/test_fiscal_model.py`). Avoid randomness, network calls and time-dependence.
+
+## Acceptance criteria (Definition of Done)
+- [ ] Tests prove private is inaccessible to non-owners
+- [ ] Unlisted requires the URL; public is read-only
+- [ ] New/updated tests pass and cover the above
+- [ ] No regression in the existing `pytest` suite
+
+## Dependencies
+None within this story. (Respect cross-epic dependencies of the parent epic.)
+
+## Project conventions
+- Target Python 3.13. Use British spelling in all user-facing text.
+- Keep the pure model layer (`model/`) free of Streamlit; `app.py` is UI/render only.
+- Pin any new runtime deps in `requirements.txt`; test-only deps in `requirements-dev.txt`.
+- Write deterministic `pytest` tests; follow the style of `tests/test_fiscal_model.py`.
+- Match the surrounding code style. Prefer small, coherent diffs over broad refactors.
+- Update `README.md` / `docs/` whenever behaviour changes.
+
+## Guardrails (EPIC-006)
+- Default visibility is private; publishing is an explicit action.
+- Enforce access server-side; private data must never leak to non-owners.
+- Unlisted models use unguessable ids; public views are strictly read-only.
+
+## Verification
+- `python3 -m py_compile <changed .py files>`
+- `python3 -m pytest -q` — all tests pass (add/extend tests for this change).
+
+## Notes
+- This simulator is a transparent scenario sandbox, not an official forecast — keep that framing in any user-facing text.
+- If requirements are ambiguous or you must change a public interface, stop and flag it rather than guessing.

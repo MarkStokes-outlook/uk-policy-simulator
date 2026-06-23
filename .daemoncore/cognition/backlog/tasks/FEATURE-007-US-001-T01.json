@@ -1,0 +1,32 @@
+{
+  "id": "FEATURE-007-US-001-T01",
+  "title": "Implement: Ranking logic",
+  "user_story_id": "FEATURE-007-US-001",
+  "description": "As a developer, I want deterministic ranking functions so leaderboards are reproducible.",
+  "priority": "P2",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Ranking sorts eligible public models by a given category score",
+    "Ties broken by a documented rule",
+    "Rankings are reproducible"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-007-US-001-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.738686+00:00"
+}

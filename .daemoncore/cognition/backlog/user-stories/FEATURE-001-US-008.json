@@ -1,0 +1,23 @@
+{
+  "id": "FEATURE-001-US-008",
+  "title": "Engine reference documentation",
+  "feature_id": "FEATURE-001",
+  "story": "As a contributor, I want a `docs/` reference for the engine so the maths is auditable.",
+  "description": "Provide an auditable engine reference documenting every formula and worked examples.",
+  "priority": "P2",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-001-US-008-T01"
+  ],
+  "updated_at": "2026-06-23T09:31:43.989098+00:00",
+  "acceptance_criteria": [
+    "docs/engine.md documents each formula, input and output",
+    "Worked examples match the regression-test fixtures"
+  ]
+}

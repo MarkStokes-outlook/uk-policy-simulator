@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-004-US-004-T01",
+  "title": "Implement: Load model",
+  "user_story_id": "FEATURE-004-US-004",
+  "description": "As a user, I want to load a saved model so I can continue or review it.",
+  "priority": "P1",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Loading restores all controls",
+    "Outputs recompute/display identically to when saved"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-004-US-004-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.729309+00:00"
+}

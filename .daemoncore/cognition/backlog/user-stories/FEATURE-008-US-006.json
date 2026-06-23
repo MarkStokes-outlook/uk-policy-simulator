@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-008-US-006",
+  "title": "Usage tracking",
+  "feature_id": "FEATURE-008",
+  "story": "As an operator, I want usage recorded so quotas and cost are observable.",
+  "description": "Record AI usage for quotas and cost awareness.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-008-US-006-T01",
+    "FEATURE-008-US-006-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.995430+00:00",
+  "acceptance_criteria": [
+    "Each call records provider, model, tokens/units and outcome",
+    "Usage is queryable per user (feeds EPIC-009)"
+  ]
+}

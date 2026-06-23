@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-004-US-003",
+  "title": "Save model",
+  "feature_id": "FEATURE-004",
+  "story": "As a user, I want to save my current model so I can return to it.",
+  "description": "Let a user save the current model with a stable id.",
+  "priority": "P1",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-004-US-003-T01",
+    "FEATURE-004-US-003-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.985255+00:00",
+  "acceptance_criteria": [
+    "Save captures inputs, outputs, scores and metadata",
+    "A stable, unique model id is assigned",
+    "Saved file validates against the schema"
+  ]
+}

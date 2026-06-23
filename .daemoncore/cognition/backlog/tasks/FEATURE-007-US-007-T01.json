@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-007-US-007-T01",
+  "title": "Implement: Ranking performance & caching",
+  "user_story_id": "FEATURE-007-US-007",
+  "description": "As an operator, I want cached rankings so leaderboards stay fast as data grows.",
+  "priority": "P3",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Rankings precomputed/cached with invalidation on relevant changes",
+    "Leaderboards load within a target latency"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-007-US-007-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.740790+00:00"
+}

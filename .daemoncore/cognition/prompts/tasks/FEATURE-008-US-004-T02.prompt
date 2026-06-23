@@ -1,0 +1,47 @@
+# Task FEATURE-008-US-004-T02 — Test & verify: OpenAI / Anthropic / Gemini adapters
+
+> **DaemonCore coding-agent prompt.** Work type: `feature` · Size: `S` · Priority: `P3` · Status: `todo`
+
+## Where this fits
+- **Epic EPIC-008 — AI Provider Framework.** Provide a pluggable AI provider framework (Ollama, OpenAI, Anthropic, Gemini, future) with a registry, model selection, usage tracking and centralised prompt templates - without coupling to any one vendor.
+- **Feature FEATURE-008 — AI Provider Framework — implementation.**
+- **Story FEATURE-008-US-004 — OpenAI / Anthropic / Gemini adapters.** _As a user, I want commercial providers so I can choose higher-capability models._
+
+## Objective
+Add automated tests and verify acceptance for: OpenAI / Anthropic / Gemini adapters.
+
+## What to do
+Write **deterministic automated tests** that cover each acceptance criterion of the parent story:
+- Assert: Each adapter implements the interface
+- Assert: Covered by contract tests against mocked APIs
+Use fixed, hand-computed numbers (see `tests/test_fiscal_model.py`). Avoid randomness, network calls and time-dependence.
+
+## Acceptance criteria (Definition of Done)
+- [ ] Automated tests cover the story's acceptance criteria
+- [ ] Tests are deterministic and pass in CI
+- [ ] New/updated tests pass and cover the above
+- [ ] No regression in the existing `pytest` suite
+
+## Dependencies
+Complete these first: `FEATURE-008-US-004-T01`.
+
+## Project conventions
+- Target Python 3.13. Use British spelling in all user-facing text.
+- Keep the pure model layer (`model/`) free of Streamlit; `app.py` is UI/render only.
+- Pin any new runtime deps in `requirements.txt`; test-only deps in `requirements-dev.txt`.
+- Write deterministic `pytest` tests; follow the style of `tests/test_fiscal_model.py`.
+- Match the surrounding code style. Prefer small, coherent diffs over broad refactors.
+- Update `README.md` / `docs/` whenever behaviour changes.
+
+## Guardrails (EPIC-008)
+- Define an `AIProvider` abstraction; callers must not depend on a concrete SDK.
+- Local Ollama is first-class and must work with no paid credentials.
+- Centralise and version prompt templates; track usage per call.
+
+## Verification
+- `python3 -m py_compile <changed .py files>`
+- `python3 -m pytest -q` — all tests pass (add/extend tests for this change).
+
+## Notes
+- This simulator is a transparent scenario sandbox, not an official forecast — keep that framing in any user-facing text.
+- If requirements are ambiguous or you must change a public interface, stop and flag it rather than guessing.

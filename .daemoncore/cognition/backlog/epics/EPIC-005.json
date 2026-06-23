@@ -1,0 +1,23 @@
+{
+  "id": "EPIC-005",
+  "title": "Identity Platform",
+  "phase": 1,
+  "tags": [
+    "uk-policy-simulator",
+    "roadmap"
+  ],
+  "description": "Introduce authentication and user ownership through a provider-agnostic abstraction, with local auth (registration, login/logout, password reset/change, profile) as the first concrete backend.",
+  "feature_ids": [
+    "FEATURE-005"
+  ],
+  "updated_at": "2026-06-23T09:25:48.469239+00:00",
+  "rationale": "Ownership is the gateway to sharing, leaderboards and per-user AI credentials. Building auth behind an abstraction prevents lock-in and lets the project grow from local accounts to enterprise SSO without re-architecting.",
+  "success_criteria": [
+    "Auth is accessed only through the provider abstraction (no direct coupling)",
+    "A user can register, log in, log out, reset and change password",
+    "A user can view and edit their profile",
+    "Saved models are correctly associated with their owner",
+    "Passwords are stored hashed; sessions handled securely"
+  ],
+  "notes": "## Scope (in)\n- Auth abstraction layer (provider interface)\n- Local authentication: registration, login, logout\n- Password reset and change\n- Profile management\n- Association of saved models with an owning user\n\n## Out of scope\n- External OIDC/social providers (future stories)\n- Sharing/visibility rules (EPIC-006)\n- Encrypted per-user AI keys (EPIC-009)\n\n## Dependencies\n- EPIC-004 - there must be models to own before ownership is meaningful\n\n## Assumptions\n- Auth modelled as identify/authenticate/session/profile, backend-independent\n- Local auth is the first concrete implementation\n- Security best practice (hashing, secure tokens) is mandatory\n\n## Risks\n- Auth coupled to local impl -> define provider interface first\n- Credential mishandling -> vetted libs; never plaintext; security review\n- Session/token vulnerabilities -> secure sessions, expiry, CSRF protection\n- Scope creep into full SSO early -> limit to abstraction + local auth\n\n## Future extensions\n- OIDC (Authentik), Google, Microsoft, GitHub as new AuthProviders\n- Multi-factor authentication\n- Role-based access (admin/curator) feeding leaderboard moderation"
+}

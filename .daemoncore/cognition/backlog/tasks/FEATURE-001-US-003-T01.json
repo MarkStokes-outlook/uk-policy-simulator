@@ -1,0 +1,34 @@
+{
+  "id": "FEATURE-001-US-003-T01",
+  "title": "Implement: Static fiscal calculations",
+  "user_story_id": "FEATURE-001-US-003",
+  "description": "As a user, I want correct static receipts/spending/deficit so I can read the immediate effect of levers.",
+  "priority": "P1",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [
+    "model/fiscal_model.py"
+  ],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "static_receipts = baseline receipts + summed revenue levers",
+    "static_spending = baseline spending + summed investment levers",
+    "static_deficit = static_spending - static_receipts"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-001-US-003-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.718391+00:00"
+}

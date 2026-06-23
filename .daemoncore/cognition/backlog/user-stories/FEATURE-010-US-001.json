@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-010-US-001",
+  "title": "Analysis context builder",
+  "feature_id": "FEATURE-010",
+  "story": "As a developer, I want a grounding-context builder so the AI critiques real data, not guesses.",
+  "description": "Build a grounding-context payload from real model data.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-010-US-001-T01",
+    "FEATURE-010-US-001-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.992744+00:00",
+  "acceptance_criteria": [
+    "Assembles model inputs, engine outputs and deterministic scores",
+    "Payload is structured for prompt templating"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-014-US-004",
+  "title": "Model benchmarking",
+  "feature_id": "FEATURE-014",
+  "story": "As an analyst, I want to benchmark models against references so I can judge relative quality.",
+  "description": "Benchmark models against references.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "work-endpoints",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-014-US-004-T01",
+    "FEATURE-014-US-004-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.989868+00:00",
+  "acceptance_criteria": [
+    "Models benchmarked against reference models/baselines",
+    "Benchmark criteria are transparent"
+  ]
+}

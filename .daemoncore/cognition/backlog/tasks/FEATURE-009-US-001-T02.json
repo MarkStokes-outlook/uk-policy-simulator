@@ -1,0 +1,33 @@
+{
+  "id": "FEATURE-009-US-001-T02",
+  "title": "Test & verify: Encrypted key storage",
+  "user_story_id": "FEATURE-009-US-001",
+  "description": "Add automated tests and verify acceptance for: Encrypted key storage.",
+  "priority": "P2",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [
+    "FEATURE-009-US-001-T01"
+  ],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Automated tests cover the story's acceptance criteria",
+    "Tests are deterministic and pass in CI"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-009-US-001-T02.prompt",
+  "updated_at": "2026-06-23T09:47:31.744111+00:00"
+}

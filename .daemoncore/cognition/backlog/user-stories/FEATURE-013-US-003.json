@@ -1,0 +1,23 @@
+{
+  "id": "FEATURE-013-US-003",
+  "title": "Age-cohort breakdown",
+  "feature_id": "FEATURE-013",
+  "story": "As a user, I want impacts by age cohort so generational effects are visible.",
+  "description": "Break impacts down by age cohort.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-013-US-003-T01",
+    "FEATURE-013-US-003-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.999495+00:00",
+  "acceptance_criteria": [
+    "Cohort breakdown computed and caveated"
+  ]
+}

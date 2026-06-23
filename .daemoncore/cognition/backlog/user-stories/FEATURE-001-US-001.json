@@ -1,0 +1,29 @@
+{
+  "id": "FEATURE-001-US-001",
+  "title": "Canonical baseline dataset",
+  "feature_id": "FEATURE-001",
+  "story": "As a modeller, I want baseline fiscal values in one validated file so results are reproducible.",
+  "description": "Make baseline.csv the single validated source for baseline fiscal values, loaded at startup.",
+  "priority": "P1",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-001-US-001-T01",
+    "FEATURE-001-US-001-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:44.001944+00:00",
+  "acceptance_criteria": [
+    "baseline.csv is the canonical source for receipts, spending and implied GDP",
+    "Required metrics validated at load: Total receipts, Total spending, Implied GDP",
+    "Missing/invalid file raises a clear user-facing error rather than failing silently",
+    "No hidden hardcoded baseline fallback remains in the code"
+  ],
+  "implementation_hints": [
+    "Implemented via load_baseline() and BaselineError in model/fiscal_model.py"
+  ]
+}

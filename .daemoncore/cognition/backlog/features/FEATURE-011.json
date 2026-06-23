@@ -1,0 +1,27 @@
+{
+  "id": "FEATURE-011",
+  "title": "Policy Slider Intelligence — implementation",
+  "epic_id": "EPIC-011",
+  "phase": 1,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "user_story_ids": [
+    "FEATURE-011-US-001",
+    "FEATURE-011-US-002",
+    "FEATURE-011-US-003",
+    "FEATURE-011-US-004",
+    "FEATURE-011-US-005"
+  ],
+  "summary": "Turn each policy slider into an educational tool: description, intended effect, likely side effects, uncertainty level, affected score categories and real-world examples, surfaced via progressive disclosure. Tracks all implementation stories for this epic.",
+  "acceptance_criteria": [
+    "Every slider has all six metadata fields populated",
+    "Metadata is accessible in the UI without overwhelming the controls",
+    "Affected score categories reference real EPIC-003 categories",
+    "Uncertainty levels are explicit and consistently scaled"
+  ],
+  "notes": "Scope (in): Per-slider metadata: description, intended effect, likely side effects, uncertainty level, affected score categories, real-world examples\nOut of scope: Changing the engine's maths (EPIC-012); AI generation of explanations now (future; soft-linked EPIC-008/010)",
+  "updated_at": "2026-06-23T09:25:48.469239+00:00"
+}

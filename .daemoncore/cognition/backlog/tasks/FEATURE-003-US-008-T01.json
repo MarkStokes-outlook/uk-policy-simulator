@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-003-US-008-T01",
+  "title": "Implement: Rationale output",
+  "user_story_id": "FEATURE-003-US-008",
+  "description": "As a user, I want a plain-English rationale per score so I understand the result.",
+  "priority": "P1",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Each category produces a deterministic rationale string",
+    "Rationale references the category's key drivers"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-003-US-008-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.727081+00:00"
+}

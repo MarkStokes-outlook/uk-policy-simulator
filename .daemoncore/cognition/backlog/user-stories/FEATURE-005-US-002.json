@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-005-US-002",
+  "title": "Local auth backend",
+  "feature_id": "FEATURE-005",
+  "story": "As a user, I want a local account so I can use the platform without external providers.",
+  "description": "Implement a local authentication backend with hashed credentials.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-005-US-002-T01",
+    "FEATURE-005-US-002-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.995721+00:00",
+  "acceptance_criteria": [
+    "Local AuthProvider implementation with hashed credentials",
+    "Secure session handling",
+    "Conforms to the AuthProvider interface"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-007-US-002-T01",
+  "title": "Implement: \"Best Balanced\" composite",
+  "user_story_id": "FEATURE-007-US-002",
+  "description": "As a user, I want a balanced-model ranking so I can find well-rounded policies.",
+  "priority": "P2",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Composite across categories is documented",
+    "Ranking is deterministic with rationale shown"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-007-US-002-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.739053+00:00"
+}

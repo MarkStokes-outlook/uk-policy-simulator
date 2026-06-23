@@ -1,0 +1,28 @@
+{
+  "id": "FEATURE-006",
+  "title": "Sharing Platform — implementation",
+  "epic_id": "EPIC-006",
+  "phase": 1,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "user_story_ids": [
+    "FEATURE-006-US-001",
+    "FEATURE-006-US-002",
+    "FEATURE-006-US-003",
+    "FEATURE-006-US-004",
+    "FEATURE-006-US-005",
+    "FEATURE-006-US-006"
+  ],
+  "summary": "Allow users to share models with controlled visibility (public, private, unlisted), shareable URLs and clean read-only public views. Tracks all implementation stories for this epic.",
+  "acceptance_criteria": [
+    "An owner can set a model to public, private or unlisted",
+    "Public and unlisted models render read-only to non-owners",
+    "Private models are inaccessible to anyone but the owner",
+    "Share URLs resolve correctly per visibility rules"
+  ],
+  "notes": "Scope (in): Visibility states: public, private, unlisted; Shareable URLs; Read-only public views\nOut of scope: Ranking/comparison (EPIC-007); Comments/social interaction (future); Collaborative editing (future)",
+  "updated_at": "2026-06-23T09:25:48.469239+00:00"
+}

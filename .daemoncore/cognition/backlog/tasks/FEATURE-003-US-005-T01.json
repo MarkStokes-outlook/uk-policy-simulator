@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-003-US-005-T01",
+  "title": "Implement: Public-service pressure categories",
+  "user_story_id": "FEATURE-003-US-005",
+  "description": "As a user, I want NHS Pressure and Housing Pressure scores so I can see service impacts.",
+  "priority": "P2",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Both categories computed deterministically",
+    "Proxies documented as interim until EPIC-012 enriches them"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-003-US-005-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.725665+00:00"
+}

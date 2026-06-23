@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-002-US-007-T01",
+  "title": "Implement: Scenario round-trip tests",
+  "user_story_id": "FEATURE-002-US-007",
+  "description": "Implement the tests for: Scenario round-trip tests.",
+  "priority": "P1",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "A parametrised test loads every scenario",
+    "Each scenario produces finite, expected-shape engine output"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-002-US-007-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.723353+00:00"
+}

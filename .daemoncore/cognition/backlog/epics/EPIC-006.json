@@ -1,0 +1,22 @@
+{
+  "id": "EPIC-006",
+  "title": "Sharing Platform",
+  "phase": 1,
+  "tags": [
+    "uk-policy-simulator",
+    "roadmap"
+  ],
+  "description": "Allow users to share models with controlled visibility (public, private, unlisted), shareable URLs and clean read-only public views.",
+  "feature_ids": [
+    "FEATURE-006"
+  ],
+  "updated_at": "2026-06-23T09:25:48.469239+00:00",
+  "rationale": "Sharing turns private exploration into public conversation, drives organic reach via share URLs, and provides the population of public models that leaderboards rank.",
+  "success_criteria": [
+    "An owner can set a model to public, private or unlisted",
+    "Public and unlisted models render read-only to non-owners",
+    "Private models are inaccessible to anyone but the owner",
+    "Share URLs resolve correctly per visibility rules"
+  ],
+  "notes": "## Scope (in)\n- Visibility states: public, private, unlisted\n- Shareable URLs\n- Read-only public views\n\n## Out of scope\n- Ranking/comparison (EPIC-007)\n- Comments/social interaction (future)\n- Collaborative editing (future)\n\n## Dependencies\n- EPIC-004 - models must exist and be persistable\n- EPIC-005 - ownership/identity define who may change visibility\n\n## Assumptions\n- Visibility is an owner-controlled property of a model\n- Unlisted = accessible via URL but not discoverable\n- Public views must not leak owner-private data\n\n## Risks\n- Accidental exposure of private models -> default private; explicit publish; tests\n- Share URLs guessable -> unguessable identifiers for unlisted models\n- Public view leaks editable controls -> strict read-only path\n- Stale shares after deletion -> defined 'removed' view\n\n## Future extensions\n- Comments / reactions on public models\n- Embeddable model widgets\n- Collaboration (shared editing) with permissions"
+}

@@ -1,0 +1,32 @@
+{
+  "id": "FEATURE-009-US-001-T01",
+  "title": "Implement: Encrypted key storage",
+  "user_story_id": "FEATURE-009-US-001",
+  "description": "As a security-conscious user, I want my API keys encrypted at rest so they're protected.",
+  "priority": "P2",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Keys encrypted with a documented scheme",
+    "Decrypted only in-memory at call time",
+    "Never persisted in plaintext"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-009-US-001-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.743904+00:00"
+}

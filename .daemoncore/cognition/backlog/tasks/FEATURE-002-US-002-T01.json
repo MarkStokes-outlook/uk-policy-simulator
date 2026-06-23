@@ -1,0 +1,32 @@
+{
+  "id": "FEATURE-002-US-002-T01",
+  "title": "Implement: Scenario loader",
+  "user_story_id": "FEATURE-002-US-002",
+  "description": "As a developer, I want a loader that parses and returns typed scenarios so the UI/engine can consume them.",
+  "priority": "P1",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Loader returns typed scenario objects",
+    "Malformed input raises a clear error",
+    "Loader has no Streamlit dependency"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-002-US-002-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.721397+00:00"
+}

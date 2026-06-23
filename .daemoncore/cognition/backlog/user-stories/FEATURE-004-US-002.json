@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-004-US-002",
+  "title": "Storage abstraction",
+  "feature_id": "FEATURE-004",
+  "story": "As an architect, I want a storage interface so JSON now can become a database later.",
+  "description": "Introduce a storage interface so JSON now can become a database later.",
+  "priority": "P1",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-004-US-002-T01",
+    "FEATURE-004-US-002-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.985602+00:00",
+  "acceptance_criteria": [
+    "ModelStore interface defined with a JSON-file implementation",
+    "No caller depends on the concrete backend",
+    "Interface supports list/get/save/delete"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "EPIC-010",
+  "title": "AI Model Analysis",
+  "phase": 1,
+  "tags": [
+    "uk-policy-simulator",
+    "roadmap"
+  ],
+  "description": "Generate AI critiques that explain policy models in plain language (executive summary, strengths, weaknesses, hidden trade-offs, implementation risks, socio-economic impacts, alternatives) while keeping scoring strictly deterministic. AI interprets; it never scores.",
+  "feature_ids": [
+    "FEATURE-010"
+  ],
+  "updated_at": "2026-06-23T09:25:48.469239+00:00",
+  "rationale": "AI commentary makes models accessible to non-experts, surfaces non-obvious trade-offs, and adds qualitative depth on top of the quantitative scores - without compromising the reproducibility guarantee.",
+  "success_criteria": [
+    "For a saved model, the AI produces all seven critique sections",
+    "Critique is grounded in the model's actual inputs, outputs and scores",
+    "The deterministic score is unchanged by, and shown independently of, the AI",
+    "Output is clearly labelled AI-generated"
+  ],
+  "notes": "## Scope (in)\n- Critique outputs: executive summary, strengths, weaknesses, hidden trade-offs, implementation risks, socio-economic impacts, alternative recommendations\n\n## Out of scope\n- Any AI influence on scores (EPIC-003 stays deterministic)\n- The provider framework (EPIC-008) and user keys (EPIC-009)\n\n## Dependencies\n- EPIC-003 - AI is given the deterministic scores + rationale to explain\n- EPIC-004 - analysis runs against a saved model\n- EPIC-008 - analysis calls go through the provider framework\n\n## Assumptions\n- AI receives model inputs, engine outputs and scores as grounding context\n- Outputs are advisory commentary, clearly labelled AI-generated\n- The same deterministic score is shown regardless of which AI is used\n\n## Risks\n- AI appears to set the score -> hard separation; UI states 'AI explains, not scores'\n- Hallucinated facts -> ground prompts in actual model data; label as AI opinion\n- Inconsistent output structure -> structured prompt templates + output schema\n- Sensitive/biased commentary -> neutral prompting; disclaimers; dismissable\n\n## Future extensions\n- Comparative critique across two models\n- Critique in multiple tones/audiences (policymaker vs citizen)\n- Feeding alternative recommendations back as suggested slider changes"
+}

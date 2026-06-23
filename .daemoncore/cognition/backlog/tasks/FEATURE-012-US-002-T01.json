@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-012-US-002-T01",
+  "title": "Implement: Labour & productivity channels",
+  "user_story_id": "FEATURE-012-US-002",
+  "description": "As an analyst, I want labour participation and productivity effects so growth is modelled credibly.",
+  "priority": "P3",
+  "size": "L",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Documented, sourced channels feed GDP/receipts",
+    "Deterministic per forecast mode"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-012-US-002-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.755201+00:00"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-009-US-005-T01",
+  "title": "Implement: Quota awareness",
+  "user_story_id": "FEATURE-009-US-005",
+  "description": "As a user, I want to see my usage so I avoid surprise overruns.",
+  "priority": "P3",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Per-user usage surfaced from EPIC-008 tracking",
+    "Warnings near configured/known limits"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-009-US-005-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.746846+00:00"
+}

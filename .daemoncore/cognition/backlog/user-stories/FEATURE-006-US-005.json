@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-006-US-005",
+  "title": "Visibility management UI",
+  "feature_id": "FEATURE-006",
+  "story": "As an owner, I want to change a model's visibility so I control who sees it.",
+  "description": "Let owners change a model's visibility.",
+  "priority": "P2",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-006-US-005-T01",
+    "FEATURE-006-US-005-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.994258+00:00",
+  "acceptance_criteria": [
+    "Owner can switch visibility",
+    "Switching to private immediately revokes prior public/unlisted access"
+  ]
+}

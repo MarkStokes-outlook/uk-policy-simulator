@@ -1,0 +1,28 @@
+{
+  "id": "FEATURE-009",
+  "title": "Bring Your Own AI — implementation",
+  "epic_id": "EPIC-009",
+  "phase": 1,
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "user_story_ids": [
+    "FEATURE-009-US-001",
+    "FEATURE-009-US-002",
+    "FEATURE-009-US-003",
+    "FEATURE-009-US-004",
+    "FEATURE-009-US-005",
+    "FEATURE-009-US-006"
+  ],
+  "summary": "Allow users to bring their own AI credentials, configured per user, with encrypted storage and quota awareness - while guaranteeing the platform remains fully usable with no paid API via local Ollama. Tracks all implementation stories for this epic.",
+  "acceptance_criteria": [
+    "A user can add, rotate and remove provider keys; keys encrypted at rest",
+    "Keys are never displayed after entry and never appear in logs",
+    "The platform works end-to-end with no keys via local Ollama",
+    "Per-user usage/quota is visible to that user"
+  ],
+  "notes": "Scope (in): Encrypted API key storage; Per-user provider selection and configuration; Quota awareness; Key management (add, rotate, remove)\nOut of scope: The provider abstraction itself (EPIC-008); Generating critiques (EPIC-010); Billing/payments",
+  "updated_at": "2026-06-23T09:25:48.469239+00:00"
+}

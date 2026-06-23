@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-009-US-003",
+  "title": "Per-user provider configuration",
+  "feature_id": "FEATURE-009",
+  "story": "As a user, I want to choose my default provider/model so analysis uses my setup.",
+  "description": "Let users set a default provider/model.",
+  "priority": "P2",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-009-US-003-T01",
+    "FEATURE-009-US-003-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.993663+00:00",
+  "acceptance_criteria": [
+    "Per-user config stored and applied",
+    "Falls back to Ollama when no key is present"
+  ]
+}

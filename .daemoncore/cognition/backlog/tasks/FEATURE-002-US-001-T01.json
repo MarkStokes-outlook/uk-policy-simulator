@@ -1,0 +1,32 @@
+{
+  "id": "FEATURE-002-US-001-T01",
+  "title": "Implement: Scenario schema & `scenarios.yaml`",
+  "user_story_id": "FEATURE-002-US-001",
+  "description": "As a curator, I want a defined schema so scenarios are consistent and machine-checkable.",
+  "priority": "P1",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Documented schema: id, name, summary, levers, assumptions",
+    "scenarios.yaml created containing all seven presets",
+    "Schema is versioned to allow future evolution"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-002-US-001-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.720885+00:00"
+}

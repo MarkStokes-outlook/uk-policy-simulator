@@ -1,0 +1,23 @@
+{
+  "id": "FEATURE-002-US-006",
+  "title": "Scenario documentation",
+  "feature_id": "FEATURE-002",
+  "story": "As a reader, I want documented scenarios so the assumptions behind each are transparent.",
+  "description": "Document each preset's rationale and lever choices for transparency.",
+  "priority": "P2",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-002-US-006-T01"
+  ],
+  "updated_at": "2026-06-23T09:31:44.003501+00:00",
+  "acceptance_criteria": [
+    "docs/scenarios.md explains each preset's intent and lever choices",
+    "Assumptions behind each scenario are stated"
+  ]
+}

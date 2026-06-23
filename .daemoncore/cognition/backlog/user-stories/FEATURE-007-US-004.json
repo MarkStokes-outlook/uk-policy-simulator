@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-007-US-004",
+  "title": "Filtering",
+  "feature_id": "FEATURE-007",
+  "story": "As a user, I want to filter leaderboards so I can focus on relevant models.",
+  "description": "Let users filter leaderboards.",
+  "priority": "P3",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-007-US-004-T01",
+    "FEATURE-007-US-004-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.984140+00:00",
+  "acceptance_criteria": [
+    "Filters (e.g. by scenario theme/tag) refine the list",
+    "Filtering does not change ranking semantics"
+  ]
+}

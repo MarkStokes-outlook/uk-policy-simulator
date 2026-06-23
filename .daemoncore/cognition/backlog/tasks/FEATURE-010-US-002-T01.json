@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-010-US-002-T01",
+  "title": "Implement: Critique prompt templates",
+  "user_story_id": "FEATURE-010-US-002",
+  "description": "As a maintainer, I want versioned critique prompts so output is consistent across providers.",
+  "priority": "P2",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Templates define the seven critique sections and output structure",
+    "Templates versioned in the EPIC-008 system"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-010-US-002-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.750295+00:00"
+}

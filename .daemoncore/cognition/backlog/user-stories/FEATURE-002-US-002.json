@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-002-US-002",
+  "title": "Scenario loader",
+  "feature_id": "FEATURE-002",
+  "story": "As a developer, I want a loader that parses and returns typed scenarios so the UI/engine can consume them.",
+  "description": "Parse scenarios.yaml into typed scenario objects for the UI and engine to consume.",
+  "priority": "P1",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-002-US-002-T01",
+    "FEATURE-002-US-002-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.991970+00:00",
+  "acceptance_criteria": [
+    "Loader returns typed scenario objects",
+    "Malformed input raises a clear error",
+    "Loader has no Streamlit dependency"
+  ]
+}

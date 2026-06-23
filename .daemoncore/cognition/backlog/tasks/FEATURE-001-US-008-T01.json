@@ -1,0 +1,33 @@
+{
+  "id": "FEATURE-001-US-008-T01",
+  "title": "Author: Engine reference documentation",
+  "user_story_id": "FEATURE-001-US-008",
+  "description": "Write the documentation for: Engine reference documentation.",
+  "priority": "P2",
+  "size": "S",
+  "work_type": "chore",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [
+    "docs/engine.md"
+  ],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "docs/engine.md documents each formula, input and output",
+    "Worked examples match the regression-test fixtures"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-001-US-008-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.720649+00:00"
+}

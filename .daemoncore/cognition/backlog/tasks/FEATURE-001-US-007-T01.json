@@ -1,0 +1,34 @@
+{
+  "id": "FEATURE-001-US-007-T01",
+  "title": "Implement: Engine input contracts & typing",
+  "user_story_id": "FEATURE-001-US-007",
+  "description": "As a developer, I want explicit typed inputs/outputs so the engine is safe to extend.",
+  "priority": "P1",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [
+    "model/fiscal_model.py"
+  ],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Dataclasses define baseline, assumptions and result types",
+    "Units are documented (£bn; fractions vs percentages)",
+    "Out-of-range assumptions are validated with clear errors"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-001-US-007-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.720140+00:00"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-012-US-001",
+  "title": "Engine interface for pluggable models",
+  "feature_id": "FEATURE-012",
+  "story": "As an architect, I want the engine to accept swappable models so the simple one can be replaced safely.",
+  "description": "Make the engine accept swappable feedback models.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-012-US-001-T01",
+    "FEATURE-012-US-001-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.997733+00:00",
+  "acceptance_criteria": [
+    "A feedback-strategy interface exists",
+    "The current model is one implementation",
+    "Callers are unaffected by the swap"
+  ]
+}

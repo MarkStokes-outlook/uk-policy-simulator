@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-004",
+  "title": "Saved Models — implementation",
+  "epic_id": "EPIC-004",
+  "phase": 1,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "user_story_ids": [
+    "FEATURE-004-US-001",
+    "FEATURE-004-US-002",
+    "FEATURE-004-US-003",
+    "FEATURE-004-US-004",
+    "FEATURE-004-US-005",
+    "FEATURE-004-US-006",
+    "FEATURE-004-US-007",
+    "FEATURE-004-US-008",
+    "FEATURE-004-US-009"
+  ],
+  "summary": "Allow users to save, load, clone, delete, version and export/import policy models as structured JSON behind a storage abstraction designed for future database migration. Tracks all implementation stories for this epic.",
+  "acceptance_criteria": [
+    "A user can save the current model and reload it to an identical state",
+    "Clone and delete operate without corrupting other models",
+    "Models persist as versioned, structured JSON behind a storage interface",
+    "Export produces a portable file that import reconstructs faithfully"
+  ],
+  "notes": "Scope (in): Save, load, clone, delete a model; Model metadata; Model versioning; Export / import; Structured JSON storage, DB-migration ready\nOut of scope: User accounts/ownership (EPIC-005); Visibility (EPIC-006); Cross-user ranking (EPIC-007)",
+  "updated_at": "2026-06-23T09:25:48.469239+00:00"
+}

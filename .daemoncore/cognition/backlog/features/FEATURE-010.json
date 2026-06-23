@@ -1,0 +1,28 @@
+{
+  "id": "FEATURE-010",
+  "title": "AI Model Analysis — implementation",
+  "epic_id": "EPIC-010",
+  "phase": 1,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "user_story_ids": [
+    "FEATURE-010-US-001",
+    "FEATURE-010-US-002",
+    "FEATURE-010-US-003",
+    "FEATURE-010-US-004",
+    "FEATURE-010-US-005",
+    "FEATURE-010-US-006"
+  ],
+  "summary": "Generate AI critiques that explain policy models in plain language (executive summary, strengths, weaknesses, hidden trade-offs, implementation risks, socio-economic impacts, alternatives) while keeping scoring strictly deterministic. AI interprets; it never scores. Tracks all implementation stories for this epic.",
+  "acceptance_criteria": [
+    "For a saved model, the AI produces all seven critique sections",
+    "Critique is grounded in the model's actual inputs, outputs and scores",
+    "The deterministic score is unchanged by, and shown independently of, the AI",
+    "Output is clearly labelled AI-generated"
+  ],
+  "notes": "Scope (in): Critique outputs: executive summary, strengths, weaknesses, hidden trade-offs, implementation risks, socio-economic impacts, alternative recommendations\nOut of scope: Any AI influence on scores (EPIC-003 stays deterministic); The provider framework (EPIC-008) and user keys (EPIC-009)",
+  "updated_at": "2026-06-23T09:25:48.469239+00:00"
+}

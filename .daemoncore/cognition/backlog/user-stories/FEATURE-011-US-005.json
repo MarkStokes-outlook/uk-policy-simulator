@@ -1,0 +1,23 @@
+{
+  "id": "FEATURE-011-US-005",
+  "title": "Metadata coverage tests",
+  "feature_id": "FEATURE-011",
+  "story": "As a maintainer, I want a test ensuring every slider has complete metadata so none is missed.",
+  "description": "Ensure no slider is missing metadata.",
+  "priority": "P3",
+  "size": "XS",
+  "impact_area": "policy-simulation",
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-011-US-005-T01"
+  ],
+  "updated_at": "2026-06-23T09:31:43.988958+00:00",
+  "acceptance_criteria": [
+    "A test fails if any lever lacks a required field",
+    "A test fails on references to unknown categories"
+  ]
+}

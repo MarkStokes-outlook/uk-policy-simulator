@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-006-US-001-T01",
+  "title": "Implement: Visibility model",
+  "user_story_id": "FEATURE-006-US-001",
+  "description": "As a developer, I want a visibility field with clear semantics so access rules are unambiguous.",
+  "priority": "P2",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Model gains visibility with documented access semantics",
+    "Default visibility is private"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-006-US-001-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.736191+00:00"
+}

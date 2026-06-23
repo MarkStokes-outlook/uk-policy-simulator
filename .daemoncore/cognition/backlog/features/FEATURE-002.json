@@ -1,0 +1,29 @@
+{
+  "id": "FEATURE-002",
+  "title": "Scenario Presets — implementation",
+  "epic_id": "EPIC-002",
+  "phase": 1,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "user_story_ids": [
+    "FEATURE-002-US-001",
+    "FEATURE-002-US-002",
+    "FEATURE-002-US-003",
+    "FEATURE-002-US-004",
+    "FEATURE-002-US-005",
+    "FEATURE-002-US-006",
+    "FEATURE-002-US-007"
+  ],
+  "summary": "Support reusable, named policy scenarios so users start from a coherent position rather than blank sliders. Provides scenarios.yaml, a validated loader, a UI selector and human-readable summaries. Tracks all implementation stories for this epic.",
+  "acceptance_criteria": [
+    "All seven initial scenarios load, validate and run without error",
+    "Selecting a scenario populates every lever and assumption deterministically",
+    "An invalid or missing scenario file fails clearly in the UI",
+    "Each scenario has a one-paragraph summary visible to users"
+  ],
+  "notes": "Scope (in): scenarios.yaml describing each preset; Schema-validating scenario loader; Scenario selector in the UI; Human-readable scenario summaries; Scenario documentation; Initial set: Baseline, Fairness Swap, Social Investment, Deficit Repair, Universal Basic Services, UBI Experiment, Austerity Trap\nOut of scope: User-created/saved scenarios (EPIC-004); Scoring of scenarios (EPIC-003); Sharing scenarios publicly (EPIC-006)",
+  "updated_at": "2026-06-23T09:25:48.469239+00:00"
+}

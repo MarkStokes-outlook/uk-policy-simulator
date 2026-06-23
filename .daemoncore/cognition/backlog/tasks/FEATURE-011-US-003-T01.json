@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-011-US-003-T01",
+  "title": "Implement: Progressive-disclosure UI",
+  "user_story_id": "FEATURE-011-US-003",
+  "description": "As a user, I want slider explanations on demand so the UI stays clean.",
+  "priority": "P3",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Tooltip/expander reveals metadata per slider",
+    "Default view stays uncluttered"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-011-US-003-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.753914+00:00"
+}

@@ -1,0 +1,30 @@
+{
+  "id": "FEATURE-012-US-005-T01",
+  "title": "Implement: Crime & long-term effects",
+  "user_story_id": "FEATURE-012-US-005",
+  "description": "As an analyst, I want crime and long-run effects so second-order impacts are represented.",
+  "priority": "P3",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Documented channels with explicit long-horizon behaviour and caveats"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-012-US-005-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.756362+00:00"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-009-US-004-T01",
+  "title": "Implement: Ollama-first fallback guarantee",
+  "user_story_id": "FEATURE-009-US-004",
+  "description": "As a free user, I want everything to work without paid keys so cost is never a barrier.",
+  "priority": "P2",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "With zero keys configured, all AI features route to local Ollama",
+    "Verified by an automated no-keys test"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-009-US-004-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.745787+00:00"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-003-US-004",
+  "title": "Social & poverty categories",
+  "feature_id": "FEATURE-003",
+  "story": "As a user, I want Social Fairness and Poverty Reduction scores so I can judge equity effects.",
+  "description": "Score Social Fairness and Poverty Reduction from the lever mix and outputs.",
+  "priority": "P1",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-003-US-004-T01",
+    "FEATURE-003-US-004-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.993480+00:00",
+  "acceptance_criteria": [
+    "Both categories computed deterministically",
+    "Rationale explains which levers/outcomes drove the score"
+  ]
+}

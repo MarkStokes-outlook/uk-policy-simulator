@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-001-US-004",
+  "title": "Multi-year projection engine",
+  "feature_id": "FEATURE-001",
+  "story": "As a user, I want a year-by-year projection so I can see trajectories.",
+  "description": "Project receipts, spending and deficit year-by-year with lagged feedback and GDP growth.",
+  "priority": "P1",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-001-US-004-T01",
+    "FEATURE-001-US-004-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.988027+00:00",
+  "acceptance_criteria": [
+    "GDP compounds at the configured baseline growth rate each year",
+    "Feedback is zero during the lag, then ramps linearly to full effect",
+    "Each year reports receipts, spending, deficit and deficit % of GDP for years 0..N"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-010-US-005",
+  "title": "Scoring/AI separation safeguards",
+  "feature_id": "FEATURE-010",
+  "story": "As a stakeholder, I want a guarantee that AI can't change scores so integrity holds.",
+  "description": "Guarantee AI cannot change scores.",
+  "priority": "P2",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-010-US-005-T01",
+    "FEATURE-010-US-005-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:44.002584+00:00",
+  "acceptance_criteria": [
+    "Architectural separation enforced",
+    "UI states the boundary",
+    "A test asserts scores are identical with AI on/off"
+  ]
+}

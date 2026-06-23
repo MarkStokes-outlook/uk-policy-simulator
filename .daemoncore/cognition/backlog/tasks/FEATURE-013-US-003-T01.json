@@ -1,0 +1,30 @@
+{
+  "id": "FEATURE-013-US-003-T01",
+  "title": "Implement: Age-cohort breakdown",
+  "user_story_id": "FEATURE-013-US-003",
+  "description": "As a user, I want impacts by age cohort so generational effects are visible.",
+  "priority": "P3",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Cohort breakdown computed and caveated"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-013-US-003-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.758936+00:00"
+}

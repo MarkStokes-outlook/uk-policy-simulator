@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-005-US-001",
+  "title": "Auth provider abstraction",
+  "feature_id": "FEATURE-005",
+  "story": "As an architect, I want an auth provider interface so backends can be swapped later.",
+  "description": "Define an auth provider interface so backends can be swapped later.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-005-US-001-T01",
+    "FEATURE-005-US-001-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.991584+00:00",
+  "acceptance_criteria": [
+    "AuthProvider interface defines identify/authenticate/session/profile operations",
+    "Contract is documented",
+    "No caller couples directly to a concrete backend"
+  ]
+}

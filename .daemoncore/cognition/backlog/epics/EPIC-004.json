@@ -1,0 +1,22 @@
+{
+  "id": "EPIC-004",
+  "title": "Saved Models",
+  "phase": 1,
+  "tags": [
+    "uk-policy-simulator",
+    "roadmap"
+  ],
+  "description": "Allow users to save, load, clone, delete, version and export/import policy models as structured JSON behind a storage abstraction designed for future database migration.",
+  "feature_ids": [
+    "FEATURE-004"
+  ],
+  "updated_at": "2026-06-23T09:25:48.469239+00:00",
+  "rationale": "Persistence converts a transient sandbox into something users return to. A saved model (inputs + outputs + scores + metadata) is the unit of value that ownership, sharing, leaderboards and AI analysis all operate on.",
+  "success_criteria": [
+    "A user can save the current model and reload it to an identical state",
+    "Clone and delete operate without corrupting other models",
+    "Models persist as versioned, structured JSON behind a storage interface",
+    "Export produces a portable file that import reconstructs faithfully"
+  ],
+  "notes": "## Scope (in)\n- Save, load, clone, delete a model\n- Model metadata\n- Model versioning\n- Export / import\n- Structured JSON storage, DB-migration ready\n\n## Out of scope\n- User accounts/ownership (EPIC-005)\n- Visibility (EPIC-006)\n- Cross-user ranking (EPIC-007)\n\n## Dependencies\n- EPIC-001/002 - a model captures engine inputs (incl. preset origin)\n- EPIC-003 - a saved model stores its computed scores + score version\n\n## Assumptions\n- JSON files suffice for the first iteration; a DB comes later\n- A versioned model schema enables forward migration\n- Engine and scoring versions are recorded so old models stay interpretable\n\n## Risks\n- Schema changes break old models -> versioned schema + migration; store versions\n- JSON storage doesn't scale -> storage behind an interface to allow DB swap\n- Re-scoring drift after engine changes -> store original scores; show both\n\n## Future extensions\n- Database-backed ModelStore (Postgres/SQLite)\n- Soft-delete / trash with restore\n- Model diffing UI (ties into EPIC-014)"
+}

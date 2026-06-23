@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-014",
+  "title": "Simulation & Research Platform — implementation",
+  "epic_id": "EPIC-014",
+  "phase": 1,
+  "domain": "web-api",
+  "area": "work-endpoints",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "user_story_ids": [
+    "FEATURE-014-US-001",
+    "FEATURE-014-US-002",
+    "FEATURE-014-US-003",
+    "FEATURE-014-US-004",
+    "FEATURE-014-US-005",
+    "FEATURE-014-US-006",
+    "FEATURE-014-US-007",
+    "FEATURE-014-US-008"
+  ],
+  "summary": "Transform the project into a serious policy experimentation platform: Monte Carlo simulation, sensitivity analysis, policy comparison, benchmarking, reproducible research exports, an authenticated API and dataset versioning. Tracks all implementation stories for this epic.",
+  "acceptance_criteria": [
+    "Monte Carlo and sensitivity analyses run over the engine and report results",
+    "Two or more saved models can be compared/benchmarked side by side",
+    "Research exports are reproducible and record engine/dataset/seed versions",
+    "A documented API exposes core capabilities under authentication",
+    "Datasets are versioned and selectable"
+  ],
+  "notes": "Scope (in): Monte Carlo simulation; Sensitivity analysis; Policy comparison; Model benchmarking; Research exports; API access; Dataset versioning\nOut of scope: New socio-economic channels (EPIC-012); New distributional dimensions (EPIC-013)",
+  "updated_at": "2026-06-23T09:25:48.469239+00:00"
+}

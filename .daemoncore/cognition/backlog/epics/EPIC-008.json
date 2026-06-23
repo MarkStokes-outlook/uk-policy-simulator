@@ -1,0 +1,23 @@
+{
+  "id": "EPIC-008",
+  "title": "AI Provider Framework",
+  "phase": 1,
+  "tags": [
+    "uk-policy-simulator",
+    "roadmap"
+  ],
+  "description": "Provide a pluggable AI provider framework (Ollama, OpenAI, Anthropic, Gemini, future) with a registry, model selection, usage tracking and centralised prompt templates - without coupling to any one vendor.",
+  "feature_ids": [
+    "FEATURE-008"
+  ],
+  "updated_at": "2026-06-23T09:25:48.469239+00:00",
+  "rationale": "A clean provider abstraction future-proofs all AI features. It lets the platform default to free/local inference (Ollama) while supporting commercial providers, keeping downstream AI features simple.",
+  "success_criteria": [
+    "A new provider can be added by implementing the interface + registering it",
+    "The same calling code works across all providers",
+    "Model selection and usage tracking work for every provider",
+    "Prompt templates are centralised and versioned",
+    "Local Ollama works with no paid credentials"
+  ],
+  "notes": "## Scope (in)\n- AIProvider abstraction with Ollama/OpenAI/Anthropic/Gemini implementations\n- Provider registry\n- Model selection per provider\n- Usage tracking\n- Prompt templates\n\n## Out of scope\n- User-supplied credentials/encryption (EPIC-009)\n- Producing model critiques (EPIC-010)\n- Allowing AI to influence scoring (forbidden - EPIC-003 stays deterministic)\n\n## Dependencies\n- EPIC-001 - providers operate on engine outputs/model data\n- EPIC-004 - the unit AI consumes is a saved model\n\n## Assumptions\n- All providers expressible via a common request/response contract\n- Local Ollama is a first-class, always-available option\n- Usage tracking is needed for quotas and cost awareness\n\n## Risks\n- Leaky abstraction -> minimal common contract; adapt per provider\n- Provider API drift -> version adapters; isolate SDKs behind interface\n- Unbounded usage/cost -> usage tracking + quota hooks from day one\n- Prompt sprawl -> centralised, versioned prompt templates\n\n## Future extensions\n- Streaming responses\n- Provider fallback / routing policies\n- Caching identical prompts to cut cost"
+}

@@ -1,0 +1,32 @@
+{
+  "id": "FEATURE-003-US-007-T01",
+  "title": "Implement: Weighting system",
+  "user_story_id": "FEATURE-003-US-007",
+  "description": "As an operator, I want configurable category weights so the overall score reflects chosen priorities.",
+  "priority": "P2",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Weights loaded from config, not hardcoded",
+    "Overall score = documented weighted aggregate of categories",
+    "Default weights are published"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-003-US-007-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.726631+00:00"
+}

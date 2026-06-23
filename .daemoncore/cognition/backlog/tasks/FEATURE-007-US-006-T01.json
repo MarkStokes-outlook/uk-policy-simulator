@@ -1,0 +1,32 @@
+{
+  "id": "FEATURE-007-US-006-T01",
+  "title": "Implement: Historical tracking",
+  "user_story_id": "FEATURE-007-US-006",
+  "description": "As an analyst, I want historical leaderboard snapshots so I can see how rankings change.",
+  "priority": "P3",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Periodic snapshots stored",
+    "A model's rank history is viewable",
+    "Retention policy documented"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-007-US-006-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.740451+00:00"
+}

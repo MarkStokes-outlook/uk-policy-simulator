@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-004-US-001",
+  "title": "Model schema & versioning",
+  "feature_id": "FEATURE-004",
+  "story": "As a developer, I want a versioned model schema so saved data survives future changes.",
+  "description": "Define a versioned model schema capturing inputs, outputs, scores and metadata.",
+  "priority": "P1",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-004-US-001-T01",
+    "FEATURE-004-US-001-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:44.000700+00:00",
+  "acceptance_criteria": [
+    "JSON schema includes schema_version, inputs, outputs, scores, metadata",
+    "Engine and scoring versions are recorded",
+    "Schema documented for contributors"
+  ]
+}

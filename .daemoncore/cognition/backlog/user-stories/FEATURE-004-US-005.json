@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-004-US-005",
+  "title": "Clone model",
+  "feature_id": "FEATURE-004",
+  "story": "As a user, I want to clone a model so I can explore variations without losing the original.",
+  "description": "Let a user clone a model to explore variations safely.",
+  "priority": "P2",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-004-US-005-T01",
+    "FEATURE-004-US-005-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.988494+00:00",
+  "acceptance_criteria": [
+    "Clone creates a new id with copied data",
+    "Clone records a 'cloned from' reference",
+    "Original is unaffected"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "FEATURE-012-US-009-T01",
+  "title": "Implement: Re-baselined regression tests",
+  "user_story_id": "FEATURE-012-US-009",
+  "description": "Implement the tests for: Re-baselined regression tests.",
+  "priority": "P3",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Per-mode fixtures lock outputs",
+    "Determinism verified",
+    "Migration from EPIC-001 baselines documented"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-012-US-009-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.757766+00:00"
+}

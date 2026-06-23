@@ -1,0 +1,35 @@
+{
+  "id": "FEATURE-001-US-006-T01",
+  "title": "Author: Honest feedback-model documentation",
+  "user_story_id": "FEATURE-001-US-006",
+  "description": "Write the documentation for: Honest feedback-model documentation.",
+  "priority": "P1",
+  "size": "XS",
+  "work_type": "chore",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [
+    "README.md",
+    "app.py"
+  ],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "README and UI describe feedback as annual, lagged and linearly ramped",
+    "Documentation states it is not cumulative capital-stock modelling",
+    "A TODO for future cumulative/lifecycle modelling is recorded"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-001-US-006-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.719806+00:00"
+}

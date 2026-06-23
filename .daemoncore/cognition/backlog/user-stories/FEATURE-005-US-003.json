@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-005-US-003",
+  "title": "Registration",
+  "feature_id": "FEATURE-005",
+  "story": "As a new user, I want to register so I can own models.",
+  "description": "Let a new user register to own models.",
+  "priority": "P2",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-005-US-003-T01",
+    "FEATURE-005-US-003-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.996527+00:00",
+  "acceptance_criteria": [
+    "Registration validates input and prevents duplicates",
+    "A user record is created with a hashed password"
+  ]
+}

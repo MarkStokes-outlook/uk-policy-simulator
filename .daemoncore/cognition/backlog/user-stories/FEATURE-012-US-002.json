@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-012-US-002",
+  "title": "Labour & productivity channels",
+  "feature_id": "FEATURE-012",
+  "story": "As an analyst, I want labour participation and productivity effects so growth is modelled credibly.",
+  "description": "Model labour participation and productivity effects.",
+  "priority": "P3",
+  "size": "L",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-012-US-002-T01",
+    "FEATURE-012-US-002-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.987879+00:00",
+  "acceptance_criteria": [
+    "Documented, sourced channels feed GDP/receipts",
+    "Deterministic per forecast mode"
+  ]
+}

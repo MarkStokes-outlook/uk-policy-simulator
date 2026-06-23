@@ -1,0 +1,29 @@
+{
+  "id": "FEATURE-013",
+  "title": "Distributional Analysis — implementation",
+  "epic_id": "EPIC-013",
+  "phase": 1,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "user_story_ids": [
+    "FEATURE-013-US-001",
+    "FEATURE-013-US-002",
+    "FEATURE-013-US-003",
+    "FEATURE-013-US-004",
+    "FEATURE-013-US-005",
+    "FEATURE-013-US-006",
+    "FEATURE-013-US-007"
+  ],
+  "summary": "Reveal who wins and loses under a model by breaking outcomes down across income deciles, age cohorts, regions and household types, with honest, uncertainty-aware visualisations. Tracks all implementation stories for this epic.",
+  "acceptance_criteria": [
+    "A model's outcomes are broken down across all four dimensions",
+    "Distributional results are visualised clearly with uncertainty shown",
+    "Breakdowns are sourced/caveated and consistent with aggregate totals",
+    "Fairness / Poverty scores can optionally incorporate distribution"
+  ],
+  "notes": "Scope (in): Income deciles; Age cohorts; Regional impacts; Household types; Distribution visualisations\nOut of scope: The underlying channel modelling (EPIC-012); Monte Carlo over distributions (EPIC-014)",
+  "updated_at": "2026-06-23T09:25:48.469239+00:00"
+}

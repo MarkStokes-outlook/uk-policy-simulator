@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-009-US-005",
+  "title": "Quota awareness",
+  "feature_id": "FEATURE-009",
+  "story": "As a user, I want to see my usage so I avoid surprise overruns.",
+  "description": "Surface per-user usage to avoid overruns.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-009-US-005-T01",
+    "FEATURE-009-US-005-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:44.000502+00:00",
+  "acceptance_criteria": [
+    "Per-user usage surfaced from EPIC-008 tracking",
+    "Warnings near configured/known limits"
+  ]
+}

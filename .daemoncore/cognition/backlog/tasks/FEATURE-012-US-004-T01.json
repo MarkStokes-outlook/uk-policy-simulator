@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-012-US-004-T01",
+  "title": "Implement: Health (NHS) & housing channels",
+  "user_story_id": "FEATURE-012-US-004",
+  "description": "As an analyst, I want NHS demand and housing outcomes so public-service pressure is modelled.",
+  "priority": "P3",
+  "size": "L",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Channels produce NHS/housing pressure signals",
+    "Signals usable by EPIC-003 categories"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-012-US-004-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.755997+00:00"
+}

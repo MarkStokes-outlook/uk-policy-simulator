@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-006-US-001",
+  "title": "Visibility model",
+  "feature_id": "FEATURE-006",
+  "story": "As a developer, I want a visibility field with clear semantics so access rules are unambiguous.",
+  "description": "Add a visibility field with clear public/private/unlisted semantics.",
+  "priority": "P2",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-006-US-001-T01",
+    "FEATURE-006-US-001-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.984859+00:00",
+  "acceptance_criteria": [
+    "Model gains visibility with documented access semantics",
+    "Default visibility is private"
+  ]
+}

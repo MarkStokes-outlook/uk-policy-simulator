@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-013-US-002",
+  "title": "Income-decile breakdown",
+  "feature_id": "FEATURE-013",
+  "story": "As a user, I want impacts by income decile so I see distributional fairness.",
+  "description": "Break impacts down by income decile.",
+  "priority": "P3",
+  "size": "L",
+  "impact_area": "policy-simulation",
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-013-US-002-T01",
+    "FEATURE-013-US-002-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:44.004348+00:00",
+  "acceptance_criteria": [
+    "Per-decile outcome deltas computed from EPIC-012 channels",
+    "Decile breakdown reconciles to aggregate totals"
+  ]
+}

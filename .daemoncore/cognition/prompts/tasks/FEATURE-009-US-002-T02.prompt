@@ -1,0 +1,48 @@
+# Task FEATURE-009-US-002-T02 — Test & verify: Key management UI
+
+> **DaemonCore coding-agent prompt.** Work type: `feature` · Size: `S` · Priority: `P2` · Status: `todo`
+
+## Where this fits
+- **Epic EPIC-009 — Bring Your Own AI.** Allow users to bring their own AI credentials, configured per user, with encrypted storage and quota awareness - while guaranteeing the platform remains fully usable with no paid API via local Ollama.
+- **Feature FEATURE-009 — Bring Your Own AI — implementation.**
+- **Story FEATURE-009-US-002 — Key management UI.** _As a user, I want to add, rotate and remove keys so I control my credentials._
+
+## Objective
+Add automated tests and verify acceptance for: Key management UI.
+
+## What to do
+Write **deterministic automated tests** that cover each acceptance criterion of the parent story:
+- Assert: Add/rotate/remove flows provided
+- Assert: Keys masked after entry
+- Assert: Removal is immediate and complete
+Use fixed, hand-computed numbers (see `tests/test_fiscal_model.py`). Avoid randomness, network calls and time-dependence.
+
+## Acceptance criteria (Definition of Done)
+- [ ] Automated tests cover the story's acceptance criteria
+- [ ] Tests are deterministic and pass in CI
+- [ ] New/updated tests pass and cover the above
+- [ ] No regression in the existing `pytest` suite
+
+## Dependencies
+Complete these first: `FEATURE-009-US-002-T01`.
+
+## Project conventions
+- Target Python 3.13. Use British spelling in all user-facing text.
+- Keep the pure model layer (`model/`) free of Streamlit; `app.py` is UI/render only.
+- Pin any new runtime deps in `requirements.txt`; test-only deps in `requirements-dev.txt`.
+- Write deterministic `pytest` tests; follow the style of `tests/test_fiscal_model.py`.
+- Match the surrounding code style. Prefer small, coherent diffs over broad refactors.
+- Update `README.md` / `docs/` whenever behaviour changes.
+
+## Guardrails (EPIC-009)
+- Encrypt API keys at rest; never log or render them; decrypt only in-memory.
+- The platform MUST work end-to-end with no keys via local Ollama.
+- Provide add / rotate / remove key management.
+
+## Verification
+- `python3 -m py_compile <changed .py files>`
+- `python3 -m pytest -q` — all tests pass (add/extend tests for this change).
+
+## Notes
+- This simulator is a transparent scenario sandbox, not an official forecast — keep that framing in any user-facing text.
+- If requirements are ambiguous or you must change a public interface, stop and flag it rather than guessing.

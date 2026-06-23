@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-010-US-006-T01",
+  "title": "Implement: Analysis caching & persistence",
+  "user_story_id": "FEATURE-010-US-006",
+  "description": "As a user, I want my critique saved with the model so I don't re-run it needlessly.",
+  "priority": "P3",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Critique stored against the model version + provider/model used",
+    "Regenerable on demand"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-010-US-006-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.752745+00:00"
+}

@@ -1,0 +1,36 @@
+{
+  "id": "FEATURE-001-US-001-T02",
+  "title": "Test & verify: Canonical baseline dataset",
+  "user_story_id": "FEATURE-001-US-001",
+  "description": "Add automated tests and verify acceptance for: Canonical baseline dataset.",
+  "priority": "P1",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [
+    "FEATURE-001-US-001-T01"
+  ],
+  "target_files": [
+    "model/fiscal_model.py",
+    "baseline.csv"
+  ],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Automated tests cover the story's acceptance criteria",
+    "Tests are deterministic and pass in CI"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-001-US-001-T02.prompt",
+  "updated_at": "2026-06-23T09:47:31.717910+00:00"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-003-US-006",
+  "title": "Risk & plausibility categories",
+  "feature_id": "FEATURE-003",
+  "story": "As a user, I want Implementation Risk and Political Plausibility scores so I can judge realism.",
+  "description": "Score Implementation Risk and Political Plausibility from realism signals.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-003-US-006-T01",
+    "FEATURE-003-US-006-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.988759+00:00",
+  "acceptance_criteria": [
+    "Computed from implementation quality, optimism penalty and lever aggressiveness",
+    "Rationale provided for each"
+  ]
+}

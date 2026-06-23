@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-001-US-006",
+  "title": "Honest feedback-model documentation",
+  "feature_id": "FEATURE-001",
+  "story": "As a reader, I want the feedback model described honestly so I don't over-trust it.",
+  "description": "State plainly, in UI and README, how the feedback model works and what it is not.",
+  "priority": "P1",
+  "size": "XS",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-001-US-006-T01"
+  ],
+  "updated_at": "2026-06-23T09:31:43.994489+00:00",
+  "acceptance_criteria": [
+    "README and UI describe feedback as annual, lagged and linearly ramped",
+    "Documentation states it is not cumulative capital-stock modelling",
+    "A TODO for future cumulative/lifecycle modelling is recorded"
+  ]
+}

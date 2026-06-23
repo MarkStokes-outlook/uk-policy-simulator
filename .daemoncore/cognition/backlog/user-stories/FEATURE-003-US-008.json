@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-003-US-008",
+  "title": "Rationale output",
+  "feature_id": "FEATURE-003",
+  "story": "As a user, I want a plain-English rationale per score so I understand the result.",
+  "description": "Emit a plain-English rationale for every category score.",
+  "priority": "P1",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-003-US-008-T01",
+    "FEATURE-003-US-008-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.994711+00:00",
+  "acceptance_criteria": [
+    "Each category produces a deterministic rationale string",
+    "Rationale references the category's key drivers"
+  ]
+}

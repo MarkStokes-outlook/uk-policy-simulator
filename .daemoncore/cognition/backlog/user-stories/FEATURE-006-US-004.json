@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-006-US-004",
+  "title": "Read-only public view",
+  "feature_id": "FEATURE-006",
+  "story": "As a visitor, I want a clean read-only view so I can explore a shared model without editing it.",
+  "description": "Render a clean read-only public view.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-006-US-004-T01",
+    "FEATURE-006-US-004-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.998195+00:00",
+  "acceptance_criteria": [
+    "Public/unlisted models render inputs, outputs and scores read-only",
+    "No owner-only data is exposed"
+  ]
+}

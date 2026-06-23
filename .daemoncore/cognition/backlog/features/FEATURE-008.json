@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-008",
+  "title": "AI Provider Framework — implementation",
+  "epic_id": "EPIC-008",
+  "phase": 1,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "user_story_ids": [
+    "FEATURE-008-US-001",
+    "FEATURE-008-US-002",
+    "FEATURE-008-US-003",
+    "FEATURE-008-US-004",
+    "FEATURE-008-US-005",
+    "FEATURE-008-US-006",
+    "FEATURE-008-US-007",
+    "FEATURE-008-US-008"
+  ],
+  "summary": "Provide a pluggable AI provider framework (Ollama, OpenAI, Anthropic, Gemini, future) with a registry, model selection, usage tracking and centralised prompt templates - without coupling to any one vendor. Tracks all implementation stories for this epic.",
+  "acceptance_criteria": [
+    "A new provider can be added by implementing the interface + registering it",
+    "The same calling code works across all providers",
+    "Model selection and usage tracking work for every provider",
+    "Prompt templates are centralised and versioned",
+    "Local Ollama works with no paid credentials"
+  ],
+  "notes": "Scope (in): AIProvider abstraction with Ollama/OpenAI/Anthropic/Gemini implementations; Provider registry; Model selection per provider; Usage tracking; Prompt templates\nOut of scope: User-supplied credentials/encryption (EPIC-009); Producing model critiques (EPIC-010); Allowing AI to influence scoring (forbidden - EPIC-003 stays deterministic)",
+  "updated_at": "2026-06-23T09:25:48.469239+00:00"
+}

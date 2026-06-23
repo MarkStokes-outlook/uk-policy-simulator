@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-005-US-009",
+  "title": "Auth security tests",
+  "feature_id": "FEATURE-005",
+  "story": "As a maintainer, I want tests for the auth flows so security regressions are caught.",
+  "description": "Cover auth flows with security tests.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-005-US-009-T01"
+  ],
+  "updated_at": "2026-06-23T09:31:44.002329+00:00",
+  "acceptance_criteria": [
+    "Tests cover hashing and session lifecycle",
+    "Reset token expiry and single-use tested",
+    "Access scoping tested"
+  ]
+}

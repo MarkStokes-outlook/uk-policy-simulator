@@ -1,0 +1,30 @@
+{
+  "id": "FEATURE-012-US-008-T01",
+  "title": "Author: Methodology documentation",
+  "user_story_id": "FEATURE-012-US-008",
+  "description": "Write the documentation for: Methodology documentation.",
+  "priority": "P3",
+  "size": "M",
+  "work_type": "chore",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "docs/engine-advanced.md describes every channel, parameter, source and limitation"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-012-US-008-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.757563+00:00"
+}

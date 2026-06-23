@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-011-US-001",
+  "title": "Slider metadata schema",
+  "feature_id": "FEATURE-011",
+  "story": "As a curator, I want a metadata schema so every slider is described consistently.",
+  "description": "Define a per-slider metadata schema.",
+  "priority": "P3",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-011-US-001-T01",
+    "FEATURE-011-US-001-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:44.000138+00:00",
+  "acceptance_criteria": [
+    "Schema with the six fields, keyed by lever id",
+    "Validated for completeness"
+  ]
+}

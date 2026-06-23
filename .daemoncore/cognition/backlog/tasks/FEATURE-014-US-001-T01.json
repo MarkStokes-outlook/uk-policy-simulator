@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-014-US-001-T01",
+  "title": "Implement: Monte Carlo simulation",
+  "user_story_id": "FEATURE-014-US-001",
+  "description": "As a researcher, I want Monte Carlo runs so I can see outcome distributions, not single points.",
+  "priority": "P3",
+  "size": "XL",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "work-endpoints",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Seeded sampling over EPIC-012 uncertainty produces outcome distributions",
+    "Runs are reproducible given the seed"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-014-US-001-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.761313+00:00"
+}

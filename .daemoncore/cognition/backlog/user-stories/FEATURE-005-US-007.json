@@ -1,0 +1,23 @@
+{
+  "id": "FEATURE-005-US-007",
+  "title": "Profile management",
+  "feature_id": "FEATURE-005",
+  "story": "As a user, I want to manage my profile so my display details are accurate.",
+  "description": "Let a user manage their profile.",
+  "priority": "P3",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-005-US-007-T01",
+    "FEATURE-005-US-007-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.986792+00:00",
+  "acceptance_criteria": [
+    "User can view and edit display name and basic profile fields"
+  ]
+}

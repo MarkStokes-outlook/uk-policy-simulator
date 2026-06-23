@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-009-US-003-T01",
+  "title": "Implement: Per-user provider configuration",
+  "user_story_id": "FEATURE-009-US-003",
+  "description": "As a user, I want to choose my default provider/model so analysis uses my setup.",
+  "priority": "P2",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Per-user config stored and applied",
+    "Falls back to Ollama when no key is present"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-009-US-003-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.745004+00:00"
+}

@@ -1,0 +1,23 @@
+{
+  "id": "FEATURE-013-US-005",
+  "title": "Household-type breakdown",
+  "feature_id": "FEATURE-013",
+  "story": "As a user, I want impacts by household type so family-structure effects are visible.",
+  "description": "Break impacts down by household type.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-013-US-005-T01",
+    "FEATURE-013-US-005-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.994935+00:00",
+  "acceptance_criteria": [
+    "Household-type breakdown computed and caveated"
+  ]
+}

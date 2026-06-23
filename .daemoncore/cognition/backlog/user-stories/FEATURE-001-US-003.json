@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-001-US-003",
+  "title": "Static fiscal calculations",
+  "feature_id": "FEATURE-001",
+  "story": "As a user, I want correct static receipts/spending/deficit so I can read the immediate effect of levers.",
+  "description": "Compute the immediate (pre-feedback) fiscal position from baseline plus levers.",
+  "priority": "P1",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-001-US-003-T01",
+    "FEATURE-001-US-003-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.985965+00:00",
+  "acceptance_criteria": [
+    "static_receipts = baseline receipts + summed revenue levers",
+    "static_spending = baseline spending + summed investment levers",
+    "static_deficit = static_spending - static_receipts"
+  ]
+}

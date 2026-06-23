@@ -1,0 +1,22 @@
+{
+  "id": "EPIC-009",
+  "title": "Bring Your Own AI",
+  "phase": 1,
+  "tags": [
+    "uk-policy-simulator",
+    "roadmap"
+  ],
+  "description": "Allow users to bring their own AI credentials, configured per user, with encrypted storage and quota awareness - while guaranteeing the platform remains fully usable with no paid API via local Ollama.",
+  "feature_ids": [
+    "FEATURE-009"
+  ],
+  "updated_at": "2026-06-23T09:25:48.469239+00:00",
+  "rationale": "BYO-AI removes platform-side API costs, respects user choice, and unlocks higher-capability models for those who want them, without making the core product depend on paid services.",
+  "success_criteria": [
+    "A user can add, rotate and remove provider keys; keys encrypted at rest",
+    "Keys are never displayed after entry and never appear in logs",
+    "The platform works end-to-end with no keys via local Ollama",
+    "Per-user usage/quota is visible to that user"
+  ],
+  "notes": "## Scope (in)\n- Encrypted API key storage\n- Per-user provider selection and configuration\n- Quota awareness\n- Key management (add, rotate, remove)\n\n## Out of scope\n- The provider abstraction itself (EPIC-008)\n- Generating critiques (EPIC-010)\n- Billing/payments\n\n## Dependencies\n- EPIC-005 - keys and config are per authenticated user\n- EPIC-008 - keys configure providers; usage tracking exists\n\n## Assumptions\n- Secrets encrypted at rest, never logged or exposed\n- Platform functions with no user keys by falling back to local Ollama\n- Quota awareness uses EPIC-008 usage tracking\n\n## Risks\n- Key leakage -> encrypt at rest; never render; redact logs; security review\n- Encryption key management -> managed/derived key strategy; documented rotation\n- Hard dependency on paid APIs creeps in -> enforce Ollama-first; CI no-keys test\n- Quota overruns -> surface usage + warnings against known limits\n\n## Future extensions\n- Organisation-shared keys with pooled quota\n- Per-feature provider overrides\n- Hardware-backed/KMS secret storage"
+}

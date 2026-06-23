@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-011-US-001-T01",
+  "title": "Implement: Slider metadata schema",
+  "user_story_id": "FEATURE-011-US-001",
+  "description": "As a curator, I want a metadata schema so every slider is described consistently.",
+  "priority": "P3",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Schema with the six fields, keyed by lever id",
+    "Validated for completeness"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-011-US-001-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.753138+00:00"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-010-US-006",
+  "title": "Analysis caching & persistence",
+  "feature_id": "FEATURE-010",
+  "story": "As a user, I want my critique saved with the model so I don't re-run it needlessly.",
+  "description": "Persist and cache critiques against a model version.",
+  "priority": "P3",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-010-US-006-T01",
+    "FEATURE-010-US-006-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.985112+00:00",
+  "acceptance_criteria": [
+    "Critique stored against the model version + provider/model used",
+    "Regenerable on demand"
+  ]
+}

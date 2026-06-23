@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-002-US-003",
+  "title": "Scenario validation",
+  "feature_id": "FEATURE-002",
+  "story": "As a maintainer, I want every scenario validated against the engine's input contract so presets can't silently break.",
+  "description": "Validate every scenario against the engine's input contract so presets cannot silently break.",
+  "priority": "P1",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-002-US-003-T01",
+    "FEATURE-002-US-003-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.989407+00:00",
+  "acceptance_criteria": [
+    "Validation checks all required levers/assumptions exist and are in range",
+    "Validation is covered by tests and is CI-friendly",
+    "Invalid scenarios produce actionable error messages"
+  ]
+}

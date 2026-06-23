@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-001-US-007",
+  "title": "Engine input contracts & typing",
+  "feature_id": "FEATURE-001",
+  "story": "As a developer, I want explicit typed inputs/outputs so the engine is safe to extend.",
+  "description": "Give the engine explicit typed inputs/outputs and documented units so it is safe to extend.",
+  "priority": "P1",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-001-US-007-T01",
+    "FEATURE-001-US-007-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.997949+00:00",
+  "acceptance_criteria": [
+    "Dataclasses define baseline, assumptions and result types",
+    "Units are documented (£bn; fractions vs percentages)",
+    "Out-of-range assumptions are validated with clear errors"
+  ]
+}

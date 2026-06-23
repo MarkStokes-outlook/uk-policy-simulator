@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-014-US-006",
+  "title": "API access",
+  "feature_id": "FEATURE-014",
+  "story": "As a developer, I want an API so I can run the engine programmatically.",
+  "description": "Expose an authenticated API for programmatic runs.",
+  "priority": "P3",
+  "size": "L",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "work-endpoints",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-014-US-006-T01",
+    "FEATURE-014-US-006-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.995213+00:00",
+  "acceptance_criteria": [
+    "Documented API runs scenarios/scoring",
+    "API is authenticated, rate-limited and usage-tracked"
+  ]
+}

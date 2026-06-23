@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-009-US-006",
+  "title": "Secret-handling security tests",
+  "feature_id": "FEATURE-009",
+  "story": "As a maintainer, I want tests proving keys never leak so BYO-AI is safe.",
+  "description": "Prove keys never leak.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-009-US-006-T01"
+  ],
+  "updated_at": "2026-06-23T09:31:43.985741+00:00",
+  "acceptance_criteria": [
+    "Tests assert no plaintext at rest",
+    "No key in logs or responses",
+    "Correct decrypt-in-memory behaviour"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "id": "FEATURE-007-US-003-T02",
+  "title": "Test & verify: Leaderboard views (UI)",
+  "user_story_id": "FEATURE-007-US-003",
+  "description": "Add automated tests and verify acceptance for: Leaderboard views (UI).",
+  "priority": "P2",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [
+    "FEATURE-007-US-003-T01"
+  ],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Automated tests cover the story's acceptance criteria",
+    "Tests are deterministic and pass in CI"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-007-US-003-T02.prompt",
+  "updated_at": "2026-06-23T09:47:31.739577+00:00"
+}

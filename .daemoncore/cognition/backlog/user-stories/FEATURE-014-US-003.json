@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-014-US-003",
+  "title": "Policy comparison",
+  "feature_id": "FEATURE-014",
+  "story": "As a user, I want to compare models side by side so differences are clear.",
+  "description": "Compare two or more models side by side.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "work-endpoints",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-014-US-003-T01",
+    "FEATURE-014-US-003-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.986658+00:00",
+  "acceptance_criteria": [
+    "Models compared across inputs, outputs and scores",
+    "Differences highlighted"
+  ]
+}

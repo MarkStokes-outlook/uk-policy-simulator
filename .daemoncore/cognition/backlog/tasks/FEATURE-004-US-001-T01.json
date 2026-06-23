@@ -1,0 +1,32 @@
+{
+  "id": "FEATURE-004-US-001-T01",
+  "title": "Implement: Model schema & versioning",
+  "user_story_id": "FEATURE-004-US-001",
+  "description": "As a developer, I want a versioned model schema so saved data survives future changes.",
+  "priority": "P1",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "JSON schema includes schema_version, inputs, outputs, scores, metadata",
+    "Engine and scoring versions are recorded",
+    "Schema documented for contributors"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-004-US-001-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.727834+00:00"
+}

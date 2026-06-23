@@ -1,0 +1,23 @@
+{
+  "id": "FEATURE-011-US-002",
+  "title": "Author metadata for all sliders",
+  "feature_id": "FEATURE-011",
+  "story": "As a user, I want each slider explained so I understand its purpose and effects.",
+  "description": "Author metadata for every slider.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-011-US-002-T01",
+    "FEATURE-011-US-002-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.987689+00:00",
+  "acceptance_criteria": [
+    "All sliders have description, intended effect, side effects, uncertainty, categories, examples"
+  ]
+}

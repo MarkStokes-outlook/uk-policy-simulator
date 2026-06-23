@@ -1,0 +1,33 @@
+{
+  "id": "FEATURE-013-US-005-T02",
+  "title": "Test & verify: Household-type breakdown",
+  "user_story_id": "FEATURE-013-US-005",
+  "description": "Add automated tests and verify acceptance for: Household-type breakdown.",
+  "priority": "P3",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [
+    "FEATURE-013-US-005-T01"
+  ],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Automated tests cover the story's acceptance criteria",
+    "Tests are deterministic and pass in CI"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-013-US-005-T02.prompt",
+  "updated_at": "2026-06-23T09:47:31.759895+00:00"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-010-US-003-T01",
+  "title": "Implement: Executive summary, strengths, weaknesses",
+  "user_story_id": "FEATURE-010-US-003",
+  "description": "As a user, I want a clear summary and pros/cons so I quickly grasp my model.",
+  "priority": "P2",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "All three sections generated and grounded in model data",
+    "Output clearly labelled AI-generated"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-010-US-003-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.751048+00:00"
+}

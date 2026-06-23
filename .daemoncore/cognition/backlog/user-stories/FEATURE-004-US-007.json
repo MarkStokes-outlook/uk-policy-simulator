@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-004-US-007",
+  "title": "Export / import",
+  "feature_id": "FEATURE-004",
+  "story": "As a user, I want to export and import models so I can back them up or move them.",
+  "description": "Let a user export and import models as portable files.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-004-US-007-T01",
+    "FEATURE-004-US-007-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.993815+00:00",
+  "acceptance_criteria": [
+    "Export yields a portable JSON file",
+    "Import validates and reconstructs the model",
+    "Malformed/incompatible files are rejected with a clear message"
+  ]
+}

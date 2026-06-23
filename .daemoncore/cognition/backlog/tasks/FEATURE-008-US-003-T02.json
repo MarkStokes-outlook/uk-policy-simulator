@@ -1,0 +1,33 @@
+{
+  "id": "FEATURE-008-US-003-T02",
+  "title": "Test & verify: Ollama provider (first-class)",
+  "user_story_id": "FEATURE-008-US-003",
+  "description": "Add automated tests and verify acceptance for: Ollama provider (first-class).",
+  "priority": "P2",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [
+    "FEATURE-008-US-003-T01"
+  ],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Automated tests cover the story's acceptance criteria",
+    "Tests are deterministic and pass in CI"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-008-US-003-T02.prompt",
+  "updated_at": "2026-06-23T09:47:31.742021+00:00"
+}

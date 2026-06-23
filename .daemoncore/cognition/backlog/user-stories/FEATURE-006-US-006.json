@@ -1,0 +1,23 @@
+{
+  "id": "FEATURE-006-US-006",
+  "title": "Sharing access tests",
+  "feature_id": "FEATURE-006",
+  "story": "As a maintainer, I want tests asserting private data never leaks so sharing is safe.",
+  "description": "Assert private data never leaks via sharing.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-006-US-006-T01"
+  ],
+  "updated_at": "2026-06-23T09:31:43.992904+00:00",
+  "acceptance_criteria": [
+    "Tests prove private is inaccessible to non-owners",
+    "Unlisted requires the URL; public is read-only"
+  ]
+}

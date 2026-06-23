@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-006-US-006-T01",
+  "title": "Implement: Sharing access tests",
+  "user_story_id": "FEATURE-006-US-006",
+  "description": "Implement the tests for: Sharing access tests.",
+  "priority": "P2",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Tests prove private is inaccessible to non-owners",
+    "Unlisted requires the URL; public is read-only"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-006-US-006-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.738479+00:00"
+}

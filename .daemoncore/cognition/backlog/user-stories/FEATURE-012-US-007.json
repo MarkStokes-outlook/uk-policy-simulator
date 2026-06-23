@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-012-US-007",
+  "title": "Uncertainty representation",
+  "feature_id": "FEATURE-012",
+  "story": "As a user, I want uncertainty shown so I don't over-trust point estimates.",
+  "description": "Represent uncertainty in outputs.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-012-US-007-T01",
+    "FEATURE-012-US-007-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:44.001746+00:00",
+  "acceptance_criteria": [
+    "Outputs carry uncertainty metadata (e.g. ranges)",
+    "Uncertainty rendered in UI and consumable by EPIC-014"
+  ]
+}

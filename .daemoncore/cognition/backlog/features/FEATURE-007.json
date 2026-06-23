@@ -1,0 +1,29 @@
+{
+  "id": "FEATURE-007",
+  "title": "Leaderboards — implementation",
+  "epic_id": "EPIC-007",
+  "phase": 1,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "user_story_ids": [
+    "FEATURE-007-US-001",
+    "FEATURE-007-US-002",
+    "FEATURE-007-US-003",
+    "FEATURE-007-US-004",
+    "FEATURE-007-US-005",
+    "FEATURE-007-US-006",
+    "FEATURE-007-US-007"
+  ],
+  "summary": "Allow comparison between public models through transparent, category-based rankings with filtering, historical tracking and full score transparency. Tracks all implementation stories for this epic.",
+  "acceptance_criteria": [
+    "Each category lists public models ranked by the relevant deterministic score",
+    "Filtering narrows results without changing ranking semantics",
+    "Each ranked entry exposes the score and rationale behind its position",
+    "Historical ranking snapshots are retained and viewable"
+  ],
+  "notes": "Scope (in): Categories: Best Social Fairness, Best Economic Growth, Best Fiscal Sustainability, Best NHS Outcome, Best Housing Outcome, Best Balanced Model; Ranking logic; Filtering; Historical tracking; Score transparency\nOut of scope: Determining scores (EPIC-003); Making models public (EPIC-006); Monte Carlo / benchmarking research views (EPIC-014)",
+  "updated_at": "2026-06-23T09:25:48.469239+00:00"
+}

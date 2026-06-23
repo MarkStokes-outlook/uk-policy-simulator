@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-009-US-002",
+  "title": "Key management UI",
+  "feature_id": "FEATURE-009",
+  "story": "As a user, I want to add, rotate and remove keys so I control my credentials.",
+  "description": "Let users add, rotate and remove keys.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-009-US-002-T01",
+    "FEATURE-009-US-002-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.998730+00:00",
+  "acceptance_criteria": [
+    "Add/rotate/remove flows provided",
+    "Keys masked after entry",
+    "Removal is immediate and complete"
+  ]
+}

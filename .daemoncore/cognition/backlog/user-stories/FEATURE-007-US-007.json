@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-007-US-007",
+  "title": "Ranking performance & caching",
+  "feature_id": "FEATURE-007",
+  "story": "As an operator, I want cached rankings so leaderboards stay fast as data grows.",
+  "description": "Keep leaderboards fast via caching.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-007-US-007-T01",
+    "FEATURE-007-US-007-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:44.004514+00:00",
+  "acceptance_criteria": [
+    "Rankings precomputed/cached with invalidation on relevant changes",
+    "Leaderboards load within a target latency"
+  ]
+}

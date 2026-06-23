@@ -1,0 +1,22 @@
+{
+  "id": "EPIC-013",
+  "title": "Distributional Analysis",
+  "phase": 1,
+  "tags": [
+    "uk-policy-simulator",
+    "roadmap"
+  ],
+  "description": "Reveal who wins and loses under a model by breaking outcomes down across income deciles, age cohorts, regions and household types, with honest, uncertainty-aware visualisations.",
+  "feature_ids": [
+    "FEATURE-013"
+  ],
+  "updated_at": "2026-06-23T09:25:48.469239+00:00",
+  "rationale": "Aggregate fiscal numbers hide the politics of policy. Distributional analysis answers 'what does this mean for me and people like me?' and materially improves fairness/poverty scoring and research depth.",
+  "success_criteria": [
+    "A model's outcomes are broken down across all four dimensions",
+    "Distributional results are visualised clearly with uncertainty shown",
+    "Breakdowns are sourced/caveated and consistent with aggregate totals",
+    "Fairness / Poverty scores can optionally incorporate distribution"
+  ],
+  "notes": "## Scope (in)\n- Income deciles\n- Age cohorts\n- Regional impacts\n- Household types\n- Distribution visualisations\n\n## Out of scope\n- The underlying channel modelling (EPIC-012)\n- Monte Carlo over distributions (EPIC-014)\n\n## Dependencies\n- EPIC-012 - credible breakdowns require the advanced engine's channels\n- EPIC-001 - base fiscal aggregates to distribute\n\n## Assumptions\n- Suitable distributional reference data is available and citable\n- Breakdowns are modelled approximations, clearly caveated\n- Visualisations are honest about uncertainty (carried from EPIC-012)\n\n## Risks\n- Distributional data poor/unavailable -> source carefully; document; degrade\n- Misuse to claim precise personal impact -> frame as group-level approximations\n- Visual complexity overwhelms -> clear, progressive visualisations\n- Combinatorial explosion -> precompute common cuts; lazy-load detail\n\n## Future extensions\n- Intersectional breakdowns (e.g. region x decile)\n- Personal 'impact estimator' (heavily caveated)\n- Time-evolving distributional paths across the horizon"
+}

@@ -1,0 +1,23 @@
+{
+  "id": "EPIC-001",
+  "title": "Core Fiscal Engine",
+  "phase": 1,
+  "tags": [
+    "uk-policy-simulator",
+    "roadmap"
+  ],
+  "description": "Establish a trustworthy, deterministic and testable fiscal modelling foundation: canonical baseline data, a UI-free calculation module, static and multi-year projection calculations, validation, and regression tests.",
+  "feature_ids": [
+    "FEATURE-001"
+  ],
+  "updated_at": "2026-06-23T09:25:48.469239+00:00",
+  "rationale": "The simulator's credibility rests entirely on the engine. Reproducible, transparent, tested numbers mean every downstream capability (scoring, scenarios, AI critique) inherits that trust. If the engine is wrong, nothing else matters.",
+  "success_criteria": [
+    "Baseline values come from one canonical, validated source",
+    "All fiscal maths lives in a module testable without Streamlit",
+    "A regression test fails if default outputs change unexpectedly",
+    "The feedback model's nature and limits are documented in UI and README",
+    "pytest passes and the app boots headless"
+  ],
+  "notes": "## Scope (in)\n- Canonical baseline fiscal datasets (baseline.csv)\n- Pure, UI-free calculation module (model/fiscal_model.py)\n- Static fiscal calculations (receipts, spending, deficit)\n- Multi-year projection engine with feedback assumptions\n- Input validation and clear failure modes\n- Deterministic regression and unit tests\n- Honest documentation of the feedback model\n\n## Out of scope\n- Scenario presets (EPIC-002)\n- Scoring (EPIC-003)\n- Model persistence (EPIC-004)\n- Cumulative capital-stock modelling (EPIC-012)\n- Distributional detail (EPIC-013)\n\n## Dependencies\n- None upstream\n- External: Python 3.13, pandas, Streamlit (render only)\n\n## Assumptions\n- Baseline figures are approximate and clearly labelled\n- The current feedback model is a deliberate, documented simplification\n- Calculations remain deterministic (no randomness) at this stage\n\n## Risks\n- Divergence between baseline.csv and code constants -> single source of truth\n- Silent numerical regressions -> regression test locks default outputs\n- Over-claiming model realism -> explicit 'not OBR-grade' caveats\n- Engine coupled to Streamlit -> keep model import-free of Streamlit\n\n## Future extensions\n- Configurable baseline years / multiple baseline files\n- Versioned baseline datasets (ties into EPIC-014)\n- Pluggable feedback strategies so EPIC-012 can swap the model cleanly"
+}

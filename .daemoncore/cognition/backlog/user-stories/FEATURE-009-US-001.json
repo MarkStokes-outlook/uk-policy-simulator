@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-009-US-001",
+  "title": "Encrypted key storage",
+  "feature_id": "FEATURE-009",
+  "story": "As a security-conscious user, I want my API keys encrypted at rest so they're protected.",
+  "description": "Store user API keys encrypted at rest.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-009-US-001-T01",
+    "FEATURE-009-US-001-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.988624+00:00",
+  "acceptance_criteria": [
+    "Keys encrypted with a documented scheme",
+    "Decrypted only in-memory at call time",
+    "Never persisted in plaintext"
+  ]
+}

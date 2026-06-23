@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-003-US-004-T01",
+  "title": "Implement: Social & poverty categories",
+  "user_story_id": "FEATURE-003-US-004",
+  "description": "As a user, I want Social Fairness and Poverty Reduction scores so I can judge equity effects.",
+  "priority": "P1",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Both categories computed deterministically",
+    "Rationale explains which levers/outcomes drove the score"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-003-US-004-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.725208+00:00"
+}

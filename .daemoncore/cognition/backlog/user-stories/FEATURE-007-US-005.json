@@ -1,0 +1,23 @@
+{
+  "id": "FEATURE-007-US-005",
+  "title": "Score transparency on rankings",
+  "feature_id": "FEATURE-007",
+  "story": "As a visitor, I want to see why a model ranks where it does so I trust the leaderboard.",
+  "description": "Show why each model ranks where it does.",
+  "priority": "P2",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-007-US-005-T01",
+    "FEATURE-007-US-005-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.986456+00:00",
+  "acceptance_criteria": [
+    "Each ranked entry shows the deciding score and its rationale"
+  ]
+}

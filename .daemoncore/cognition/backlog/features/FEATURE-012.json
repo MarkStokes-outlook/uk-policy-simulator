@@ -1,0 +1,32 @@
+{
+  "id": "FEATURE-012",
+  "title": "Advanced Socio-Economic Engine — implementation",
+  "epic_id": "EPIC-012",
+  "phase": 1,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "user_story_ids": [
+    "FEATURE-012-US-001",
+    "FEATURE-012-US-002",
+    "FEATURE-012-US-003",
+    "FEATURE-012-US-004",
+    "FEATURE-012-US-005",
+    "FEATURE-012-US-006",
+    "FEATURE-012-US-007",
+    "FEATURE-012-US-008",
+    "FEATURE-012-US-009"
+  ],
+  "summary": "Replace the simple annual-feedback model with a richer multi-channel socio-economic engine (labour, productivity, education, housing, NHS, welfare, crime, long-term effects) supporting conservative/moderate/optimistic forecast modes and explicit uncertainty. Tracks all implementation stories for this epic.",
+  "acceptance_criteria": [
+    "The simple feedback model is replaced behind the engine interface",
+    "All listed channels are modelled and documented with sources",
+    "Conservative/moderate/optimistic modes produce coherent, ordered outputs",
+    "Uncertainty is represented explicitly in outputs",
+    "Scoring consumes the new engine deterministically per mode"
+  ],
+  "notes": "Scope (in): Channels: labour participation, productivity, education, housing, NHS demand, welfare, crime, long-term economic effects, uncertainty modelling; Forecast modes: conservative, moderate, optimistic\nOut of scope: Distributional/by-group breakdowns (EPIC-013); Monte Carlo simulation tooling (EPIC-014)",
+  "updated_at": "2026-06-23T09:25:48.469239+00:00"
+}

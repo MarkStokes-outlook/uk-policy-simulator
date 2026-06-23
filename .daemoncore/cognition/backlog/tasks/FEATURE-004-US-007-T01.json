@@ -1,0 +1,32 @@
+{
+  "id": "FEATURE-004-US-007-T01",
+  "title": "Implement: Export / import",
+  "user_story_id": "FEATURE-004-US-007",
+  "description": "As a user, I want to export and import models so I can back them up or move them.",
+  "priority": "P2",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Export yields a portable JSON file",
+    "Import validates and reconstructs the model",
+    "Malformed/incompatible files are rejected with a clear message"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-004-US-007-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.730782+00:00"
+}

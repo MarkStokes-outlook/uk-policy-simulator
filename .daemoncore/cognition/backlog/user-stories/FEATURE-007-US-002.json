@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-007-US-002",
+  "title": "\"Best Balanced\" composite",
+  "feature_id": "FEATURE-007",
+  "story": "As a user, I want a balanced-model ranking so I can find well-rounded policies.",
+  "description": "Provide a documented 'Best Balanced' composite ranking.",
+  "priority": "P2",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-007-US-002-T01",
+    "FEATURE-007-US-002-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.990472+00:00",
+  "acceptance_criteria": [
+    "Composite across categories is documented",
+    "Ranking is deterministic with rationale shown"
+  ]
+}

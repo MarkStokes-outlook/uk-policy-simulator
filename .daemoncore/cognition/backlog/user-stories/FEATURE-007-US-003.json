@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-007-US-003",
+  "title": "Leaderboard views (UI)",
+  "feature_id": "FEATURE-007",
+  "story": "As a visitor, I want to browse leaderboards by category so I can discover top models.",
+  "description": "Let visitors browse leaderboards by category.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-007-US-003-T01",
+    "FEATURE-007-US-003-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.990668+00:00",
+  "acceptance_criteria": [
+    "One view per category",
+    "Each entry links to the model's read-only view"
+  ]
+}

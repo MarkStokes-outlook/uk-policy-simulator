@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-001-US-005",
+  "title": "Deterministic regression tests",
+  "feature_id": "FEATURE-001",
+  "story": "As a maintainer, I want tests that lock known outputs so regressions are caught.",
+  "description": "Lock engine behaviour with deterministic tests covering the core calculations.",
+  "priority": "P1",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-001-US-005-T01"
+  ],
+  "updated_at": "2026-06-23T09:31:43.993086+00:00",
+  "acceptance_criteria": [
+    "Tests cover baseline deficit, static calc, feedback lag and deficit % GDP",
+    "Baseline-file validation paths are tested (missing file, missing metric, non-numeric)",
+    "The default scenario output is locked as a regression fixture",
+    "Identical inputs always produce identical outputs"
+  ]
+}

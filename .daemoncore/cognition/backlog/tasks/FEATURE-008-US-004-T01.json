@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-008-US-004-T01",
+  "title": "Implement: OpenAI / Anthropic / Gemini adapters",
+  "user_story_id": "FEATURE-008-US-004",
+  "description": "As a user, I want commercial providers so I can choose higher-capability models.",
+  "priority": "P3",
+  "size": "L",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Each adapter implements the interface",
+    "Covered by contract tests against mocked APIs"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-008-US-004-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.742199+00:00"
+}

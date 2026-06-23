@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-014-US-001",
+  "title": "Monte Carlo simulation",
+  "feature_id": "FEATURE-014",
+  "story": "As a researcher, I want Monte Carlo runs so I can see outcome distributions, not single points.",
+  "description": "Run seeded Monte Carlo simulations over engine uncertainty.",
+  "priority": "P3",
+  "size": "XL",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "work-endpoints",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-014-US-001-T01",
+    "FEATURE-014-US-001-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:44.004112+00:00",
+  "acceptance_criteria": [
+    "Seeded sampling over EPIC-012 uncertainty produces outcome distributions",
+    "Runs are reproducible given the seed"
+  ]
+}

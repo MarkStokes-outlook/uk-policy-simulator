@@ -1,0 +1,30 @@
+{
+  "id": "FEATURE-013-US-005-T01",
+  "title": "Implement: Household-type breakdown",
+  "user_story_id": "FEATURE-013-US-005",
+  "description": "As a user, I want impacts by household type so family-structure effects are visible.",
+  "priority": "P3",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Household-type breakdown computed and caveated"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-013-US-005-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.759709+00:00"
+}

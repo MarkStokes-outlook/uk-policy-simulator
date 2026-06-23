@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-006-US-002",
+  "title": "Access control enforcement",
+  "feature_id": "FEATURE-006",
+  "story": "As an owner, I want access enforced server-side so visibility can't be bypassed.",
+  "description": "Enforce visibility/ownership access checks server-side.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-006-US-002-T01",
+    "FEATURE-006-US-002-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:44.002133+00:00",
+  "acceptance_criteria": [
+    "Access checks gate every model read/write",
+    "Enforcement covered by tests"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-001-US-002",
+  "title": "Extract calculations into testable module",
+  "feature_id": "FEATURE-001",
+  "story": "As a developer, I want fiscal maths separated from UI so it can be unit-tested.",
+  "description": "Separate fiscal maths from the Streamlit UI into an importable, unit-testable module.",
+  "priority": "P1",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-001-US-002-T01"
+  ],
+  "updated_at": "2026-06-23T09:31:43.984672+00:00",
+  "acceptance_criteria": [
+    "compute_fiscal() accepts baseline, revenue levers, investment levers and assumptions",
+    "Returns static figures and a year-by-year projection structure",
+    "model/fiscal_model.py imports no Streamlit",
+    "app.py is reduced to control collection and rendering"
+  ]
+}

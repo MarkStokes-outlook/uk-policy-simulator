@@ -1,5 +1,6 @@
 # DaemonCore runtime state
 .daemoncore/kernel/state.md
+.daemoncore/kernel/state.json
 .daemoncore/exchange/session-lock.md
 .daemoncore/exchange/active-session.md
 .daemoncore/exchange/system/boot-logs/*

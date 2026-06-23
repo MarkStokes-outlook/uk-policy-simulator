@@ -1,0 +1,30 @@
+{
+  "id": "FEATURE-011-US-002-T01",
+  "title": "Implement: Author metadata for all sliders",
+  "user_story_id": "FEATURE-011-US-002",
+  "description": "As a user, I want each slider explained so I understand its purpose and effects.",
+  "priority": "P3",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "All sliders have description, intended effect, side effects, uncertainty, categories, examples"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-011-US-002-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.753537+00:00"
+}

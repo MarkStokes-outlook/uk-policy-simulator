@@ -1,0 +1,47 @@
+# Task FEATURE-002-US-006-T01 — Author: Scenario documentation
+
+> **DaemonCore coding-agent prompt.** Work type: `chore` · Size: `S` · Priority: `P2` · Status: `todo`
+
+## Where this fits
+- **Epic EPIC-002 — Scenario Presets.** Support reusable, named policy scenarios so users start from a coherent position rather than blank sliders. Provides scenarios.yaml, a validated loader, a UI selector and human-readable summaries.
+- **Feature FEATURE-002 — Scenario Presets — implementation.**
+- **Story FEATURE-002-US-006 — Scenario documentation.** _As a reader, I want documented scenarios so the assumptions behind each are transparent._
+
+## Objective
+Write the documentation for: Scenario documentation.
+
+## What to do
+1. Create or update **the appropriate file under `docs/`**.
+2. Cover the following points clearly and neutrally (British spelling):
+   - docs/scenarios.md explains each preset's intent and lever choices
+   - Assumptions behind each scenario are stated
+3. Cross-link related docs and the relevant code/modules.
+
+## Acceptance criteria (Definition of Done)
+- [ ] docs/scenarios.md explains each preset's intent and lever choices
+- [ ] Assumptions behind each scenario are stated
+
+## Dependencies
+None within this story. (Respect cross-epic dependencies of the parent epic.)
+
+## Project conventions
+- Target Python 3.13. Use British spelling in all user-facing text.
+- Keep the pure model layer (`model/`) free of Streamlit; `app.py` is UI/render only.
+- Pin any new runtime deps in `requirements.txt`; test-only deps in `requirements-dev.txt`.
+- Write deterministic `pytest` tests; follow the style of `tests/test_fiscal_model.py`.
+- Match the surrounding code style. Prefer small, coherent diffs over broad refactors.
+- Update `README.md` / `docs/` whenever behaviour changes.
+
+## Guardrails (EPIC-002)
+- Presets are inputs to the existing engine — do not change engine maths.
+- Validate every preset against the engine's input contract.
+- Frame scenarios neutrally; they are not endorsements.
+- The scenario loader must have no Streamlit dependency.
+
+## Verification
+- Proofread the document; ensure headings, links and code references resolve.
+- If it includes code/number examples, confirm they match the implementation/tests.
+
+## Notes
+- This simulator is a transparent scenario sandbox, not an official forecast — keep that framing in any user-facing text.
+- If requirements are ambiguous or you must change a public interface, stop and flag it rather than guessing.

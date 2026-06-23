@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-014-US-005",
+  "title": "Research exports",
+  "feature_id": "FEATURE-014",
+  "story": "As a researcher, I want reproducible exports so results can be cited and rerun.",
+  "description": "Produce reproducible research exports.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "work-endpoints",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-014-US-005-T01",
+    "FEATURE-014-US-005-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.991425+00:00",
+  "acceptance_criteria": [
+    "Exports record engine version, dataset version and seeds",
+    "Export format documented"
+  ]
+}

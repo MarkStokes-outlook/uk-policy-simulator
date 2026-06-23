@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-001",
+  "title": "Core Fiscal Engine — implementation",
+  "epic_id": "EPIC-001",
+  "phase": 1,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "user_story_ids": [
+    "FEATURE-001-US-001",
+    "FEATURE-001-US-002",
+    "FEATURE-001-US-003",
+    "FEATURE-001-US-004",
+    "FEATURE-001-US-005",
+    "FEATURE-001-US-006",
+    "FEATURE-001-US-007",
+    "FEATURE-001-US-008"
+  ],
+  "summary": "Establish a trustworthy, deterministic and testable fiscal modelling foundation: canonical baseline data, a UI-free calculation module, static and multi-year projection calculations, validation, and regression tests. Tracks all implementation stories for this epic.",
+  "acceptance_criteria": [
+    "Baseline values come from one canonical, validated source",
+    "All fiscal maths lives in a module testable without Streamlit",
+    "A regression test fails if default outputs change unexpectedly",
+    "The feedback model's nature and limits are documented in UI and README",
+    "pytest passes and the app boots headless"
+  ],
+  "notes": "Scope (in): Canonical baseline fiscal datasets (baseline.csv); Pure, UI-free calculation module (model/fiscal_model.py); Static fiscal calculations (receipts, spending, deficit); Multi-year projection engine with feedback assumptions; Input validation and clear failure modes; Deterministic regression and unit tests; Honest documentation of the feedback model\nOut of scope: Scenario presets (EPIC-002); Scoring (EPIC-003); Model persistence (EPIC-004); Cumulative capital-stock modelling (EPIC-012); Distributional detail (EPIC-013)",
+  "updated_at": "2026-06-23T09:25:48.469239+00:00"
+}

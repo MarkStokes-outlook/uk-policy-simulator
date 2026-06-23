@@ -1,0 +1,23 @@
+{
+  "id": "EPIC-014",
+  "title": "Simulation & Research Platform",
+  "phase": 1,
+  "tags": [
+    "uk-policy-simulator",
+    "roadmap"
+  ],
+  "description": "Transform the project into a serious policy experimentation platform: Monte Carlo simulation, sensitivity analysis, policy comparison, benchmarking, reproducible research exports, an authenticated API and dataset versioning.",
+  "feature_ids": [
+    "FEATURE-014"
+  ],
+  "updated_at": "2026-06-23T09:25:48.469239+00:00",
+  "rationale": "This is the destination: rigorous, repeatable experimentation plus programmatic access, elevating the tool to something usable in research, teaching and serious analysis.",
+  "success_criteria": [
+    "Monte Carlo and sensitivity analyses run over the engine and report results",
+    "Two or more saved models can be compared/benchmarked side by side",
+    "Research exports are reproducible and record engine/dataset/seed versions",
+    "A documented API exposes core capabilities under authentication",
+    "Datasets are versioned and selectable"
+  ],
+  "notes": "## Scope (in)\n- Monte Carlo simulation\n- Sensitivity analysis\n- Policy comparison\n- Model benchmarking\n- Research exports\n- API access\n- Dataset versioning\n\n## Out of scope\n- New socio-economic channels (EPIC-012)\n- New distributional dimensions (EPIC-013)\n\n## Dependencies\n- EPIC-012 - Monte Carlo/sensitivity need engine parameters + uncertainty\n- EPIC-013 - research outputs include distributional dimensions\n- EPIC-004 - comparison/benchmarking operate over saved models\n\n## Assumptions\n- The engine exposes parameters and uncertainty amenable to sampling\n- Heavy computation may run asynchronously/batched\n- Research exports are reproducible and cite engine/dataset versions\n\n## Risks\n- Compute cost of simulations -> async jobs, sampling budgets, caching\n- Reproducibility of stochastic runs -> seeded runs; record seed + versions\n- API abuse -> auth (EPIC-005), rate limits, usage tracking\n- Dataset drift breaks old research -> dataset versioning; pin versions in exports\n\n## Future extensions\n- Collaborative research workspaces\n- Public research dataset / model registry\n- Plug-in framework for third-party analysis modules\n- Reproducibility 'notebooks' bundling model + run + export"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-011-US-004",
+  "title": "Affected-category linking",
+  "feature_id": "FEATURE-011",
+  "story": "As a user, I want to see which scores a slider affects so I understand its impact.",
+  "description": "Link each slider to the score categories it affects.",
+  "priority": "P3",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-011-US-004-T01",
+    "FEATURE-011-US-004-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.992225+00:00",
+  "acceptance_criteria": [
+    "Each slider lists the EPIC-003 categories it influences",
+    "References validated against real categories"
+  ]
+}

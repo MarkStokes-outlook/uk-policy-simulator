@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-008-US-001-T01",
+  "title": "Implement: `AIProvider` interface",
+  "user_story_id": "FEATURE-008-US-001",
+  "description": "As an architect, I want a provider interface so AI backends are interchangeable.",
+  "priority": "P2",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "AIProvider contract documented (generate, model list, capability flags)",
+    "No caller depends on a concrete SDK"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-008-US-001-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.741150+00:00"
+}

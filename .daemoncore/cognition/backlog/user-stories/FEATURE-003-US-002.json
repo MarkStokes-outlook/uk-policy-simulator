@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-003-US-002",
+  "title": "Score model & data contracts",
+  "feature_id": "FEATURE-003",
+  "story": "As a developer, I want typed score objects so categories are consistent.",
+  "description": "Define typed score objects so categories are represented consistently.",
+  "priority": "P1",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-003-US-002-T01",
+    "FEATURE-003-US-002-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:44.000327+00:00",
+  "acceptance_criteria": [
+    "ScoreResult carries per-category value, weight and rationale",
+    "The 0-100 scale is enforced in the type",
+    "Score objects are serialisable for storage with a model"
+  ]
+}

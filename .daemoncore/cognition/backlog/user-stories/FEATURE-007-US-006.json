@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-007-US-006",
+  "title": "Historical tracking",
+  "feature_id": "FEATURE-007",
+  "story": "As an analyst, I want historical leaderboard snapshots so I can see how rankings change.",
+  "description": "Track ranking history over time.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-007-US-006-T01",
+    "FEATURE-007-US-006-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.999262+00:00",
+  "acceptance_criteria": [
+    "Periodic snapshots stored",
+    "A model's rank history is viewable",
+    "Retention policy documented"
+  ]
+}

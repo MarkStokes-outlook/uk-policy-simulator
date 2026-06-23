@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-003-US-003",
+  "title": "Fiscal & economic categories",
+  "feature_id": "FEATURE-003",
+  "story": "As a user, I want Fiscal Sustainability and Economic Growth scores so I can judge the macro picture.",
+  "description": "Score Fiscal Sustainability and Economic Growth deterministically from engine outputs.",
+  "priority": "P1",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-003-US-003-T01",
+    "FEATURE-003-US-003-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:44.003276+00:00",
+  "acceptance_criteria": [
+    "Both categories computed from engine outputs only",
+    "Rationale references the driving figures (e.g. deficit trajectory, GDP growth)",
+    "Identical inputs yield identical scores"
+  ]
+}

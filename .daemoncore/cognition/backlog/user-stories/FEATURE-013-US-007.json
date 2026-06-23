@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-013-US-007",
+  "title": "Distributional inputs to scoring",
+  "feature_id": "FEATURE-013",
+  "story": "As an analyst, I want fairness/poverty scores to optionally use distribution so they're richer.",
+  "description": "Optionally feed distribution into fairness/poverty scores.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-013-US-007-T01",
+    "FEATURE-013-US-007-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.990086+00:00",
+  "acceptance_criteria": [
+    "EPIC-003 categories can consume distributional outputs deterministically",
+    "Behaviour is toggleable and documented"
+  ]
+}

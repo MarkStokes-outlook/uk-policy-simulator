@@ -1,0 +1,22 @@
+{
+  "id": "EPIC-011",
+  "title": "Policy Slider Intelligence",
+  "phase": 1,
+  "tags": [
+    "uk-policy-simulator",
+    "roadmap"
+  ],
+  "description": "Turn each policy slider into an educational tool: description, intended effect, likely side effects, uncertainty level, affected score categories and real-world examples, surfaced via progressive disclosure.",
+  "feature_ids": [
+    "FEATURE-011"
+  ],
+  "updated_at": "2026-06-23T09:25:48.469239+00:00",
+  "rationale": "The sliders are the primary interaction. Annotating them turns a black-box calculator into a teaching instrument, increasing trust, engagement and the quality of scenarios users build.",
+  "success_criteria": [
+    "Every slider has all six metadata fields populated",
+    "Metadata is accessible in the UI without overwhelming the controls",
+    "Affected score categories reference real EPIC-003 categories",
+    "Uncertainty levels are explicit and consistently scaled"
+  ],
+  "notes": "## Scope (in)\n- Per-slider metadata: description, intended effect, likely side effects, uncertainty level, affected score categories, real-world examples\n\n## Out of scope\n- Changing the engine's maths (EPIC-012)\n- AI generation of explanations now (future; soft-linked EPIC-008/010)\n\n## Dependencies\n- EPIC-001 - sliders/levers and their meanings must exist\n- Benefits from EPIC-003 to reference affected score categories\n\n## Assumptions\n- Metadata is human-authored, curated and sourced where claims are made\n- Real-world examples are illustrative and caveated\n- Metadata is data (not code), enabling later AI assistance\n\n## Risks\n- Over-confident claims -> explicit uncertainty levels; neutral, sourced wording\n- Metadata drifts from engine behaviour -> link to lever ids; validate coverage\n- UI clutter -> progressive disclosure (tooltip/expander), not always-on\n\n## Future extensions\n- AI-assisted explanations (soft-link EPIC-008/010), clearly labelled\n- Inline 'what if I change this?' micro-simulations\n- Localisation of slider metadata"
+}

@@ -1,0 +1,23 @@
+{
+  "id": "FEATURE-008-US-008",
+  "title": "Provider contract tests",
+  "feature_id": "FEATURE-008",
+  "story": "As a maintainer, I want contract tests so every provider behaves to spec.",
+  "description": "Verify every provider behaves to spec.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-008-US-008-T01"
+  ],
+  "updated_at": "2026-06-23T09:31:43.988161+00:00",
+  "acceptance_criteria": [
+    "A shared contract test suite runs against each provider (mocked)",
+    "Interface compliance asserted"
+  ]
+}

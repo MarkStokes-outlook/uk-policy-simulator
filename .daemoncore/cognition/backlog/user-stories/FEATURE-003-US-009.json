@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-003-US-009",
+  "title": "Determinism & regression tests",
+  "feature_id": "FEATURE-003",
+  "story": "As a maintainer, I want tests proving scores are deterministic and stable.",
+  "description": "Prove scores are deterministic and stable with tests.",
+  "priority": "P1",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-003-US-009-T01"
+  ],
+  "updated_at": "2026-06-23T09:31:43.997219+00:00",
+  "acceptance_criteria": [
+    "Repeated runs yield identical scores",
+    "Preset scores locked as regression fixtures",
+    "A test asserts no AI/randomness in the scoring path"
+  ]
+}

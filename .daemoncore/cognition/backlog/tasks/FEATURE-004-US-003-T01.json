@@ -1,0 +1,32 @@
+{
+  "id": "FEATURE-004-US-003-T01",
+  "title": "Implement: Save model",
+  "user_story_id": "FEATURE-004-US-003",
+  "description": "As a user, I want to save my current model so I can return to it.",
+  "priority": "P1",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Save captures inputs, outputs, scores and metadata",
+    "A stable, unique model id is assigned",
+    "Saved file validates against the schema"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-004-US-003-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.728811+00:00"
+}

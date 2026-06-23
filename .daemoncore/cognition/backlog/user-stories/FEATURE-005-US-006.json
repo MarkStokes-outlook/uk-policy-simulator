@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-005-US-006",
+  "title": "Password change",
+  "feature_id": "FEATURE-005",
+  "story": "As a logged-in user, I want to change my password so I can maintain security.",
+  "description": "Let a logged-in user change their password.",
+  "priority": "P3",
+  "size": "XS",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-005-US-006-T01",
+    "FEATURE-005-US-006-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.982645+00:00",
+  "acceptance_criteria": [
+    "Change requires the current password",
+    "New password is validated and hashed"
+  ]
+}

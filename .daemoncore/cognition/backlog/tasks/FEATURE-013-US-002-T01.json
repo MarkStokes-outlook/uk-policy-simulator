@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-013-US-002-T01",
+  "title": "Implement: Income-decile breakdown",
+  "user_story_id": "FEATURE-013-US-002",
+  "description": "As a user, I want impacts by income decile so I see distributional fairness.",
+  "priority": "P3",
+  "size": "L",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Per-decile outcome deltas computed from EPIC-012 channels",
+    "Decile breakdown reconciles to aggregate totals"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-013-US-002-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.758469+00:00"
+}

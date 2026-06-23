@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-012-US-006",
+  "title": "Forecast modes",
+  "feature_id": "FEATURE-012",
+  "story": "As a user, I want conservative/moderate/optimistic modes so I can see a range, not false precision.",
+  "description": "Provide conservative/moderate/optimistic forecast modes.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-012-US-006-T01",
+    "FEATURE-012-US-006-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:44.001500+00:00",
+  "acceptance_criteria": [
+    "Selecting a mode adjusts channel parameters",
+    "Outputs are ordered (conservative <= moderate <= optimistic where meaningful)"
+  ]
+}

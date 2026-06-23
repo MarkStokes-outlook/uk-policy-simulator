@@ -1,0 +1,23 @@
+{
+  "id": "EPIC-012",
+  "title": "Advanced Socio-Economic Engine",
+  "phase": 1,
+  "tags": [
+    "uk-policy-simulator",
+    "roadmap"
+  ],
+  "description": "Replace the simple annual-feedback model with a richer multi-channel socio-economic engine (labour, productivity, education, housing, NHS, welfare, crime, long-term effects) supporting conservative/moderate/optimistic forecast modes and explicit uncertainty.",
+  "feature_ids": [
+    "FEATURE-012"
+  ],
+  "updated_at": "2026-06-23T09:25:48.469239+00:00",
+  "rationale": "This is the leap from 'transparent toy' to 'credible model'. Realistic channels make scores and distributional analysis meaningful and underpin the research platform.",
+  "success_criteria": [
+    "The simple feedback model is replaced behind the engine interface",
+    "All listed channels are modelled and documented with sources",
+    "Conservative/moderate/optimistic modes produce coherent, ordered outputs",
+    "Uncertainty is represented explicitly in outputs",
+    "Scoring consumes the new engine deterministically per mode"
+  ],
+  "notes": "## Scope (in)\n- Channels: labour participation, productivity, education, housing, NHS demand, welfare, crime, long-term economic effects, uncertainty modelling\n- Forecast modes: conservative, moderate, optimistic\n\n## Out of scope\n- Distributional/by-group breakdowns (EPIC-013)\n- Monte Carlo simulation tooling (EPIC-014)\n\n## Dependencies\n- EPIC-001 - replaces/extends the engine behind its interface\n- EPIC-003 - new channels must feed scoring without breaking determinism\n- EPIC-011 - slider metadata (effects/uncertainty) informs channel design\n\n## Assumptions\n- The engine exposes a swappable feedback strategy\n- Channel relationships are documented, sourced and transparent\n- Determinism preserved per forecast mode; uncertainty explicit\n\n## Risks\n- Complexity outruns transparency -> document every channel + source\n- Spurious precision -> forecast ranges + uncertainty; clear caveats\n- Breaking existing scores/tests -> introduce behind interface; re-baseline\n- Calibration is contested -> cite assumptions; offer the three modes\n\n## Future extensions\n- Empirical calibration against historical data\n- Region/cohort-specific channel parameters (feeds EPIC-013)\n- Pluggable third-party economic modules"
+}

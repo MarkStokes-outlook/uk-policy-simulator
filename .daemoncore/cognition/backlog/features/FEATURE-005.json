@@ -1,0 +1,32 @@
+{
+  "id": "FEATURE-005",
+  "title": "Identity Platform — implementation",
+  "epic_id": "EPIC-005",
+  "phase": 1,
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "user_story_ids": [
+    "FEATURE-005-US-001",
+    "FEATURE-005-US-002",
+    "FEATURE-005-US-003",
+    "FEATURE-005-US-004",
+    "FEATURE-005-US-005",
+    "FEATURE-005-US-006",
+    "FEATURE-005-US-007",
+    "FEATURE-005-US-008",
+    "FEATURE-005-US-009"
+  ],
+  "summary": "Introduce authentication and user ownership through a provider-agnostic abstraction, with local auth (registration, login/logout, password reset/change, profile) as the first concrete backend. Tracks all implementation stories for this epic.",
+  "acceptance_criteria": [
+    "Auth is accessed only through the provider abstraction (no direct coupling)",
+    "A user can register, log in, log out, reset and change password",
+    "A user can view and edit their profile",
+    "Saved models are correctly associated with their owner",
+    "Passwords are stored hashed; sessions handled securely"
+  ],
+  "notes": "Scope (in): Auth abstraction layer (provider interface); Local authentication: registration, login, logout; Password reset and change; Profile management; Association of saved models with an owning user\nOut of scope: External OIDC/social providers (future stories); Sharing/visibility rules (EPIC-006); Encrypted per-user AI keys (EPIC-009)",
+  "updated_at": "2026-06-23T09:25:48.469239+00:00"
+}

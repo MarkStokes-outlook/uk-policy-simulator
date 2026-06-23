@@ -1,0 +1,49 @@
+# Task FEATURE-002-US-004-T02 — Test & verify: Scenario selector (UI)
+
+> **DaemonCore coding-agent prompt.** Work type: `feature` · Size: `S` · Priority: `P1` · Status: `todo`
+
+## Where this fits
+- **Epic EPIC-002 — Scenario Presets.** Support reusable, named policy scenarios so users start from a coherent position rather than blank sliders. Provides scenarios.yaml, a validated loader, a UI selector and human-readable summaries.
+- **Feature FEATURE-002 — Scenario Presets — implementation.**
+- **Story FEATURE-002-US-004 — Scenario selector (UI).** _As a user, I want to pick a scenario from a dropdown so sliders pre-fill._
+
+## Objective
+Add automated tests and verify acceptance for: Scenario selector (UI).
+
+## What to do
+Write **deterministic automated tests** that cover each acceptance criterion of the parent story:
+- Assert: Selecting a preset sets every lever and assumption
+- Assert: A 'Custom' state appears once the user edits any slider
+- Assert: Switching presets is deterministic and repeatable
+Use fixed, hand-computed numbers (see `tests/test_fiscal_model.py`). Avoid randomness, network calls and time-dependence.
+
+## Acceptance criteria (Definition of Done)
+- [ ] Automated tests cover the story's acceptance criteria
+- [ ] Tests are deterministic and pass in CI
+- [ ] New/updated tests pass and cover the above
+- [ ] No regression in the existing `pytest` suite
+
+## Dependencies
+Complete these first: `FEATURE-002-US-004-T01`.
+
+## Project conventions
+- Target Python 3.13. Use British spelling in all user-facing text.
+- Keep the pure model layer (`model/`) free of Streamlit; `app.py` is UI/render only.
+- Pin any new runtime deps in `requirements.txt`; test-only deps in `requirements-dev.txt`.
+- Write deterministic `pytest` tests; follow the style of `tests/test_fiscal_model.py`.
+- Match the surrounding code style. Prefer small, coherent diffs over broad refactors.
+- Update `README.md` / `docs/` whenever behaviour changes.
+
+## Guardrails (EPIC-002)
+- Presets are inputs to the existing engine — do not change engine maths.
+- Validate every preset against the engine's input contract.
+- Frame scenarios neutrally; they are not endorsements.
+- The scenario loader must have no Streamlit dependency.
+
+## Verification
+- `python3 -m py_compile <changed .py files>`
+- `python3 -m pytest -q` — all tests pass (add/extend tests for this change).
+
+## Notes
+- This simulator is a transparent scenario sandbox, not an official forecast — keep that framing in any user-facing text.
+- If requirements are ambiguous or you must change a public interface, stop and flag it rather than guessing.

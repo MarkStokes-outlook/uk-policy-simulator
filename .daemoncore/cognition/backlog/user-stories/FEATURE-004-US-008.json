@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-004-US-008",
+  "title": "Model version history",
+  "feature_id": "FEATURE-004",
+  "story": "As a user, I want a model to keep versions so I can see how it evolved.",
+  "description": "Keep a version history as a model evolves.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-004-US-008-T01",
+    "FEATURE-004-US-008-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.990879+00:00",
+  "acceptance_criteria": [
+    "Saving an edited model records a new version",
+    "Previous versions are retrievable"
+  ]
+}

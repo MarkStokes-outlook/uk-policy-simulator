@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-006-US-004-T01",
+  "title": "Implement: Read-only public view",
+  "user_story_id": "FEATURE-006-US-004",
+  "description": "As a visitor, I want a clean read-only view so I can explore a shared model without editing it.",
+  "priority": "P2",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Public/unlisted models render inputs, outputs and scores read-only",
+    "No owner-only data is exposed"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-006-US-004-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.737600+00:00"
+}

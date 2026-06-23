@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-014-US-002",
+  "title": "Sensitivity analysis",
+  "feature_id": "FEATURE-014",
+  "story": "As a researcher, I want sensitivity analysis so I know which levers matter most.",
+  "description": "Provide sensitivity analysis over levers.",
+  "priority": "P3",
+  "size": "L",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "work-endpoints",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-014-US-002-T01",
+    "FEATURE-014-US-002-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.983316+00:00",
+  "acceptance_criteria": [
+    "Systematic parameter variation reports impact on key outputs/scores",
+    "Results are exportable"
+  ]
+}

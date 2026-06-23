@@ -1,0 +1,22 @@
+{
+  "id": "EPIC-002",
+  "title": "Scenario Presets",
+  "phase": 1,
+  "tags": [
+    "uk-policy-simulator",
+    "roadmap"
+  ],
+  "description": "Support reusable, named policy scenarios so users start from a coherent position rather than blank sliders. Provides scenarios.yaml, a validated loader, a UI selector and human-readable summaries.",
+  "feature_ids": [
+    "FEATURE-002"
+  ],
+  "updated_at": "2026-06-23T09:25:48.469239+00:00",
+  "rationale": "Presets make the tool approachable, demonstrate the breadth of policy space, and provide stable reference points for scoring and leaderboards.",
+  "success_criteria": [
+    "All seven initial scenarios load, validate and run without error",
+    "Selecting a scenario populates every lever and assumption deterministically",
+    "An invalid or missing scenario file fails clearly in the UI",
+    "Each scenario has a one-paragraph summary visible to users"
+  ],
+  "notes": "## Scope (in)\n- scenarios.yaml describing each preset\n- Schema-validating scenario loader\n- Scenario selector in the UI\n- Human-readable scenario summaries\n- Scenario documentation\n- Initial set: Baseline, Fairness Swap, Social Investment, Deficit Repair, Universal Basic Services, UBI Experiment, Austerity Trap\n\n## Out of scope\n- User-created/saved scenarios (EPIC-004)\n- Scoring of scenarios (EPIC-003)\n- Sharing scenarios publicly (EPIC-006)\n\n## Dependencies\n- EPIC-001 - presets are sets of inputs to the core engine\n\n## Assumptions\n- Preset values are illustrative, human-curated and clearly labelled\n- YAML is acceptable for a small, human-edited set\n- Each preset maps cleanly onto existing engine inputs\n\n## Risks\n- Preset values become stale as engine evolves -> validate against engine schema\n- Presets misread as endorsements -> neutral framing + caveats\n- Schema drift between YAML and code -> versioned schema + clear validation errors\n\n## Future extensions\n- Scenario inheritance (a preset extending another)\n- Community-contributed presets (gated review)\n- Scenario tags/themes feeding EPIC-007 filtering"
+}

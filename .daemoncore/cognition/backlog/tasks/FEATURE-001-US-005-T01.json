@@ -1,0 +1,35 @@
+{
+  "id": "FEATURE-001-US-005-T01",
+  "title": "Implement: Deterministic regression tests",
+  "user_story_id": "FEATURE-001-US-005",
+  "description": "Implement the tests for: Deterministic regression tests.",
+  "priority": "P1",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [
+    "tests/test_fiscal_model.py"
+  ],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Tests cover baseline deficit, static calc, feedback lag and deficit % GDP",
+    "Baseline-file validation paths are tested (missing file, missing metric, non-numeric)",
+    "The default scenario output is locked as a regression fixture",
+    "Identical inputs always produce identical outputs"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-001-US-005-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.719283+00:00"
+}

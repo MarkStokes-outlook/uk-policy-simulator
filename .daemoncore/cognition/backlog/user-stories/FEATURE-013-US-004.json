@@ -1,0 +1,23 @@
+{
+  "id": "FEATURE-013-US-004",
+  "title": "Regional breakdown",
+  "feature_id": "FEATURE-013",
+  "story": "As a user, I want regional impacts so geographic effects are visible.",
+  "description": "Break impacts down by region.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-013-US-004-T01",
+    "FEATURE-013-US-004-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.997051+00:00",
+  "acceptance_criteria": [
+    "Regional breakdown computed against sourced regional data"
+  ]
+}

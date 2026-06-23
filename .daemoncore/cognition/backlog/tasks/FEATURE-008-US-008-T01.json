@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-008-US-008-T01",
+  "title": "Implement: Provider contract tests",
+  "user_story_id": "FEATURE-008-US-008",
+  "description": "Implement the tests for: Provider contract tests.",
+  "priority": "P2",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "A shared contract test suite runs against each provider (mocked)",
+    "Interface compliance asserted"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-008-US-008-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.743705+00:00"
+}

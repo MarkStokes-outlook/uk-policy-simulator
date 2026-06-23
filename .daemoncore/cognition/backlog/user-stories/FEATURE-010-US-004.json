@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-010-US-004",
+  "title": "Trade-offs, risks, impacts, alternatives",
+  "feature_id": "FEATURE-010",
+  "story": "As a user, I want deeper analysis so I understand hidden trade-offs and options.",
+  "description": "Generate trade-offs, risks, impacts and alternatives.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-010-US-004-T01",
+    "FEATURE-010-US-004-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:44.000882+00:00",
+  "acceptance_criteria": [
+    "Hidden trade-offs, implementation risks, socio-economic impacts and alternative recommendations generated",
+    "Grounded in the model's actual figures"
+  ]
+}

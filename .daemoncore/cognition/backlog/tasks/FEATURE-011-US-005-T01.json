@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-011-US-005-T01",
+  "title": "Implement: Metadata coverage tests",
+  "user_story_id": "FEATURE-011-US-005",
+  "description": "Implement the tests for: Metadata coverage tests.",
+  "priority": "P3",
+  "size": "XS",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "A test fails if any lever lacks a required field",
+    "A test fails on references to unknown categories"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-011-US-005-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.754657+00:00"
+}

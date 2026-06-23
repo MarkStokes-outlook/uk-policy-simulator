@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-005-US-005",
+  "title": "Password reset",
+  "feature_id": "FEATURE-005",
+  "story": "As a user, I want to reset a forgotten password so I can regain access.",
+  "description": "Let a user reset a forgotten password securely.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-005-US-005-T01",
+    "FEATURE-005-US-005-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:44.003852+00:00",
+  "acceptance_criteria": [
+    "Time-limited, single-use reset flow",
+    "Old password invalidated on completion"
+  ]
+}

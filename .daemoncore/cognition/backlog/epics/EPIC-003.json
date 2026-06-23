@@ -1,0 +1,23 @@
+{
+  "id": "EPIC-003",
+  "title": "Deterministic Scoring Engine",
+  "phase": 1,
+  "tags": [
+    "uk-policy-simulator",
+    "roadmap"
+  ],
+  "description": "Generate transparent, explainable, deterministic scores across eight policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.",
+  "feature_ids": [
+    "FEATURE-003"
+  ],
+  "updated_at": "2026-06-23T09:25:48.469239+00:00",
+  "rationale": "Scores let users compare scenarios at a glance and underpin leaderboards and AI critique. Keeping scoring deterministic and AI-free makes results reproducible and defensible - the platform's core integrity guarantee.",
+  "success_criteria": [
+    "All eight categories produce a deterministic score for a given model",
+    "Identical inputs always yield identical scores (verified by test)",
+    "Each score is accompanied by a human-readable rationale",
+    "Weightings are externally configurable and documented",
+    "No code path in scoring imports an AI provider"
+  ],
+  "notes": "## Scope (in)\n- Categories: Fiscal Sustainability, Social Fairness, Economic Growth, NHS Pressure, Housing Pressure, Poverty Reduction, Implementation Risk, Political Plausibility\n- Configurable score-weighting system\n- Score rationale output\n- No AI dependency\n\n## Out of scope\n- AI-generated commentary on scores (EPIC-010)\n- Cross-user ranking UI (EPIC-007)\n- Distributional inputs to scoring (EPIC-013, later refinement)\n\n## Dependencies\n- EPIC-001 - scores consume engine outputs\n- EPIC-002 - presets provide calibration/sanity-check reference points\n\n## Assumptions\n- Each category is a deterministic function of inputs and engine outputs\n- Weightings are explicit and documented, not hidden constants\n- Scores normalised to a common documented scale (e.g. 0-100)\n\n## Risks\n- Arbitrary-seeming weightings -> document every weight + rationale; configurable\n- Category formulas encode bias -> publish methodology; neutral framing\n- Scores misread as objective truth -> always pair score with rationale + caveat\n- Non-determinism creeps in -> forbid randomness/AI; test determinism\n\n## Future extensions\n- Confidence/uncertainty bands per score (links to EPIC-012)\n- Distributional adjustments once EPIC-013 lands\n- User-selectable weighting profiles surfaced in EPIC-007"
+}

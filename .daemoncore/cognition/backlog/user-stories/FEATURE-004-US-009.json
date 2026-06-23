@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-004-US-009",
+  "title": "Persistence tests",
+  "feature_id": "FEATURE-004",
+  "story": "As a maintainer, I want round-trip tests so save/load/export never silently corrupts data.",
+  "description": "Guarantee save/load/export never silently corrupt data.",
+  "priority": "P1",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-004-US-009-T01"
+  ],
+  "updated_at": "2026-06-23T09:31:43.990253+00:00",
+  "acceptance_criteria": [
+    "save->load round-trip asserts field equivalence",
+    "export->import round-trip asserts equivalence",
+    "Schema migration is tested"
+  ]
+}

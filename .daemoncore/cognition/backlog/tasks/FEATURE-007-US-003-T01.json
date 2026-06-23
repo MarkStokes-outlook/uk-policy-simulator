@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-007-US-003-T01",
+  "title": "Implement: Leaderboard views (UI)",
+  "user_story_id": "FEATURE-007-US-003",
+  "description": "As a visitor, I want to browse leaderboards by category so I can discover top models.",
+  "priority": "P2",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "One view per category",
+    "Each entry links to the model's read-only view"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-007-US-003-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.739400+00:00"
+}

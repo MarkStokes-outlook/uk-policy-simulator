@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-004-US-006",
+  "title": "Delete model",
+  "feature_id": "FEATURE-004",
+  "story": "As a user, I want to delete a model so I can manage my workspace.",
+  "description": "Let a user delete a model with confirmation.",
+  "priority": "P2",
+  "size": "XS",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-004-US-006-T01",
+    "FEATURE-004-US-006-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.998891+00:00",
+  "acceptance_criteria": [
+    "Delete requires confirmation",
+    "Other models are unaffected"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "FEATURE-012-US-005",
+  "title": "Crime & long-term effects",
+  "feature_id": "FEATURE-012",
+  "story": "As an analyst, I want crime and long-run effects so second-order impacts are represented.",
+  "description": "Model crime and long-term effects.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-012-US-005-T01",
+    "FEATURE-012-US-005-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.986268+00:00",
+  "acceptance_criteria": [
+    "Documented channels with explicit long-horizon behaviour and caveats"
+  ]
+}

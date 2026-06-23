@@ -1,0 +1,53 @@
+# Task FEATURE-001-US-002-T01 — Implement: Extract calculations into testable module
+
+> **DaemonCore coding-agent prompt.** Work type: `feature` · Size: `M` · Priority: `P1` · Status: `done`
+
+## Where this fits
+- **Epic EPIC-001 — Core Fiscal Engine.** Establish a trustworthy, deterministic and testable fiscal modelling foundation: canonical baseline data, a UI-free calculation module, static and multi-year projection calculations, validation, and regression tests.
+- **Feature FEATURE-001 — Core Fiscal Engine — implementation.**
+- **Story FEATURE-001-US-002 — Extract calculations into testable module.** _As a developer, I want fiscal maths separated from UI so it can be unit-tested._
+
+## Objective
+Implement the tests for: Extract calculations into testable module.
+
+## What to do
+Write **deterministic automated tests** that cover each acceptance criterion of the parent story:
+- Assert: compute_fiscal() accepts baseline, revenue levers, investment levers and assumptions
+- Assert: Returns static figures and a year-by-year projection structure
+- Assert: model/fiscal_model.py imports no Streamlit
+- Assert: app.py is reduced to control collection and rendering
+Use fixed, hand-computed numbers (see `tests/test_fiscal_model.py`). Avoid randomness, network calls and time-dependence.
+
+## Acceptance criteria (Definition of Done)
+- [ ] compute_fiscal() accepts baseline, revenue levers, investment levers and assumptions
+- [ ] Returns static figures and a year-by-year projection structure
+- [ ] model/fiscal_model.py imports no Streamlit
+- [ ] app.py is reduced to control collection and rendering
+- [ ] New/updated tests pass and cover the above
+- [ ] No regression in the existing `pytest` suite
+
+## Dependencies
+None within this story. (Respect cross-epic dependencies of the parent epic.)
+
+## Project conventions
+- Target Python 3.13. Use British spelling in all user-facing text.
+- Keep the pure model layer (`model/`) free of Streamlit; `app.py` is UI/render only.
+- Pin any new runtime deps in `requirements.txt`; test-only deps in `requirements-dev.txt`.
+- Write deterministic `pytest` tests; follow the style of `tests/test_fiscal_model.py`.
+- Match the surrounding code style. Prefer small, coherent diffs over broad refactors.
+- Update `README.md` / `docs/` whenever behaviour changes.
+
+## Guardrails (EPIC-001)
+- All calculations live in `model/fiscal_model.py` — it must NOT import Streamlit.
+- Calculations must be deterministic (no randomness).
+- `baseline.csv` is the single source of truth; validate required metrics at load.
+- Lock default-scenario outputs with a regression test.
+
+## Verification
+- `python3 -m py_compile model/fiscal_model.py app.py`
+- `python3 -m pytest -q` — all tests pass (add/extend tests for this change).
+- Boot headless once: `streamlit run app.py --server.headless true` and confirm it loads without error.
+
+## Notes
+- This simulator is a transparent scenario sandbox, not an official forecast — keep that framing in any user-facing text.
+- If requirements are ambiguous or you must change a public interface, stop and flag it rather than guessing.

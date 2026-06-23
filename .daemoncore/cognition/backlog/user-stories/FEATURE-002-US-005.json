@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-002-US-005",
+  "title": "Scenario summaries",
+  "feature_id": "FEATURE-002",
+  "story": "As a user, I want a short description of each scenario so I understand its intent.",
+  "description": "Show a short, neutral description of each scenario alongside the selector.",
+  "priority": "P2",
+  "size": "XS",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-002-US-005-T01",
+    "FEATURE-002-US-005-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.982306+00:00",
+  "acceptance_criteria": [
+    "Summary text renders next to the selector",
+    "Summaries are sourced from scenarios.yaml",
+    "Framing is neutral and caveated (not an endorsement)"
+  ]
+}

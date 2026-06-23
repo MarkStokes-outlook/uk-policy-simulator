@@ -1,0 +1,48 @@
+# Task FEATURE-005-US-002-T02 — Test & verify: Local auth backend
+
+> **DaemonCore coding-agent prompt.** Work type: `feature` · Size: `S` · Priority: `P2` · Status: `todo`
+
+## Where this fits
+- **Epic EPIC-005 — Identity Platform.** Introduce authentication and user ownership through a provider-agnostic abstraction, with local auth (registration, login/logout, password reset/change, profile) as the first concrete backend.
+- **Feature FEATURE-005 — Identity Platform — implementation.**
+- **Story FEATURE-005-US-002 — Local auth backend.** _As a user, I want a local account so I can use the platform without external providers._
+
+## Objective
+Add automated tests and verify acceptance for: Local auth backend.
+
+## What to do
+Write **deterministic automated tests** that cover each acceptance criterion of the parent story:
+- Assert: Local AuthProvider implementation with hashed credentials
+- Assert: Secure session handling
+- Assert: Conforms to the AuthProvider interface
+Use fixed, hand-computed numbers (see `tests/test_fiscal_model.py`). Avoid randomness, network calls and time-dependence.
+
+## Acceptance criteria (Definition of Done)
+- [ ] Automated tests cover the story's acceptance criteria
+- [ ] Tests are deterministic and pass in CI
+- [ ] New/updated tests pass and cover the above
+- [ ] No regression in the existing `pytest` suite
+
+## Dependencies
+Complete these first: `FEATURE-005-US-002-T01`.
+
+## Project conventions
+- Target Python 3.13. Use British spelling in all user-facing text.
+- Keep the pure model layer (`model/`) free of Streamlit; `app.py` is UI/render only.
+- Pin any new runtime deps in `requirements.txt`; test-only deps in `requirements-dev.txt`.
+- Write deterministic `pytest` tests; follow the style of `tests/test_fiscal_model.py`.
+- Match the surrounding code style. Prefer small, coherent diffs over broad refactors.
+- Update `README.md` / `docs/` whenever behaviour changes.
+
+## Guardrails (EPIC-005)
+- All auth goes through the `AuthProvider` abstraction — no coupling to one backend.
+- Never store plaintext passwords; hash them. Handle sessions securely.
+- Local auth is the first concrete provider; design for OIDC/social later.
+
+## Verification
+- `python3 -m py_compile <changed .py files>`
+- `python3 -m pytest -q` — all tests pass (add/extend tests for this change).
+
+## Notes
+- This simulator is a transparent scenario sandbox, not an official forecast — keep that framing in any user-facing text.
+- If requirements are ambiguous or you must change a public interface, stop and flag it rather than guessing.

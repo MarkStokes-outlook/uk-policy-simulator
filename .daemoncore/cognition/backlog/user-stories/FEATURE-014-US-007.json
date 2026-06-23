@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-014-US-007",
+  "title": "Dataset versioning",
+  "feature_id": "FEATURE-014",
+  "story": "As a researcher, I want versioned datasets so old analyses remain reproducible.",
+  "description": "Version datasets so old analyses stay reproducible.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "work-endpoints",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-014-US-007-T01",
+    "FEATURE-014-US-007-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.996786+00:00",
+  "acceptance_criteria": [
+    "Datasets carry versions",
+    "Runs/exports pin a dataset version",
+    "Switching versions is explicit and recorded"
+  ]
+}

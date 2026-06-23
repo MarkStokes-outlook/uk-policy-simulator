@@ -1,0 +1,48 @@
+# Task FEATURE-011-US-005-T01 — Implement: Metadata coverage tests
+
+> **DaemonCore coding-agent prompt.** Work type: `feature` · Size: `XS` · Priority: `P3` · Status: `todo`
+
+## Where this fits
+- **Epic EPIC-011 — Policy Slider Intelligence.** Turn each policy slider into an educational tool: description, intended effect, likely side effects, uncertainty level, affected score categories and real-world examples, surfaced via progressive disclosure.
+- **Feature FEATURE-011 — Policy Slider Intelligence — implementation.**
+- **Story FEATURE-011-US-005 — Metadata coverage tests.** _As a maintainer, I want a test ensuring every slider has complete metadata so none is missed._
+
+## Objective
+Implement the tests for: Metadata coverage tests.
+
+## What to do
+Write **deterministic automated tests** that cover each acceptance criterion of the parent story:
+- Assert: A test fails if any lever lacks a required field
+- Assert: A test fails on references to unknown categories
+Use fixed, hand-computed numbers (see `tests/test_fiscal_model.py`). Avoid randomness, network calls and time-dependence.
+
+## Acceptance criteria (Definition of Done)
+- [ ] A test fails if any lever lacks a required field
+- [ ] A test fails on references to unknown categories
+- [ ] New/updated tests pass and cover the above
+- [ ] No regression in the existing `pytest` suite
+
+## Dependencies
+None within this story. (Respect cross-epic dependencies of the parent epic.)
+
+## Project conventions
+- Target Python 3.13. Use British spelling in all user-facing text.
+- Keep the pure model layer (`model/`) free of Streamlit; `app.py` is UI/render only.
+- Pin any new runtime deps in `requirements.txt`; test-only deps in `requirements-dev.txt`.
+- Write deterministic `pytest` tests; follow the style of `tests/test_fiscal_model.py`.
+- Match the surrounding code style. Prefer small, coherent diffs over broad refactors.
+- Update `README.md` / `docs/` whenever behaviour changes.
+
+## Guardrails (EPIC-011)
+- Slider metadata is data (not code), keyed by lever id.
+- State uncertainty explicitly; keep claims neutral and sourced.
+- Use progressive disclosure so the UI stays uncluttered.
+
+## Verification
+- `python3 -m py_compile <changed .py files>`
+- `python3 -m pytest -q` — all tests pass (add/extend tests for this change).
+- Boot headless once: `streamlit run app.py --server.headless true` and confirm it loads without error.
+
+## Notes
+- This simulator is a transparent scenario sandbox, not an official forecast — keep that framing in any user-facing text.
+- If requirements are ambiguous or you must change a public interface, stop and flag it rather than guessing.

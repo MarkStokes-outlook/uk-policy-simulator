@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-002-US-001",
+  "title": "Scenario schema & `scenarios.yaml`",
+  "feature_id": "FEATURE-002",
+  "story": "As a curator, I want a defined schema so scenarios are consistent and machine-checkable.",
+  "description": "Define a scenario schema and author scenarios.yaml with the seven initial presets.",
+  "priority": "P1",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-002-US-001-T01",
+    "FEATURE-002-US-001-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.995960+00:00",
+  "acceptance_criteria": [
+    "Documented schema: id, name, summary, levers, assumptions",
+    "scenarios.yaml created containing all seven presets",
+    "Schema is versioned to allow future evolution"
+  ]
+}

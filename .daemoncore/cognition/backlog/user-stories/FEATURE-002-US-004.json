@@ -1,0 +1,25 @@
+{
+  "id": "FEATURE-002-US-004",
+  "title": "Scenario selector (UI)",
+  "feature_id": "FEATURE-002",
+  "story": "As a user, I want to pick a scenario from a dropdown so sliders pre-fill.",
+  "description": "Let users pick a scenario from the UI to pre-fill all controls.",
+  "priority": "P1",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-002-US-004-T01",
+    "FEATURE-002-US-004-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.987248+00:00",
+  "acceptance_criteria": [
+    "Selecting a preset sets every lever and assumption",
+    "A 'Custom' state appears once the user edits any slider",
+    "Switching presets is deterministic and repeatable"
+  ]
+}

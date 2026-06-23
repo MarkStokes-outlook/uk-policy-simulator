@@ -1,0 +1,47 @@
+# Task FEATURE-005-US-003-T01 — Implement: Registration
+
+> **DaemonCore coding-agent prompt.** Work type: `feature` · Size: `S` · Priority: `P2` · Status: `todo`
+
+## Where this fits
+- **Epic EPIC-005 — Identity Platform.** Introduce authentication and user ownership through a provider-agnostic abstraction, with local auth (registration, login/logout, password reset/change, profile) as the first concrete backend.
+- **Feature FEATURE-005 — Identity Platform — implementation.**
+- **Story FEATURE-005-US-003 — Registration.** _As a new user, I want to register so I can own models._
+
+## Objective
+As a new user, I want to register so I can own models.
+
+## What to do
+Implement the capability so that every acceptance criterion below holds. Specifically:
+- Registration validates input and prevents duplicates
+- A user record is created with a hashed password
+Add or update docstrings and any necessary types. Keep the change focused on this story; do not pull in scope from other stories/epics.
+
+## Acceptance criteria (Definition of Done)
+- [ ] Registration validates input and prevents duplicates
+- [ ] A user record is created with a hashed password
+- [ ] New/updated tests pass and cover the above
+- [ ] No regression in the existing `pytest` suite
+
+## Dependencies
+None within this story. (Respect cross-epic dependencies of the parent epic.)
+
+## Project conventions
+- Target Python 3.13. Use British spelling in all user-facing text.
+- Keep the pure model layer (`model/`) free of Streamlit; `app.py` is UI/render only.
+- Pin any new runtime deps in `requirements.txt`; test-only deps in `requirements-dev.txt`.
+- Write deterministic `pytest` tests; follow the style of `tests/test_fiscal_model.py`.
+- Match the surrounding code style. Prefer small, coherent diffs over broad refactors.
+- Update `README.md` / `docs/` whenever behaviour changes.
+
+## Guardrails (EPIC-005)
+- All auth goes through the `AuthProvider` abstraction — no coupling to one backend.
+- Never store plaintext passwords; hash them. Handle sessions securely.
+- Local auth is the first concrete provider; design for OIDC/social later.
+
+## Verification
+- `python3 -m py_compile <changed .py files>`
+- `python3 -m pytest -q` — all tests pass (add/extend tests for this change).
+
+## Notes
+- This simulator is a transparent scenario sandbox, not an official forecast — keep that framing in any user-facing text.
+- If requirements are ambiguous or you must change a public interface, stop and flag it rather than guessing.

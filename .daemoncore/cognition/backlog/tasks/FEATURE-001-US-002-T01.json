@@ -1,0 +1,36 @@
+{
+  "id": "FEATURE-001-US-002-T01",
+  "title": "Implement: Extract calculations into testable module",
+  "user_story_id": "FEATURE-001-US-002",
+  "description": "Implement the tests for: Extract calculations into testable module.",
+  "priority": "P1",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [
+    "model/fiscal_model.py",
+    "app.py"
+  ],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "compute_fiscal() accepts baseline, revenue levers, investment levers and assumptions",
+    "Returns static figures and a year-by-year projection structure",
+    "model/fiscal_model.py imports no Streamlit",
+    "app.py is reduced to control collection and rendering"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-001-US-002-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.718162+00:00"
+}

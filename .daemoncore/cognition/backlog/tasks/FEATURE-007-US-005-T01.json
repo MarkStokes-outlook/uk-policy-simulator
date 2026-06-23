@@ -1,0 +1,30 @@
+{
+  "id": "FEATURE-007-US-005-T01",
+  "title": "Implement: Score transparency on rankings",
+  "user_story_id": "FEATURE-007-US-005",
+  "description": "As a visitor, I want to see why a model ranks where it does so I trust the leaderboard.",
+  "priority": "P2",
+  "size": "S",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Each ranked entry shows the deciding score and its rationale"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-007-US-005-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.740101+00:00"
+}

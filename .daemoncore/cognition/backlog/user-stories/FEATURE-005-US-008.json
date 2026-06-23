@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-005-US-008",
+  "title": "Model ownership linkage",
+  "feature_id": "FEATURE-005",
+  "story": "As a user, I want my saved models tied to my account so they're mine across sessions.",
+  "description": "Tie saved models to the owning user.",
+  "priority": "P2",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "auth",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-005-US-008-T01",
+    "FEATURE-005-US-008-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:44.001078+00:00",
+  "acceptance_criteria": [
+    "Models gain an owner id",
+    "Access scoped to owner (pre-sharing)"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-008-US-006-T01",
+  "title": "Implement: Usage tracking",
+  "user_story_id": "FEATURE-008-US-006",
+  "description": "As an operator, I want usage recorded so quotas and cost are observable.",
+  "priority": "P2",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Each call records provider, model, tokens/units and outcome",
+    "Usage is queryable per user (feeds EPIC-009)"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-008-US-006-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.742922+00:00"
+}

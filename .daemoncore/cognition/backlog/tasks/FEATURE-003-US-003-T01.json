@@ -1,0 +1,32 @@
+{
+  "id": "FEATURE-003-US-003-T01",
+  "title": "Implement: Fiscal & economic categories",
+  "user_story_id": "FEATURE-003-US-003",
+  "description": "As a user, I want Fiscal Sustainability and Economic Growth scores so I can judge the macro picture.",
+  "priority": "P1",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Both categories computed from engine outputs only",
+    "Rationale references the driving figures (e.g. deficit trajectory, GDP growth)",
+    "Identical inputs yield identical scores"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-003-US-003-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.724780+00:00"
+}

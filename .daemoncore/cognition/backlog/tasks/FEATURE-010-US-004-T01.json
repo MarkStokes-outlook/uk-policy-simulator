@@ -1,0 +1,31 @@
+{
+  "id": "FEATURE-010-US-004-T01",
+  "title": "Implement: Trade-offs, risks, impacts, alternatives",
+  "user_story_id": "FEATURE-010-US-004",
+  "description": "As a user, I want deeper analysis so I understand hidden trade-offs and options.",
+  "priority": "P2",
+  "size": "M",
+  "work_type": "feature",
+  "severity": null,
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "depends_on": [],
+  "target_files": [],
+  "target_directories": [],
+  "acceptance_criteria": [
+    "Hidden trade-offs, implementation risks, socio-economic impacts and alternative recommendations generated",
+    "Grounded in the model's actual figures"
+  ],
+  "execution_hints": {
+    "type": "local",
+    "agent_preference": null,
+    "requires_approval": false,
+    "idempotent": true
+  },
+  "notes": "",
+  "promptRef": "prompts/tasks/FEATURE-010-US-004-T01.prompt",
+  "updated_at": "2026-06-23T09:47:31.751630+00:00"
+}

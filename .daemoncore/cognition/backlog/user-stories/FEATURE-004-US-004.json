@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-004-US-004",
+  "title": "Load model",
+  "feature_id": "FEATURE-004",
+  "story": "As a user, I want to load a saved model so I can continue or review it.",
+  "description": "Let a user reload a saved model to an identical state.",
+  "priority": "P1",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-004-US-004-T01",
+    "FEATURE-004-US-004-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.992572+00:00",
+  "acceptance_criteria": [
+    "Loading restores all controls",
+    "Outputs recompute/display identically to when saved"
+  ]
+}

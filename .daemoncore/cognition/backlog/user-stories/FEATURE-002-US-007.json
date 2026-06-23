@@ -1,0 +1,23 @@
+{
+  "id": "FEATURE-002-US-007",
+  "title": "Scenario round-trip tests",
+  "feature_id": "FEATURE-002",
+  "story": "As a maintainer, I want tests that load and run each preset so regressions are caught.",
+  "description": "Test that every preset loads and runs through the engine without error.",
+  "priority": "P1",
+  "size": "S",
+  "impact_area": "policy-simulation",
+  "domain": "web-api",
+  "area": "projects",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-002-US-007-T01"
+  ],
+  "updated_at": "2026-06-23T09:31:43.999878+00:00",
+  "acceptance_criteria": [
+    "A parametrised test loads every scenario",
+    "Each scenario produces finite, expected-shape engine output"
+  ]
+}

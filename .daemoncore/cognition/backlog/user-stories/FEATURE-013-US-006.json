@@ -1,0 +1,24 @@
+{
+  "id": "FEATURE-013-US-006",
+  "title": "Distribution visualisations",
+  "feature_id": "FEATURE-013",
+  "story": "As a user, I want clear charts so distributional effects are easy to grasp.",
+  "description": "Visualise distributional effects clearly.",
+  "priority": "P3",
+  "size": "M",
+  "impact_area": "policy-simulation",
+  "domain": "web-ui",
+  "area": "components",
+  "tags": [
+    "uk-policy-simulator"
+  ],
+  "task_ids": [
+    "FEATURE-013-US-006-T01",
+    "FEATURE-013-US-006-T02"
+  ],
+  "updated_at": "2026-06-23T09:31:43.991207+00:00",
+  "acceptance_criteria": [
+    "Visualisations per dimension with uncertainty shown",
+    "Visualisations consistent with aggregate totals"
+  ]
+}
