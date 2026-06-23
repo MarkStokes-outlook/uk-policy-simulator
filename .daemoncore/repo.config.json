@@ -1,0 +1,13 @@
+{
+  "repoName": "uk_policy_simulator",
+  "repoType": "application",
+  "daemoncoreVersion": ">=1.0.0",
+  "kernelPath": "/Users/markstokes/Source/.daemoncore",
+  "queueScope": "project",
+  "allowGlobalQueue": false,
+  "agents": {
+    "developer": true,
+    "reviewer": true,
+    "architect": false
+  }
+}
