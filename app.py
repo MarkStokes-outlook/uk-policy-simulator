@@ -9,8 +9,11 @@ from model import (
     AssumptionError,
     BaselineError,
     FeedbackAssumptions,
+    Scenario,
+    ScenarioError,
     compute_fiscal,
     load_baseline,
+    load_scenarios,
 )
 
 st.set_page_config(
@@ -20,6 +23,47 @@ st.set_page_config(
 )
 
 BASELINE_PATH = Path(__file__).parent / "baseline.csv"
+SCENARIOS_PATH = Path(__file__).parent / "scenarios.yaml"
+
+# Lever display metadata, keyed by the canonical scenario key so presets,
+# sliders and the engine all agree. Tuple: (key, label, min, max, step).
+REVENUE_LEVER_SPECS = [
+    ("income_tax_ni", "Income tax / NI reform net yield", -50.0, 80.0, 1.0),
+    ("wealth_property", "Wealth / land / property tax reform", -20.0, 100.0, 1.0),
+    ("passive_income", "CGT / dividends / rent equalisation", -10.0, 60.0, 1.0),
+    ("corporate", "Corporate / rent-seeking tax tightening", -20.0, 60.0, 1.0),
+    ("carbon_windfall", "Carbon / resource / windfall taxes", -20.0, 60.0, 1.0),
+    ("anti_avoidance", "Compliance / anti-avoidance yield", 0.0, 40.0, 1.0),
+]
+INVESTMENT_LEVER_SPECS = [
+    ("childcare", "Childcare expansion", 0.0, 60.0, 1.0),
+    ("social_care", "Social care settlement", 0.0, 60.0, 1.0),
+    ("housing", "Housing / social build programme", 0.0, 100.0, 1.0),
+    ("nhs_prevention", "NHS prevention + capacity", 0.0, 60.0, 1.0),
+    ("education_training", "Higher education / adult training", 0.0, 60.0, 1.0),
+    ("welfare_floor", "Welfare floor / taper smoothing", 0.0, 60.0, 1.0),
+    ("transport_energy", "Transport / energy infrastructure", 0.0, 100.0, 1.0),
+]
+
+
+def _scenario_to_state(scenario: Scenario) -> dict:
+    """Map a scenario onto the session-state keys the sidebar widgets use.
+
+    Lever values are engine-native £bn; assumptions are converted to the
+    sliders' display units (percentages) so the widgets show them directly.
+    """
+    a = scenario.assumptions
+    state: dict = {}
+    state.update(scenario.revenue_levers)
+    state.update(scenario.investment_levers)
+    state["years"] = a.years
+    state["lag_years"] = a.lag_years
+    state["growth_pct"] = round(a.growth_baseline * 100, 4)
+    state["rev_fb_pct"] = round(a.revenue_feedback_rate * 100, 4)
+    state["cost_red_pct"] = round(a.cost_reduction_rate * 100, 4)
+    state["impl_quality_pct"] = round(a.implementation_quality * 100, 4)
+    state["optimism_pct"] = round(a.optimism_penalty * 100, 4)
+    return state
 
 st.title("🇬🇧 UK Policy Sandbox")
 st.caption(
@@ -71,54 +115,107 @@ with st.expander("Model notes", expanded=False):
 """
     )
 
+# --- Scenario presets (EPIC-002) -----------------------------------------
+# scenarios.yaml is validated on load; fail clearly in the UI rather than
+# silently running with a broken or missing preset set.
+try:
+    SCENARIOS = load_scenarios(SCENARIOS_PATH)
+except ScenarioError as exc:
+    st.error(
+        f"Could not load scenario presets from `{SCENARIOS_PATH.name}`.\n\n"
+        f"**{exc}**\n\n"
+        "Fix the scenario file and reload."
+    )
+    st.stop()
+
+scenario_ids = list(SCENARIOS)
+
+
+def _apply_selected_scenario() -> None:
+    """Populate every slider's session-state from the chosen preset.
+
+    Run as the selectbox ``on_change`` callback (and from the reset button), so
+    it executes before the widgets are instantiated on the next rerun — which is
+    the only point at which a widget-keyed session-state value may be set.
+    """
+    chosen = SCENARIOS[st.session_state["scenario_select"]]
+    for key, value in _scenario_to_state(chosen).items():
+        st.session_state[key] = value
+
+
+# On the very first run, seed session-state from the first preset before any
+# slider widget exists. Selecting a preset later goes through the callback.
+if "scenario_select" not in st.session_state:
+    st.session_state["scenario_select"] = scenario_ids[0]
+    for _k, _v in _scenario_to_state(SCENARIOS[scenario_ids[0]]).items():
+        st.session_state[_k] = _v
+
 st.sidebar.header("Scenario controls")
 
+selected_id = st.sidebar.selectbox(
+    "Scenario preset",
+    scenario_ids,
+    format_func=lambda i: SCENARIOS[i].name,
+    key="scenario_select",
+    on_change=_apply_selected_scenario,
+)
+selected_scenario = SCENARIOS[selected_id]
+
 st.sidebar.subheader("Revenue reforms")
-income_tax_ni_reform = st.sidebar.slider("Income tax / NI reform net yield", -50.0, 80.0, 0.0, 1.0)
-wealth_tax_reform = st.sidebar.slider("Wealth / land / property tax reform", -20.0, 100.0, 35.0, 1.0)
-passive_income_reform = st.sidebar.slider("CGT / dividends / rent equalisation", -10.0, 60.0, 20.0, 1.0)
-corporate_tax_reform = st.sidebar.slider("Corporate / rent-seeking tax tightening", -20.0, 60.0, 10.0, 1.0)
-carbon_resource_tax = st.sidebar.slider("Carbon / resource / windfall taxes", -20.0, 60.0, 15.0, 1.0)
-anti_avoidance = st.sidebar.slider("Compliance / anti-avoidance yield", 0.0, 40.0, 8.0, 1.0)
+for key, label, lo, hi, step in REVENUE_LEVER_SPECS:
+    st.sidebar.slider(label, lo, hi, step=step, key=key)
 
 st.sidebar.subheader("Investment / spending reforms")
-childcare = st.sidebar.slider("Childcare expansion", 0.0, 60.0, 20.0, 1.0)
-social_care = st.sidebar.slider("Social care settlement", 0.0, 60.0, 20.0, 1.0)
-housing = st.sidebar.slider("Housing / social build programme", 0.0, 100.0, 35.0, 1.0)
-nhs_prevention = st.sidebar.slider("NHS prevention + capacity", 0.0, 60.0, 15.0, 1.0)
-education_training = st.sidebar.slider("Higher education / adult training", 0.0, 60.0, 15.0, 1.0)
-welfare_floor = st.sidebar.slider("Welfare floor / taper smoothing", 0.0, 60.0, 15.0, 1.0)
-transport_energy = st.sidebar.slider("Transport / energy infrastructure", 0.0, 100.0, 25.0, 1.0)
+for key, label, lo, hi, step in INVESTMENT_LEVER_SPECS:
+    st.sidebar.slider(label, lo, hi, step=step, key=key)
 
 st.sidebar.subheader("Dynamic feedback assumptions")
-years = st.sidebar.slider("Projection years", 5, 30, 15, 1)
-growth_baseline = st.sidebar.slider("Baseline nominal GDP growth", 0.0, 6.0, 3.5, 0.1) / 100
-revenue_feedback_rate = st.sidebar.slider("Revenue feedback from investment", 0.0, 100.0, 35.0, 1.0) / 100
-cost_reduction_rate = st.sidebar.slider("Public cost reduction from social investment", 0.0, 100.0, 20.0, 1.0) / 100
-lag_years = st.sidebar.slider("Feedback lag years", 0, 10, 3, 1)
-implementation_quality = st.sidebar.slider("Implementation quality", 0.0, 100.0, 70.0, 1.0) / 100
-optimism_penalty = st.sidebar.slider("Optimism penalty", 0.0, 50.0, 15.0, 1.0) / 100
+st.sidebar.slider("Projection years", 5, 30, step=1, key="years")
+st.sidebar.slider("Baseline nominal GDP growth (%)", 0.0, 6.0, step=0.1, key="growth_pct")
+st.sidebar.slider("Revenue feedback from investment (%)", 0.0, 100.0, step=1.0, key="rev_fb_pct")
+st.sidebar.slider("Public cost reduction from social investment (%)", 0.0, 100.0, step=1.0, key="cost_red_pct")
+st.sidebar.slider("Feedback lag years", 0, 10, step=1, key="lag_years")
+st.sidebar.slider("Implementation quality (%)", 0.0, 100.0, step=1.0, key="impl_quality_pct")
+st.sidebar.slider("Optimism penalty (%)", 0.0, 50.0, step=1.0, key="optimism_pct")
 
-# Lever values keyed by their display label so the same mapping drives both the
+# Assumption scalars converted back to engine-native fractions.
+years = st.session_state["years"]
+lag_years = st.session_state["lag_years"]
+growth_baseline = st.session_state["growth_pct"] / 100
+revenue_feedback_rate = st.session_state["rev_fb_pct"] / 100
+cost_reduction_rate = st.session_state["cost_red_pct"] / 100
+implementation_quality = st.session_state["impl_quality_pct"] / 100
+optimism_penalty = st.session_state["optimism_pct"] / 100
+
+# Lever values keyed by display label so the same mapping drives both the
 # calculation and the lever breakdown table below.
-revenue_levers = {
-    "Income tax / NI reform": income_tax_ni_reform,
-    "Wealth / land / property reform": wealth_tax_reform,
-    "Passive income equalisation": passive_income_reform,
-    "Corporate / rent-seeking tax": corporate_tax_reform,
-    "Carbon / resource / windfall taxes": carbon_resource_tax,
-    "Compliance / anti-avoidance": anti_avoidance,
-}
+revenue_levers = {label: st.session_state[key] for key, label, *_ in REVENUE_LEVER_SPECS}
+investment_levers = {label: st.session_state[key] for key, label, *_ in INVESTMENT_LEVER_SPECS}
 
-investment_levers = {
-    "Childcare expansion": childcare,
-    "Social care settlement": social_care,
-    "Housing / social build": housing,
-    "NHS prevention + capacity": nhs_prevention,
-    "Higher education / adult training": education_training,
-    "Welfare floor / taper smoothing": welfare_floor,
-    "Transport / energy infrastructure": transport_energy,
-}
+# "Custom" state: once the live controls diverge from the selected preset, say
+# so explicitly and offer a deterministic reset back to the preset values.
+_expected = _scenario_to_state(selected_scenario)
+_current = {key: st.session_state[key] for key in _expected}
+is_custom = any(abs(_current[k] - _expected[k]) > 1e-9 for k in _expected)
+
+if is_custom:
+    st.sidebar.caption(f"⚠️ Custom — modified from **{selected_scenario.name}**")
+else:
+    st.sidebar.caption(f"Preset: **{selected_scenario.name}** (unmodified)")
+
+st.sidebar.button(
+    "Reset to preset values",
+    on_click=_apply_selected_scenario,
+    disabled=not is_custom,
+    use_container_width=True,
+)
+
+with st.sidebar.expander("About this scenario", expanded=True):
+    st.markdown(selected_scenario.summary)
+    st.caption(
+        "Presets are illustrative, human-curated starting points — not "
+        "endorsements, forecasts or recommendations."
+    )
 
 # The sidebar sliders are bounded to valid ranges, so this should not normally
 # fail; guard anyway so a bad assumption surfaces clearly rather than crashing.

@@ -18,6 +18,7 @@ accumulated stock rather than the current-year flow).
 from __future__ import annotations
 
 import csv
+import math
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping
@@ -34,10 +35,34 @@ class AssumptionError(ValueError):
     """Raised when feedback assumptions are outside their valid ranges."""
 
 
+class LeverError(ValueError):
+    """Raised when a revenue/investment lever value is not a finite number."""
+
+
 def _require(condition: bool, message: str, exc: type[Exception]) -> None:
     """Raise ``exc`` with ``message`` unless ``condition`` holds."""
     if not condition:
         raise exc(message)
+
+
+def _validate_levers(levers: Mapping[str, float], kind: str) -> None:
+    """Reject non-finite lever values (nan/inf/-inf).
+
+    Lever validation lives in the engine, not the UI, so any caller of
+    :func:`compute_fiscal` (sliders, scenario presets, future APIs) gets the
+    same guarantee that impossible inputs cannot enter the projection or CSV.
+    """
+    for name, value in levers.items():
+        _require(
+            isinstance(value, (int, float)) and not isinstance(value, bool),
+            f"{kind} lever '{name}' must be numeric (got {value!r}).",
+            LeverError,
+        )
+        _require(
+            math.isfinite(value),
+            f"{kind} lever '{name}' must be a finite number (got {value}).",
+            LeverError,
+        )
 
 
 @dataclass(frozen=True)
@@ -49,6 +74,19 @@ class Baseline:
     gdp: float
 
     def __post_init__(self) -> None:
+        # Reject non-finite values (nan/inf) up front: they silently poison every
+        # downstream figure and the CSV export, and break the "engine cannot run
+        # on impossible inputs" guarantee.
+        for name, value in (
+            ("receipts", self.receipts),
+            ("spending", self.spending),
+            ("gdp", self.gdp),
+        ):
+            _require(
+                math.isfinite(value),
+                f"Baseline {name} must be a finite number (got {value}).",
+                BaselineError,
+            )
         # GDP must be strictly positive: it is the denominator for deficit % GDP.
         _require(self.gdp > 0, f"Baseline GDP must be > 0 (got {self.gdp}).", BaselineError)
         _require(
@@ -157,11 +195,18 @@ def load_baseline(path) -> Baseline:
                 if not metric:
                     continue
                 try:
-                    values[metric] = float(raw)
+                    parsed = float(raw)
                 except ValueError as exc:
                     raise BaselineError(
                         f"Non-numeric value for metric '{metric}': {raw!r}."
                     ) from exc
+                # float() happily parses 'inf'/'nan'; reject them here so the
+                # baseline can never carry a non-finite value.
+                if not math.isfinite(parsed):
+                    raise BaselineError(
+                        f"Non-finite value for metric '{metric}': {raw!r}."
+                    )
+                values[metric] = parsed
     except BaselineError:
         raise
     except OSError as exc:
@@ -199,6 +244,9 @@ def compute_fiscal(
     assumptions:
         Dynamic feedback assumptions (rates as fractions).
     """
+
+    _validate_levers(revenue_levers, "Revenue")
+    _validate_levers(investment_levers, "Investment")
 
     revenue_static = float(sum(revenue_levers.values()))
     investment_static = float(sum(investment_levers.values()))
