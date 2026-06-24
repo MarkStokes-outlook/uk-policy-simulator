@@ -2,7 +2,7 @@
 
 ## Product Vision & Long-Term Roadmap
 
-Version: 0.1 Draft  
+Version: 0.2 Reviewed  
 Status: Living Document  
 Last Updated: June 2026
 
@@ -79,6 +79,133 @@ Much like GitHub enables collaborative software development.
 
 ---
 
+## Governance, Evidence & Trust Framework
+
+The credibility of the platform is more important than the sophistication of any individual model.
+
+All outputs must be classified according to the evidence framework below.
+
+### Class A — Evidence-Based
+
+Derived directly from published datasets, deterministic calculations, and reproducible methodologies.
+
+Examples:
+
+- Tax receipts
+- Government spending
+- Debt and deficit calculations
+- Distributional analysis
+- Regional demographic analysis
+- Historical datasets
+
+Requirements:
+
+- Fully auditable
+- Versioned
+- Reproducible
+- Source-linked
+- Deterministic
+
+### Class B — Evidence-Informed Projection
+
+Derived from published research, calibrated assumptions, and transparent modelling.
+
+Examples:
+
+- Labour participation effects
+- Productivity impacts
+- Housing affordability effects
+- NHS demand reduction estimates
+- Education outcome projections
+
+Requirements:
+
+- Confidence rating
+- Published assumptions
+- Evidence references
+- Uncertainty ranges
+
+### Class C — Illustrative Simulation
+
+Exploratory and educational modelling intended to stimulate discussion and challenge assumptions.
+
+Examples:
+
+- Stakeholder reactions
+- Media simulations
+- Public reaction simulations
+- AI Cabinet analysis
+- Agent-based society models
+
+Requirements:
+
+- Clearly labelled as illustrative
+- Must not be presented as prediction
+- Must not inherit the authority of Class A outputs
+- Must explain assumptions and limitations
+
+### Credibility Boundary
+
+Versions up to and including Distributional Analysis primarily operate within Class A and Class B outputs.
+
+Society Simulation and Advanced Simulation features operate primarily within Class C outputs and must be visually and conceptually separated from evidence-based modelling.
+
+### Data Sources & Licensing
+
+Class A outputs must clearly identify:
+
+- Source dataset
+- Source organisation
+- Dataset version
+- Date retrieved
+- Applicable licence
+
+Expected primary sources include:
+
+- ONS
+- OBR
+- HMRC
+- DWP
+- NHS England
+- Department for Education
+- Ministry of Housing, Communities and Local Government
+
+Data provenance must remain visible throughout the platform.
+
+### Sustainability & Operating Model
+
+The platform should remain accessible, transparent, and financially sustainable.
+
+Future platform design should consider:
+
+- Hosting costs
+- AI inference costs
+- Data storage costs
+- Moderation requirements
+- Community management
+- Long-term maintenance
+
+Bring Your Own AI capabilities should reduce operating costs where practical, while ensuring the platform remains useful to users who do not provide external AI credentials.
+
+## Validation & Calibration Strategy
+
+The simulator must continuously validate itself against real-world outcomes.
+
+Validation is not a future feature. It is an ongoing responsibility.
+
+Key activities include:
+
+- Historical replay and policy backtesting
+- Forecast accuracy measurement
+- Sensitivity analysis
+- Assumption validation
+- Model calibration
+- Variance tracking between predicted and observed outcomes
+
+The objective is to understand where the model is strong, where it is weak, and where uncertainty is highest.
+
+---
+
 ## Product Evolution
 
 ---
@@ -111,12 +238,12 @@ Create a trustworthy simulation foundation.
 Features:
 
 - Baseline
-- Fairness Swap
+- Progressive Redistribution
 - Social Investment
 - Deficit Repair
 - Universal Basic Services
 - UBI Experiment
-- Austerity Trap
+- Spending Reduction
 
 Goal:
 
@@ -131,13 +258,18 @@ Provide reusable policy templates.
 Categories:
 
 - Fiscal Sustainability
-- Social Fairness
 - Economic Growth
-- NHS Pressure
-- Housing Pressure
 - Poverty Reduction
-- Implementation Risk
-- Political Plausibility
+- Housing Affordability
+- NHS Demand Impact
+- Income Equality
+- Implementation Complexity
+
+Note:
+
+The platform should avoid embedding ideological assumptions into scoring.
+
+Subjective concepts such as fairness, desirability, or political acceptability should be represented through configurable weighting profiles rather than fixed scores.
 
 Goal:
 
@@ -191,6 +323,12 @@ Goal:
 
 Establish ownership and identity.
 
+Architecture Note:
+
+This milestone represents the transition from a standalone simulation tool to a multi-user platform.
+
+Platform architecture should be reviewed before implementation to ensure future support for persistence, sharing, collaboration, and scale.
+
 ---
 
 ### v1.2
@@ -218,14 +356,27 @@ Categories:
 
 - Best Balanced
 - Best Fiscal Sustainability
-- Best Social Fairness
-- Best Growth
-- Best NHS Outcome
-- Best Housing Outcome
+- Best Economic Growth
+- Best Poverty Reduction
+- Best Housing Affordability
+- Best NHS Demand Reduction
+- Best Income Equality
 
 Goal:
 
 Encourage experimentation and comparison.
+
+Leaderboards should be generated within the context of a selected weighting profile.
+
+Examples:
+
+- Fiscal Conservative Profile
+- Social Democratic Profile
+- Green Investment Profile
+- Libertarian Profile
+- Custom User Profile
+
+The platform should avoid presenting any single weighting profile as objectively correct.
 
 ---
 
@@ -345,6 +496,7 @@ Features:
 - Household types
 - Age groups
 - Regional breakdowns
+- Validation against real-world household datasets
 
 Outputs:
 
@@ -379,6 +531,29 @@ Examples:
 Goal:
 
 Visualise geographical consequences.
+
+---
+
+### v3.3
+
+#### Historical Replay & Backtesting Engine
+
+Examples:
+
+- Alternative 2008 response
+- Alternative Brexit paths
+- Housing policy counterfactuals
+- Tax reform experiments
+
+Goal:
+
+Test alternate histories, validate model assumptions, and improve calibration against known historical outcomes.
+
+Validation Value:
+
+Historical replay is a trust-building capability.
+
+It allows the platform to compare model outputs against known historical outcomes and improve calibration over time.
 
 ---
 
@@ -488,23 +663,6 @@ Model second-order effects.
 
 ---
 
-### v5.1
-
-#### Historical Replay Engine
-
-Examples:
-
-- Alternative 2008 response
-- Alternative Brexit paths
-- Housing policy counterfactuals
-- Tax reform experiments
-
-Goal:
-
-Test alternate histories.
-
----
-
 ### v5.2
 
 #### AI Cabinet
@@ -526,6 +684,14 @@ Provide competing expert perspectives.
 Goal:
 
 Encourage critical thinking.
+
+Classification:
+
+Class C — Illustrative Simulation.
+
+AI Cabinet outputs are advisory perspectives and thought experiments.
+
+They are not forecasts, predictions, or evidence-based conclusions.
 
 ---
 
@@ -600,5 +766,17 @@ The final platform should answer questions such as:
 - What does the Treasury think?
 - What are the second-order effects?
 - What happens after 5, 10, or 20 years?
+
+The platform should aspire to become a trusted public instrument rather than a political advocacy tool.
+
+Its responsibility is to expose assumptions, evidence, uncertainty, and trade-offs, allowing users to reach their own conclusions.
+
+Throughout the platform, users must always be able to distinguish between:
+
+- Measured reality
+- Evidence-informed projection
+- Illustrative simulation
+
+Maintaining that distinction is fundamental to the trustworthiness of the platform.
 
 The ambition is to become a transparent public policy laboratory where citizens, researchers, students, journalists, economists, and governments can explore ideas, challenge assumptions, and better understand how complex societies function.
