@@ -23,11 +23,11 @@ never percentages.
 
 Derived property: `deficit = spending - receipts`.
 
-Out-of-range values raise `BaselineError` at construction. The canonical values
-are loaded from [`baseline.csv`](../baseline.csv) by `load_baseline()`, which
-validates that the required metrics — **Total receipts**, **Total spending**,
-**Implied GDP** — are all present and numeric, and otherwise raises a
-user-facing `BaselineError`.
+Out-of-range or **non-finite** (`nan`/`inf`) values raise `BaselineError` at
+construction. The canonical values are loaded from [`baseline.csv`](../baseline.csv)
+by `load_baseline()`, which validates that the required metrics — **Total
+receipts**, **Total spending**, **Implied GDP** — are all present, numeric and
+finite, and otherwise raises a user-facing `BaselineError`.
 
 ### `FeedbackAssumptions`
 
@@ -49,6 +49,11 @@ never run on impossible inputs.
 `revenue_levers` and `investment_levers` are each a `Mapping[str, float]` of
 lever name → £bn change. Only their **sums** affect the calculation; the keys
 exist for display/breakdown.
+
+`compute_fiscal()` validates every lever value before use: a non-numeric or
+**non-finite** (`nan`/`inf`) lever raises `LeverError`. This validation lives in
+the engine, not the UI, so any caller — sliders, scenario presets or a future
+API — inherits the guarantee that the engine never runs on impossible inputs.
 
 ---
 

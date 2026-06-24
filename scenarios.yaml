@@ -1,0 +1,234 @@
+# UK Policy Sandbox — scenario presets
+#
+# These are illustrative, human-curated starting points, NOT endorsements,
+# forecasts or recommendations. Every preset sets a value for all six revenue
+# levers, all seven investment levers and all seven feedback assumptions, in the
+# same units the engine uses:
+#   - levers:  £bn/year change (positive = more receipts / more spend)
+#   - growth_baseline, *_rate, implementation_quality, optimism_penalty:
+#       fractions (e.g. 0.035 = 3.5%)
+#   - years, lag_years: whole years
+#
+# Schema is versioned (see model/scenarios.py SCENARIO_SCHEMA_VERSION). See
+# docs/scenarios.md for the intent and assumptions behind each preset.
+
+schema_version: 1
+
+scenarios:
+  - id: baseline
+    name: Baseline
+    summary: >
+      No reforms. Every lever is set to zero so the projection simply carries
+      the canonical baseline forward under the default growth assumption. Use
+      this as the neutral reference point that every other scenario is compared
+      against — it is not a "do nothing is best" judgement.
+    revenue_levers:
+      income_tax_ni: 0
+      wealth_property: 0
+      passive_income: 0
+      corporate: 0
+      carbon_windfall: 0
+      anti_avoidance: 0
+    investment_levers:
+      childcare: 0
+      social_care: 0
+      housing: 0
+      nhs_prevention: 0
+      education_training: 0
+      welfare_floor: 0
+      transport_energy: 0
+    assumptions:
+      years: 15
+      growth_baseline: 0.035
+      revenue_feedback_rate: 0.0
+      cost_reduction_rate: 0.0
+      lag_years: 3
+      implementation_quality: 0.7
+      optimism_penalty: 0.15
+
+  - id: fairness_swap
+    name: Fairness Swap
+    summary: >
+      An illustrative shift of the tax base away from earned income and towards
+      wealth, property and passive income, paired with modest social investment.
+      It explores the trade-offs of a roughly revenue-positive "swap" rather
+      than asserting it is fairer in any objective sense.
+    revenue_levers:
+      income_tax_ni: -20
+      wealth_property: 40
+      passive_income: 25
+      corporate: 10
+      carbon_windfall: 10
+      anti_avoidance: 10
+    investment_levers:
+      childcare: 10
+      social_care: 5
+      housing: 10
+      nhs_prevention: 5
+      education_training: 5
+      welfare_floor: 10
+      transport_energy: 5
+    assumptions:
+      years: 15
+      growth_baseline: 0.035
+      revenue_feedback_rate: 0.30
+      cost_reduction_rate: 0.15
+      lag_years: 3
+      implementation_quality: 0.7
+      optimism_penalty: 0.15
+
+  - id: social_investment
+    name: Social Investment
+    summary: >
+      A broad public-investment programme (childcare, housing, NHS capacity,
+      education and infrastructure) part-funded by tax reform, run on the
+      assumption that investment generates meaningful revenue feedback and cost
+      reduction over time. The feedback assumptions are optimistic by design so
+      the trade-offs can be examined honestly.
+    revenue_levers:
+      income_tax_ni: 10
+      wealth_property: 40
+      passive_income: 25
+      corporate: 20
+      carbon_windfall: 20
+      anti_avoidance: 15
+    investment_levers:
+      childcare: 30
+      social_care: 25
+      housing: 50
+      nhs_prevention: 25
+      education_training: 25
+      welfare_floor: 15
+      transport_energy: 40
+    assumptions:
+      years: 20
+      growth_baseline: 0.035
+      revenue_feedback_rate: 0.40
+      cost_reduction_rate: 0.25
+      lag_years: 4
+      implementation_quality: 0.7
+      optimism_penalty: 0.15
+
+  - id: deficit_repair
+    name: Deficit Repair
+    summary: >
+      A revenue-led consolidation: broad-based tax rises with no new spending,
+      aimed at narrowing the static deficit. Feedback is assumed to be weak,
+      reflecting the view that tax-led consolidation does little to stimulate
+      activity. Illustrative only.
+    revenue_levers:
+      income_tax_ni: 40
+      wealth_property: 30
+      passive_income: 20
+      corporate: 15
+      carbon_windfall: 20
+      anti_avoidance: 20
+    investment_levers:
+      childcare: 0
+      social_care: 0
+      housing: 0
+      nhs_prevention: 0
+      education_training: 0
+      welfare_floor: 0
+      transport_energy: 0
+    assumptions:
+      years: 15
+      growth_baseline: 0.035
+      revenue_feedback_rate: 0.20
+      cost_reduction_rate: 0.10
+      lag_years: 2
+      implementation_quality: 0.75
+      optimism_penalty: 0.10
+
+  - id: universal_basic_services
+    name: Universal Basic Services
+    summary: >
+      A large expansion of universal public services across childcare, social
+      care, housing, health, education and transport, funded by substantial tax
+      reform. A high-tax, high-spend frontier scenario for exploring how far the
+      service-led model can be pushed before the deficit dominates.
+    revenue_levers:
+      income_tax_ni: 50
+      wealth_property: 60
+      passive_income: 40
+      corporate: 30
+      carbon_windfall: 30
+      anti_avoidance: 20
+    investment_levers:
+      childcare: 50
+      social_care: 50
+      housing: 70
+      nhs_prevention: 40
+      education_training: 40
+      welfare_floor: 30
+      transport_energy: 60
+    assumptions:
+      years: 20
+      growth_baseline: 0.035
+      revenue_feedback_rate: 0.45
+      cost_reduction_rate: 0.30
+      lag_years: 5
+      implementation_quality: 0.65
+      optimism_penalty: 0.20
+
+  - id: ubi_experiment
+    name: UBI Experiment
+    summary: >
+      A stylised Universal Basic Income: the welfare floor is raised to its
+      maximum and funded by large, broad-based tax rises. Feedback is assumed to
+      be modest and uncertain. This is a thought experiment for examining the
+      fiscal scale of UBI, not a costed UBI design.
+    revenue_levers:
+      income_tax_ni: 80
+      wealth_property: 80
+      passive_income: 50
+      corporate: 40
+      carbon_windfall: 40
+      anti_avoidance: 30
+    investment_levers:
+      childcare: 10
+      social_care: 10
+      housing: 10
+      nhs_prevention: 5
+      education_training: 5
+      welfare_floor: 60
+      transport_energy: 5
+    assumptions:
+      years: 20
+      growth_baseline: 0.035
+      revenue_feedback_rate: 0.25
+      cost_reduction_rate: 0.20
+      lag_years: 4
+      implementation_quality: 0.6
+      optimism_penalty: 0.25
+
+  - id: austerity_trap
+    name: Austerity Trap
+    summary: >
+      Tax cuts with no new investment, combined with weak growth and weak
+      feedback assumptions — a scenario for exploring the "trap" where cuts fail
+      to pay for themselves and the deficit widens. The pessimistic feedback
+      settings are deliberate, to contrast with the investment-led presets.
+    revenue_levers:
+      income_tax_ni: -30
+      wealth_property: -10
+      passive_income: -5
+      corporate: -10
+      carbon_windfall: 0
+      anti_avoidance: 5
+    investment_levers:
+      childcare: 0
+      social_care: 0
+      housing: 0
+      nhs_prevention: 0
+      education_training: 0
+      welfare_floor: 0
+      transport_energy: 0
+    assumptions:
+      years: 15
+      growth_baseline: 0.025
+      revenue_feedback_rate: 0.10
+      cost_reduction_rate: 0.05
+      lag_years: 4
+      implementation_quality: 0.5
+      optimism_penalty: 0.30

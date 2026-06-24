@@ -238,12 +238,12 @@ Create a trustworthy simulation foundation.
 Features:
 
 - Baseline
-- Progressive Redistribution
+- Fairness Swap
 - Social Investment
 - Deficit Repair
 - Universal Basic Services
 - UBI Experiment
-- Spending Reduction
+- Austerity Trap
 
 Goal:
 

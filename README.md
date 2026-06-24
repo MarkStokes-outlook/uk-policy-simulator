@@ -8,6 +8,7 @@ An interactive Streamlit app for modelling simplified UK fiscal reform scenarios
 - Baseline UK receipts and public spending
 - Tax reform levers
 - Social investment levers
+- Reusable **scenario presets** (see below)
 - Dynamic feedback assumptions:
   - revenue feedback from improved earnings/spending/productivity
   - cost reduction from lower welfare/NHS/social crisis demand
@@ -28,6 +29,18 @@ The dynamic feedback is deliberately simple and you should read it as such:
 > **TODO:** replace the flat annual-investment feedback with cumulative
 > capital-stock / lifecycle modelling — depreciation and compounding returns on
 > the accumulated stock rather than on the current-year flow.
+
+## Scenario presets
+
+The app ships with seven illustrative, human-curated presets — **Baseline,
+Fairness Swap, Social Investment, Deficit Repair, Universal Basic Services, UBI
+Experiment** and **Austerity Trap**. Selecting a preset sets every lever and
+assumption deterministically; editing any control switches the app to a
+**Custom** state (with a one-click reset back to the preset).
+
+Presets are reference points for exploration — **not** endorsements, forecasts
+or recommendations. They live in [`scenarios.yaml`](scenarios.yaml) (a versioned,
+validated schema) and are documented in [`docs/scenarios.md`](docs/scenarios.md).
 
 ## Important caveat
 
@@ -71,4 +84,4 @@ pytest
 - Add household distribution modelling by income decile.
 - Add age cohorts and lifetime earnings effects.
 - Add uncertainty bands / Monte Carlo simulation.
-- Add named scenarios: Baseline, Progressive Redistribution, Social Investment, UBI, Deficit Repair.
+- Add deterministic scoring across the policy categories (EPIC-003 / v0.3).

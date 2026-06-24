@@ -3,6 +3,7 @@
 Run with: pytest
 """
 
+import math
 from pathlib import Path
 
 import pytest
@@ -12,6 +13,7 @@ from model.fiscal_model import (
     Baseline,
     BaselineError,
     FeedbackAssumptions,
+    LeverError,
     compute_fiscal,
     load_baseline,
 )
@@ -242,3 +244,59 @@ def test_assumptions_accept_valid_bounds():
 def test_baseline_rejects_invalid_values(kwargs, match):
     with pytest.raises(BaselineError, match=match):
         Baseline(**kwargs)
+
+
+# --- Non-finite input validation (Codex review, v0.2) --------------------
+
+@pytest.mark.parametrize("bad", [math.nan, math.inf, -math.inf])
+@pytest.mark.parametrize("field", ["receipts", "spending", "gdp"])
+def test_baseline_rejects_non_finite(field, bad):
+    kwargs = {"receipts": 1000.0, "spending": 1200.0, "gdp": 3000.0}
+    kwargs[field] = bad
+    with pytest.raises(BaselineError, match="finite"):
+        Baseline(**kwargs)
+
+
+@pytest.mark.parametrize("token", ["inf", "-inf", "nan", "Infinity", "NaN"])
+def test_load_baseline_non_finite_raises(tmp_path, token):
+    bad = tmp_path / "baseline.csv"
+    bad.write_text(
+        "metric,value_bn,notes\n"
+        f"Total receipts,{token},x\n"
+        "Total spending,1368,x\n"
+        "Implied GDP,3054,x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(BaselineError, match="Non-finite"):
+        load_baseline(bad)
+
+
+@pytest.mark.parametrize("bad", [math.nan, math.inf, -math.inf])
+def test_compute_fiscal_rejects_non_finite_revenue_lever(bad):
+    baseline = Baseline(receipts=1000.0, spending=1200.0, gdp=5000.0)
+    with pytest.raises(LeverError, match="finite"):
+        compute_fiscal(baseline, {"bad": bad}, {}, NO_FEEDBACK)
+
+
+@pytest.mark.parametrize("bad", [math.nan, math.inf, -math.inf])
+def test_compute_fiscal_rejects_non_finite_investment_lever(bad):
+    baseline = Baseline(receipts=1000.0, spending=1200.0, gdp=5000.0)
+    with pytest.raises(LeverError, match="finite"):
+        compute_fiscal(baseline, {}, {"bad": bad}, NO_FEEDBACK)
+
+
+def test_compute_fiscal_rejects_non_numeric_lever():
+    baseline = Baseline(receipts=1000.0, spending=1200.0, gdp=5000.0)
+    with pytest.raises(LeverError, match="numeric"):
+        compute_fiscal(baseline, {"bad": "lots"}, {}, NO_FEEDBACK)  # type: ignore[dict-item]
+
+
+def test_compute_fiscal_output_is_all_finite():
+    """A valid run must never emit a non-finite figure into the projection/CSV."""
+    baseline = Baseline(receipts=1232.0, spending=1368.0, gdp=3054.0)
+    result = compute_fiscal(
+        baseline, {"a": 50.0}, {"x": 40.0}, NO_FEEDBACK
+    )
+    for row in result.projection:
+        for key, value in row.items():
+            assert math.isfinite(value), f"non-finite {key}={value}"
