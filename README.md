@@ -71,4 +71,4 @@ pytest
 - Add household distribution modelling by income decile.
 - Add age cohorts and lifetime earnings effects.
 - Add uncertainty bands / Monte Carlo simulation.
-- Add named scenarios: Baseline, Fairness Swap, Social Investment, UBI, Deficit Repair.
+- Add named scenarios: Baseline, Progressive Redistribution, Social Investment, UBI, Deficit Repair.

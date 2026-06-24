@@ -1,6 +1,7 @@
 """Fiscal modelling package for the UK Policy Sandbox."""
 
 from .fiscal_model import (
+    AssumptionError,
     Baseline,
     BaselineError,
     FeedbackAssumptions,
@@ -11,6 +12,7 @@ from .fiscal_model import (
 )
 
 __all__ = [
+    "AssumptionError",
     "Baseline",
     "BaselineError",
     "FeedbackAssumptions",

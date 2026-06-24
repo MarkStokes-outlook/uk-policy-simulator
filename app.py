@@ -6,6 +6,7 @@ import pandas as pd
 import altair as alt
 
 from model import (
+    AssumptionError,
     BaselineError,
     FeedbackAssumptions,
     compute_fiscal,
@@ -119,15 +120,21 @@ investment_levers = {
     "Transport / energy infrastructure": transport_energy,
 }
 
-assumptions = FeedbackAssumptions(
-    years=years,
-    growth_baseline=growth_baseline,
-    revenue_feedback_rate=revenue_feedback_rate,
-    cost_reduction_rate=cost_reduction_rate,
-    lag_years=lag_years,
-    implementation_quality=implementation_quality,
-    optimism_penalty=optimism_penalty,
-)
+# The sidebar sliders are bounded to valid ranges, so this should not normally
+# fail; guard anyway so a bad assumption surfaces clearly rather than crashing.
+try:
+    assumptions = FeedbackAssumptions(
+        years=years,
+        growth_baseline=growth_baseline,
+        revenue_feedback_rate=revenue_feedback_rate,
+        cost_reduction_rate=cost_reduction_rate,
+        lag_years=lag_years,
+        implementation_quality=implementation_quality,
+        optimism_penalty=optimism_penalty,
+    )
+except AssumptionError as exc:
+    st.error(f"Invalid feedback assumption: **{exc}**")
+    st.stop()
 
 result = compute_fiscal(baseline, revenue_levers, investment_levers, assumptions)
 projection = pd.DataFrame(result.projection)

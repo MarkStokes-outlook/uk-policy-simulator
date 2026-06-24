@@ -27,7 +27,17 @@ REQUIRED_METRICS = ("Total receipts", "Total spending", "Implied GDP")
 
 
 class BaselineError(Exception):
-    """Raised when the baseline data file is missing or invalid."""
+    """Raised when the baseline data is missing or invalid."""
+
+
+class AssumptionError(ValueError):
+    """Raised when feedback assumptions are outside their valid ranges."""
+
+
+def _require(condition: bool, message: str, exc: type[Exception]) -> None:
+    """Raise ``exc`` with ``message`` unless ``condition`` holds."""
+    if not condition:
+        raise exc(message)
 
 
 @dataclass(frozen=True)
@@ -37,6 +47,20 @@ class Baseline:
     receipts: float
     spending: float
     gdp: float
+
+    def __post_init__(self) -> None:
+        # GDP must be strictly positive: it is the denominator for deficit % GDP.
+        _require(self.gdp > 0, f"Baseline GDP must be > 0 (got {self.gdp}).", BaselineError)
+        _require(
+            self.receipts >= 0,
+            f"Baseline receipts must be >= 0 (got {self.receipts}).",
+            BaselineError,
+        )
+        _require(
+            self.spending >= 0,
+            f"Baseline spending must be >= 0 (got {self.spending}).",
+            BaselineError,
+        )
 
     @property
     def deficit(self) -> float:
@@ -49,6 +73,8 @@ class FeedbackAssumptions:
     """Dynamic feedback assumptions.
 
     Rates are expressed as fractions (e.g. 0.35 for 35%), NOT percentages.
+    Out-of-range values raise :class:`AssumptionError` at construction so the
+    engine can never run on impossible inputs.
     """
 
     years: int
@@ -58,6 +84,32 @@ class FeedbackAssumptions:
     lag_years: int
     implementation_quality: float   # fraction, 0..1
     optimism_penalty: float         # fraction, 0..1
+
+    def __post_init__(self) -> None:
+        _require(self.years >= 1, f"years must be >= 1 (got {self.years}).", AssumptionError)
+        _require(
+            self.lag_years >= 0,
+            f"lag_years must be >= 0 (got {self.lag_years}).",
+            AssumptionError,
+        )
+        # Nominal growth: 1 + g must stay positive; cap at +100%/yr for sanity.
+        _require(
+            -1.0 < self.growth_baseline <= 1.0,
+            f"growth_baseline must be a fraction in (-1.0, 1.0] (got {self.growth_baseline}).",
+            AssumptionError,
+        )
+        # Rates and quality/penalty are fractions in [0, 1].
+        for name, value in (
+            ("revenue_feedback_rate", self.revenue_feedback_rate),
+            ("cost_reduction_rate", self.cost_reduction_rate),
+            ("implementation_quality", self.implementation_quality),
+            ("optimism_penalty", self.optimism_penalty),
+        ):
+            _require(
+                0.0 <= value <= 1.0,
+                f"{name} must be a fraction in [0.0, 1.0] (got {value}).",
+                AssumptionError,
+            )
 
 
 @dataclass(frozen=True)

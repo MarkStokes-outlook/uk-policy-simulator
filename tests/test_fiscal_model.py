@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from model.fiscal_model import (
+    AssumptionError,
     Baseline,
     BaselineError,
     FeedbackAssumptions,
@@ -172,3 +173,72 @@ def test_default_scenario_does_not_regress():
     assert last["Cost reduction (£bn)"] == pytest.approx(17.255)      # 145*0.20*0.595
     assert last["Deficit (£bn)"] == pytest.approx(145.54875)
     assert last["GDP (£bn)"] == pytest.approx(3054.0 * (1.035 ** 15))
+
+
+def test_compute_is_idempotent():
+    """Identical inputs always produce identical outputs (US-005 AC4)."""
+    baseline = Baseline(receipts=1232.0, spending=1368.0, gdp=3054.0)
+    assumptions = FeedbackAssumptions(
+        years=10, growth_baseline=0.03, revenue_feedback_rate=0.4,
+        cost_reduction_rate=0.25, lag_years=2,
+        implementation_quality=0.8, optimism_penalty=0.1,
+    )
+    levers = {"a": 12.0, "b": -3.0}
+    first = compute_fiscal(baseline, levers, {"x": 40.0}, assumptions)
+    second = compute_fiscal(baseline, levers, {"x": 40.0}, assumptions)
+    assert first == second
+
+
+# --- Input validation (US-007 AC3) ---------------------------------------
+
+def _assumptions(**overrides):
+    base = dict(
+        years=15, growth_baseline=0.035, revenue_feedback_rate=0.35,
+        cost_reduction_rate=0.20, lag_years=3,
+        implementation_quality=0.70, optimism_penalty=0.15,
+    )
+    base.update(overrides)
+    return base
+
+
+@pytest.mark.parametrize(
+    "overrides, match",
+    [
+        ({"years": 0}, "years"),
+        ({"lag_years": -1}, "lag_years"),
+        ({"growth_baseline": -1.0}, "growth_baseline"),   # 1 + g would be 0
+        ({"growth_baseline": 1.5}, "growth_baseline"),
+        ({"revenue_feedback_rate": 1.5}, "revenue_feedback_rate"),
+        ({"revenue_feedback_rate": -0.1}, "revenue_feedback_rate"),
+        ({"cost_reduction_rate": 2.0}, "cost_reduction_rate"),
+        ({"implementation_quality": 4.0}, "implementation_quality"),
+        ({"optimism_penalty": 2.0}, "optimism_penalty"),
+        ({"optimism_penalty": -0.5}, "optimism_penalty"),
+    ],
+)
+def test_assumptions_reject_out_of_range(overrides, match):
+    with pytest.raises(AssumptionError, match=match):
+        FeedbackAssumptions(**_assumptions(**overrides))
+
+
+def test_assumptions_accept_valid_bounds():
+    # Boundary values are valid: rates/quality/penalty at 0 and 1, growth at +1.
+    FeedbackAssumptions(**_assumptions(
+        revenue_feedback_rate=0.0, cost_reduction_rate=1.0,
+        implementation_quality=1.0, optimism_penalty=0.0,
+        growth_baseline=1.0, lag_years=0, years=1,
+    ))
+
+
+@pytest.mark.parametrize(
+    "kwargs, match",
+    [
+        ({"receipts": 1000.0, "spending": 1200.0, "gdp": 0.0}, "GDP"),
+        ({"receipts": 1000.0, "spending": 1200.0, "gdp": -5.0}, "GDP"),
+        ({"receipts": -1.0, "spending": 1200.0, "gdp": 3000.0}, "receipts"),
+        ({"receipts": 1000.0, "spending": -1.0, "gdp": 3000.0}, "spending"),
+    ],
+)
+def test_baseline_rejects_invalid_values(kwargs, match):
+    with pytest.raises(BaselineError, match=match):
+        Baseline(**kwargs)
