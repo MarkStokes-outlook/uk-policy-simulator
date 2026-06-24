@@ -1,9 +1,9 @@
 {
   "id": "FEATURE-003-US-004",
-  "title": "Social & poverty categories",
+  "title": "Poverty & equality categories",
   "feature_id": "FEATURE-003",
-  "story": "As a user, I want Social Fairness and Poverty Reduction scores so I can judge equity effects.",
-  "description": "Score Social Fairness and Poverty Reduction from the lever mix and outputs.",
+  "story": "As a user, I want Poverty Reduction and Income Equality scores so I can judge distributional effects.",
+  "description": "Score Poverty Reduction and Income Equality from the lever mix and outputs. Value-laden notions of 'fairness' are expressed via configurable weighting profiles (US-007), not baked into category scores.",
   "priority": "P1",
   "size": "M",
   "impact_area": "policy-simulation",
@@ -16,7 +16,7 @@
     "FEATURE-003-US-004-T01",
     "FEATURE-003-US-004-T02"
   ],
-  "updated_at": "2026-06-23T09:31:43.993480+00:00",
+  "updated_at": "2026-06-24T10:00:00+00:00",
   "acceptance_criteria": [
     "Both categories computed deterministically",
     "Rationale explains which levers/outcomes drove the score"

@@ -3,7 +3,7 @@
   "title": "Weighting system",
   "feature_id": "FEATURE-003",
   "story": "As an operator, I want configurable category weights so the overall score reflects chosen priorities.",
-  "description": "Provide a configurable, documented category-weighting system.",
+  "description": "Provide a configurable, documented category-weighting system that supports named weighting profiles.",
   "priority": "P2",
   "size": "S",
   "impact_area": "policy-simulation",
@@ -16,10 +16,12 @@
     "FEATURE-003-US-007-T01",
     "FEATURE-003-US-007-T02"
   ],
-  "updated_at": "2026-06-23T09:31:43.992398+00:00",
+  "updated_at": "2026-06-24T10:00:00+00:00",
   "acceptance_criteria": [
     "Weights loaded from config, not hardcoded",
     "Overall score = documented weighted aggregate of categories",
-    "Default weights are published"
+    "Default weights are published",
+    "Subjective priorities (e.g. fairness, political acceptability) are expressed via named weighting profiles, not category scores",
+    "Named weighting profiles are supported and none is presented as objectively correct"
   ]
 }

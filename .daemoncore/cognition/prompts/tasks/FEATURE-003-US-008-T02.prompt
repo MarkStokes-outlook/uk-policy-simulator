@@ -3,7 +3,7 @@
 > **DaemonCore coding-agent prompt.** Work type: `feature` · Size: `S` · Priority: `P1` · Status: `todo`
 
 ## Where this fits
-- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across eight policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
+- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across seven policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
 - **Feature FEATURE-003 — Deterministic Scoring Engine — implementation.**
 - **Story FEATURE-003-US-008 — Rationale output.** _As a user, I want a plain-English rationale per score so I understand the result._
 

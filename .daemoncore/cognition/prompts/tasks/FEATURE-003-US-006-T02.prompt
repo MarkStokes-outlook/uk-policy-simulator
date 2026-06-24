@@ -1,14 +1,14 @@
-# Task FEATURE-003-US-006-T02 — Test & verify: Risk & plausibility categories
+# Task FEATURE-003-US-006-T02 — Test & verify: Implementation complexity category
 
 > **DaemonCore coding-agent prompt.** Work type: `feature` · Size: `S` · Priority: `P2` · Status: `todo`
 
 ## Where this fits
-- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across eight policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
+- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across seven policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
 - **Feature FEATURE-003 — Deterministic Scoring Engine — implementation.**
-- **Story FEATURE-003-US-006 — Risk & plausibility categories.** _As a user, I want Implementation Risk and Political Plausibility scores so I can judge realism._
+- **Story FEATURE-003-US-006 — Implementation complexity category.** _As a user, I want an Implementation Complexity score so I can judge how hard a scenario is to deliver._
 
 ## Objective
-Add automated tests and verify acceptance for: Risk & plausibility categories.
+Add automated tests and verify acceptance for: Implementation complexity category.
 
 ## What to do
 Write **deterministic automated tests** that cover each acceptance criterion of the parent story:

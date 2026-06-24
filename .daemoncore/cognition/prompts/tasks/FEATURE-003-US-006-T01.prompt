@@ -1,24 +1,26 @@
-# Task FEATURE-003-US-006-T01 — Implement: Risk & plausibility categories
+# Task FEATURE-003-US-006-T01 — Implement: Implementation complexity category
 
 > **DaemonCore coding-agent prompt.** Work type: `feature` · Size: `M` · Priority: `P2` · Status: `todo`
 
 ## Where this fits
-- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across eight policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
+- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across seven policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
 - **Feature FEATURE-003 — Deterministic Scoring Engine — implementation.**
-- **Story FEATURE-003-US-006 — Risk & plausibility categories.** _As a user, I want Implementation Risk and Political Plausibility scores so I can judge realism._
+- **Story FEATURE-003-US-006 — Implementation complexity category.** _As a user, I want an Implementation Complexity score so I can judge how hard a scenario is to deliver._
 
 ## Objective
-As a user, I want Implementation Risk and Political Plausibility scores so I can judge realism.
+As a user, I want an Implementation Complexity score so I can judge how hard a scenario is to deliver.
 
 ## What to do
 Implement the capability so that every acceptance criterion below holds. Specifically:
-- Computed from implementation quality, optimism penalty and lever aggressiveness
-- Rationale provided for each
+- Implementation Complexity computed deterministically from implementation quality, optimism penalty and lever aggressiveness
+- Plain-English rationale provided for the score
+- No political or ideological acceptability is scored as a fixed category
 Add or update docstrings and any necessary types. Keep the change focused on this story; do not pull in scope from other stories/epics.
 
 ## Acceptance criteria (Definition of Done)
-- [ ] Computed from implementation quality, optimism penalty and lever aggressiveness
-- [ ] Rationale provided for each
+- [ ] Implementation Complexity computed deterministically from implementation quality, optimism penalty and lever aggressiveness
+- [ ] Plain-English rationale provided for the score
+- [ ] No political or ideological acceptability is scored as a fixed category
 - [ ] New/updated tests pass and cover the above
 - [ ] No regression in the existing `pytest` suite
 

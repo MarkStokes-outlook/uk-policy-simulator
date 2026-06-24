@@ -1,8 +1,8 @@
 {
   "id": "FEATURE-003-US-004-T02",
-  "title": "Test & verify: Social & poverty categories",
+  "title": "Test & verify: Poverty & equality categories",
   "user_story_id": "FEATURE-003-US-004",
-  "description": "Add automated tests and verify acceptance for: Social & poverty categories.",
+  "description": "Add automated tests and verify acceptance for: Poverty & equality categories.",
   "priority": "P1",
   "size": "S",
   "work_type": "feature",
@@ -29,5 +29,5 @@
   },
   "notes": "",
   "promptRef": "prompts/tasks/FEATURE-003-US-004-T02.prompt",
-  "updated_at": "2026-06-23T09:47:31.725426+00:00"
+  "updated_at": "2026-06-24T10:00:00+00:00"
 }

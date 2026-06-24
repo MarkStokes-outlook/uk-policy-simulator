@@ -1,14 +1,14 @@
-# Task FEATURE-003-US-005-T02 — Test & verify: Public-service pressure categories
+# Task FEATURE-003-US-005-T02 — Test & verify: Public-service & housing categories
 
 > **DaemonCore coding-agent prompt.** Work type: `feature` · Size: `S` · Priority: `P2` · Status: `todo`
 
 ## Where this fits
-- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across eight policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
+- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across seven policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
 - **Feature FEATURE-003 — Deterministic Scoring Engine — implementation.**
-- **Story FEATURE-003-US-005 — Public-service pressure categories.** _As a user, I want NHS Pressure and Housing Pressure scores so I can see service impacts._
+- **Story FEATURE-003-US-005 — Public-service & housing categories.** _As a user, I want NHS Demand Impact and Housing Affordability scores so I can see service and housing effects._
 
 ## Objective
-Add automated tests and verify acceptance for: Public-service pressure categories.
+Add automated tests and verify acceptance for: Public-service & housing categories.
 
 ## What to do
 Write **deterministic automated tests** that cover each acceptance criterion of the parent story:

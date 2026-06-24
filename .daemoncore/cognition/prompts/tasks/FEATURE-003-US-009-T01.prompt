@@ -3,7 +3,7 @@
 > **DaemonCore coding-agent prompt.** Work type: `feature` · Size: `M` · Priority: `P1` · Status: `todo`
 
 ## Where this fits
-- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across eight policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
+- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across seven policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
 - **Feature FEATURE-003 — Deterministic Scoring Engine — implementation.**
 - **Story FEATURE-003-US-009 — Determinism & regression tests.** _As a maintainer, I want tests proving scores are deterministic and stable._
 

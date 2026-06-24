@@ -1,8 +1,8 @@
 {
   "id": "FEATURE-003-US-005-T01",
-  "title": "Implement: Public-service pressure categories",
+  "title": "Implement: Public-service & housing categories",
   "user_story_id": "FEATURE-003-US-005",
-  "description": "As a user, I want NHS Pressure and Housing Pressure scores so I can see service impacts.",
+  "description": "As a user, I want NHS Demand Impact and Housing Affordability scores so I can see service and housing effects.",
   "priority": "P2",
   "size": "M",
   "work_type": "feature",
@@ -27,5 +27,5 @@
   },
   "notes": "",
   "promptRef": "prompts/tasks/FEATURE-003-US-005-T01.prompt",
-  "updated_at": "2026-06-23T09:47:31.725665+00:00"
+  "updated_at": "2026-06-24T10:00:00+00:00"
 }

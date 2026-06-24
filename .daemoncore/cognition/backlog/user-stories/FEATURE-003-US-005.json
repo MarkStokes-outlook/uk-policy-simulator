@@ -1,9 +1,9 @@
 {
   "id": "FEATURE-003-US-005",
-  "title": "Public-service pressure categories",
+  "title": "Public-service & housing categories",
   "feature_id": "FEATURE-003",
-  "story": "As a user, I want NHS Pressure and Housing Pressure scores so I can see service impacts.",
-  "description": "Score NHS Pressure and Housing Pressure using documented proxies.",
+  "story": "As a user, I want NHS Demand Impact and Housing Affordability scores so I can see service and housing effects.",
+  "description": "Score NHS Demand Impact and Housing Affordability using documented proxies.",
   "priority": "P2",
   "size": "M",
   "impact_area": "policy-simulation",
@@ -16,7 +16,7 @@
     "FEATURE-003-US-005-T01",
     "FEATURE-003-US-005-T02"
   ],
-  "updated_at": "2026-06-23T09:31:43.999068+00:00",
+  "updated_at": "2026-06-24T10:00:00+00:00",
   "acceptance_criteria": [
     "Both categories computed deterministically",
     "Proxies documented as interim until EPIC-012 enriches them"

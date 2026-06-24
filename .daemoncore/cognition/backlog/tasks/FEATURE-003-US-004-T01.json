@@ -1,8 +1,8 @@
 {
   "id": "FEATURE-003-US-004-T01",
-  "title": "Implement: Social & poverty categories",
+  "title": "Implement: Poverty & equality categories",
   "user_story_id": "FEATURE-003-US-004",
-  "description": "As a user, I want Social Fairness and Poverty Reduction scores so I can judge equity effects.",
+  "description": "As a user, I want Poverty Reduction and Income Equality scores so I can judge distributional effects.",
   "priority": "P1",
   "size": "M",
   "work_type": "feature",
@@ -27,5 +27,5 @@
   },
   "notes": "",
   "promptRef": "prompts/tasks/FEATURE-003-US-004-T01.prompt",
-  "updated_at": "2026-06-23T09:47:31.725208+00:00"
+  "updated_at": "2026-06-24T10:00:00+00:00"
 }

@@ -3,7 +3,7 @@
 > **DaemonCore coding-agent prompt.** Work type: `chore` · Size: `M` · Priority: `P1` · Status: `todo`
 
 ## Where this fits
-- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across eight policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
+- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across seven policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
 - **Feature FEATURE-003 — Deterministic Scoring Engine — implementation.**
 - **Story FEATURE-003-US-001 — Scoring methodology document.** _As a stakeholder, I want the scoring methodology written down so it's auditable before code exists._
 
@@ -16,12 +16,14 @@ Write the documentation for: Scoring methodology document.
    - docs/scoring.md defines each category's inputs, formula, scale and weighting rationale
    - The common score scale (e.g. 0-100) is documented
    - Methodology is reviewed for neutrality
+- Documents the seven categories and states that subjective concepts (fairness, political acceptability) are handled via weighting profiles, not fixed scores
 3. Cross-link related docs and the relevant code/modules.
 
 ## Acceptance criteria (Definition of Done)
 - [ ] docs/scoring.md defines each category's inputs, formula, scale and weighting rationale
 - [ ] The common score scale (e.g. 0-100) is documented
 - [ ] Methodology is reviewed for neutrality
+- [ ] Documents the seven categories and states that subjective concepts (fairness, political acceptability) are handled via weighting profiles, not fixed scores
 
 ## Dependencies
 None within this story. (Respect cross-epic dependencies of the parent epic.)

@@ -15,10 +15,11 @@
   "task_ids": [
     "FEATURE-003-US-001-T01"
   ],
-  "updated_at": "2026-06-23T09:31:43.985461+00:00",
+  "updated_at": "2026-06-24T10:00:00+00:00",
   "acceptance_criteria": [
     "docs/scoring.md defines each category's inputs, formula, scale and weighting rationale",
     "The common score scale (e.g. 0-100) is documented",
-    "Methodology is reviewed for neutrality"
+    "Methodology is reviewed for neutrality",
+    "Documents the seven categories and states that subjective concepts (fairness, political acceptability) are handled via weighting profiles, not fixed scores"
   ]
 }

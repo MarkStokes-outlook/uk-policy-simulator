@@ -1,8 +1,8 @@
 {
   "id": "FEATURE-003-US-006-T02",
-  "title": "Test & verify: Risk & plausibility categories",
+  "title": "Test & verify: Implementation complexity category",
   "user_story_id": "FEATURE-003-US-006",
-  "description": "Add automated tests and verify acceptance for: Risk & plausibility categories.",
+  "description": "Add automated tests and verify acceptance for: Implementation complexity category.",
   "priority": "P2",
   "size": "S",
   "work_type": "feature",
@@ -29,5 +29,5 @@
   },
   "notes": "",
   "promptRef": "prompts/tasks/FEATURE-003-US-006-T02.prompt",
-  "updated_at": "2026-06-23T09:47:31.726421+00:00"
+  "updated_at": "2026-06-24T10:00:00+00:00"
 }

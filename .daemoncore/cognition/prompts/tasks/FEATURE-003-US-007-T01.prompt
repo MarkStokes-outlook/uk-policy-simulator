@@ -3,7 +3,7 @@
 > **DaemonCore coding-agent prompt.** Work type: `feature` · Size: `S` · Priority: `P2` · Status: `todo`
 
 ## Where this fits
-- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across eight policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
+- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across seven policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
 - **Feature FEATURE-003 — Deterministic Scoring Engine — implementation.**
 - **Story FEATURE-003-US-007 — Weighting system.** _As an operator, I want configurable category weights so the overall score reflects chosen priorities._
 
@@ -15,12 +15,16 @@ Implement the capability so that every acceptance criterion below holds. Specifi
 - Weights loaded from config, not hardcoded
 - Overall score = documented weighted aggregate of categories
 - Default weights are published
+- Subjective priorities (e.g. fairness, political acceptability) are expressed via named weighting profiles, not category scores
+- Named weighting profiles are supported and none is presented as objectively correct
 Add or update docstrings and any necessary types. Keep the change focused on this story; do not pull in scope from other stories/epics.
 
 ## Acceptance criteria (Definition of Done)
 - [ ] Weights loaded from config, not hardcoded
 - [ ] Overall score = documented weighted aggregate of categories
 - [ ] Default weights are published
+- [ ] Subjective priorities (e.g. fairness, political acceptability) are expressed via named weighting profiles, not category scores
+- [ ] Named weighting profiles are supported and none is presented as objectively correct
 - [ ] New/updated tests pass and cover the above
 - [ ] No regression in the existing `pytest` suite
 

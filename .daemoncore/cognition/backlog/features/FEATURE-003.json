@@ -19,14 +19,14 @@
     "FEATURE-003-US-008",
     "FEATURE-003-US-009"
   ],
-  "summary": "Generate transparent, explainable, deterministic scores across eight policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path. Tracks all implementation stories for this epic.",
+  "summary": "Generate transparent, explainable, deterministic scores across seven policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path. Tracks all implementation stories for this epic.",
   "acceptance_criteria": [
-    "All eight categories produce a deterministic score for a given model",
+    "All seven categories produce a deterministic score for a given model",
     "Identical inputs always yield identical scores (verified by test)",
     "Each score is accompanied by a human-readable rationale",
     "Weightings are externally configurable and documented",
     "No code path in scoring imports an AI provider"
   ],
-  "notes": "Scope (in): Categories: Fiscal Sustainability, Social Fairness, Economic Growth, NHS Pressure, Housing Pressure, Poverty Reduction, Implementation Risk, Political Plausibility; Configurable score-weighting system; Score rationale output; No AI dependency\nOut of scope: AI-generated commentary on scores (EPIC-010); Cross-user ranking UI (EPIC-007); Distributional inputs to scoring (EPIC-013, later refinement)",
-  "updated_at": "2026-06-23T09:25:48.469239+00:00"
+  "notes": "Scope (in): Categories: Fiscal Sustainability, Economic Growth, Poverty Reduction, Income Equality, NHS Demand Impact, Housing Affordability, Implementation Complexity; Configurable score-weighting system; Score rationale output; No AI dependency\nOut of scope: AI-generated commentary on scores (EPIC-010); Cross-user ranking UI (EPIC-007); Distributional inputs to scoring (EPIC-013, later refinement)",
+  "updated_at": "2026-06-24T10:00:00+00:00"
 }

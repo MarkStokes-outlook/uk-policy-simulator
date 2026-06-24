@@ -1,9 +1,9 @@
 {
   "id": "FEATURE-003-US-006",
-  "title": "Risk & plausibility categories",
+  "title": "Implementation complexity category",
   "feature_id": "FEATURE-003",
-  "story": "As a user, I want Implementation Risk and Political Plausibility scores so I can judge realism.",
-  "description": "Score Implementation Risk and Political Plausibility from realism signals.",
+  "story": "As a user, I want an Implementation Complexity score so I can judge how hard a scenario is to deliver.",
+  "description": "Score Implementation Complexity from delivery-difficulty signals (implementation quality, optimism penalty, lever aggressiveness). Political acceptability is NOT scored; it is expressed via configurable weighting profiles (US-007), per the vision's neutrality principle.",
   "priority": "P2",
   "size": "M",
   "impact_area": "policy-simulation",
@@ -16,9 +16,10 @@
     "FEATURE-003-US-006-T01",
     "FEATURE-003-US-006-T02"
   ],
-  "updated_at": "2026-06-23T09:31:43.988759+00:00",
+  "updated_at": "2026-06-24T10:00:00+00:00",
   "acceptance_criteria": [
-    "Computed from implementation quality, optimism penalty and lever aggressiveness",
-    "Rationale provided for each"
+    "Implementation Complexity computed deterministically from implementation quality, optimism penalty and lever aggressiveness",
+    "Plain-English rationale provided for the score",
+    "No political or ideological acceptability is scored as a fixed category"
   ]
 }

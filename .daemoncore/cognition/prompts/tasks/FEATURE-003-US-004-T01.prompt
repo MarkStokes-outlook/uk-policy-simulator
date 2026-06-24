@@ -1,14 +1,14 @@
-# Task FEATURE-003-US-004-T01 — Implement: Social & poverty categories
+# Task FEATURE-003-US-004-T01 — Implement: Poverty & equality categories
 
 > **DaemonCore coding-agent prompt.** Work type: `feature` · Size: `M` · Priority: `P1` · Status: `todo`
 
 ## Where this fits
-- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across eight policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
+- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across seven policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
 - **Feature FEATURE-003 — Deterministic Scoring Engine — implementation.**
-- **Story FEATURE-003-US-004 — Social & poverty categories.** _As a user, I want Social Fairness and Poverty Reduction scores so I can judge equity effects._
+- **Story FEATURE-003-US-004 — Poverty & equality categories.** _As a user, I want Poverty Reduction and Income Equality scores so I can judge distributional effects._
 
 ## Objective
-As a user, I want Social Fairness and Poverty Reduction scores so I can judge equity effects.
+As a user, I want Poverty Reduction and Income Equality scores so I can judge distributional effects.
 
 ## What to do
 Implement the capability so that every acceptance criterion below holds. Specifically:

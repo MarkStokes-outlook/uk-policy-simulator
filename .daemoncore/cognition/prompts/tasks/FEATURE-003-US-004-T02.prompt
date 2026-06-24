@@ -1,14 +1,14 @@
-# Task FEATURE-003-US-004-T02 — Test & verify: Social & poverty categories
+# Task FEATURE-003-US-004-T02 — Test & verify: Poverty & equality categories
 
 > **DaemonCore coding-agent prompt.** Work type: `feature` · Size: `S` · Priority: `P1` · Status: `todo`
 
 ## Where this fits
-- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across eight policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
+- **Epic EPIC-003 — Deterministic Scoring Engine.** Generate transparent, explainable, deterministic scores across seven policy outcome categories, with a configurable weighting system and per-score rationale. No AI anywhere in the scoring path.
 - **Feature FEATURE-003 — Deterministic Scoring Engine — implementation.**
-- **Story FEATURE-003-US-004 — Social & poverty categories.** _As a user, I want Social Fairness and Poverty Reduction scores so I can judge equity effects._
+- **Story FEATURE-003-US-004 — Poverty & equality categories.** _As a user, I want Poverty Reduction and Income Equality scores so I can judge distributional effects._
 
 ## Objective
-Add automated tests and verify acceptance for: Social & poverty categories.
+Add automated tests and verify acceptance for: Poverty & equality categories.
 
 ## What to do
 Write **deterministic automated tests** that cover each acceptance criterion of the parent story:

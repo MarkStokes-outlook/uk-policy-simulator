@@ -1,8 +1,8 @@
 {
   "id": "FEATURE-003-US-005-T02",
-  "title": "Test & verify: Public-service pressure categories",
+  "title": "Test & verify: Public-service & housing categories",
   "user_story_id": "FEATURE-003-US-005",
-  "description": "Add automated tests and verify acceptance for: Public-service pressure categories.",
+  "description": "Add automated tests and verify acceptance for: Public-service & housing categories.",
   "priority": "P2",
   "size": "S",
   "work_type": "feature",
@@ -29,5 +29,5 @@
   },
   "notes": "",
   "promptRef": "prompts/tasks/FEATURE-003-US-005-T02.prompt",
-  "updated_at": "2026-06-23T09:47:31.725923+00:00"
+  "updated_at": "2026-06-24T10:00:00+00:00"
 }
