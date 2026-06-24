@@ -333,16 +333,16 @@
     "FEATURE-014-US-008-T02"
   ],
   "status": {
-    "EPIC-001": "in_progress",
-    "FEATURE-001": "in_progress",
+    "EPIC-001": "done",
+    "FEATURE-001": "done",
     "FEATURE-001-US-001": "done",
     "FEATURE-001-US-002": "done",
     "FEATURE-001-US-003": "done",
     "FEATURE-001-US-004": "done",
     "FEATURE-001-US-005": "done",
     "FEATURE-001-US-006": "done",
-    "FEATURE-001-US-007": "seed",
-    "FEATURE-001-US-008": "seed",
+    "FEATURE-001-US-007": "done",
+    "FEATURE-001-US-008": "done",
     "EPIC-002": "planned",
     "FEATURE-002": "backlog",
     "FEATURE-002-US-001": "seed",
@@ -474,9 +474,9 @@
     "FEATURE-001-US-004-T02": "done",
     "FEATURE-001-US-005-T01": "done",
     "FEATURE-001-US-006-T01": "done",
-    "FEATURE-001-US-007-T01": "todo",
-    "FEATURE-001-US-007-T02": "todo",
-    "FEATURE-001-US-008-T01": "todo",
+    "FEATURE-001-US-007-T01": "done",
+    "FEATURE-001-US-007-T02": "done",
+    "FEATURE-001-US-008-T01": "done",
     "FEATURE-002-US-001-T01": "todo",
     "FEATURE-002-US-001-T02": "todo",
     "FEATURE-002-US-002-T01": "todo",
@@ -1296,5 +1296,5 @@
     "FEATURE-014-US-008-T01": "FEATURE-014-US-008",
     "FEATURE-014-US-008-T02": "FEATURE-014-US-008"
   },
-  "updated_at": "2026-06-23T09:31:43.920181+00:00"
+  "updated_at": "2026-06-24T11:00:00+00:00"
 }
