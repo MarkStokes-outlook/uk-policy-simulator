@@ -9,6 +9,8 @@ from model import (
     AssumptionError,
     BaselineError,
     FeedbackAssumptions,
+    ModelStore,
+    ModelStoreError,
     Scenario,
     ScenarioError,
     ScoringError,
@@ -29,6 +31,8 @@ st.set_page_config(
 BASELINE_PATH = Path(__file__).parent / "baseline.csv"
 SCENARIOS_PATH = Path(__file__).parent / "scenarios.yaml"
 WEIGHTING_PATH = Path(__file__).parent / "weighting_profiles.yaml"
+# User-created saved models persist here (gitignored — it is user data).
+SAVED_MODELS_PATH = Path(__file__).parent / "saved_models.json"
 
 # Lever display metadata, keyed by the canonical scenario key so presets,
 # sliders and the engine all agree. Tuple: (key, label, min, max, step).
@@ -51,16 +55,17 @@ INVESTMENT_LEVER_SPECS = [
 ]
 
 
-def _scenario_to_state(scenario: Scenario) -> dict:
-    """Map a scenario onto the session-state keys the sidebar widgets use.
+def _inputs_to_state(revenue_levers, investment_levers, assumptions) -> dict:
+    """Map engine inputs onto the session-state keys the sidebar widgets use.
 
     Lever values are engine-native £bn; assumptions are converted to the
     sliders' display units (percentages) so the widgets show them directly.
+    Shared by scenario presets and saved models, which have the same shape.
     """
-    a = scenario.assumptions
+    a = assumptions
     state: dict = {}
-    state.update(scenario.revenue_levers)
-    state.update(scenario.investment_levers)
+    state.update(revenue_levers)
+    state.update(investment_levers)
     state["years"] = a.years
     state["lag_years"] = a.lag_years
     state["growth_pct"] = round(a.growth_baseline * 100, 4)
@@ -69,6 +74,13 @@ def _scenario_to_state(scenario: Scenario) -> dict:
     state["impl_quality_pct"] = round(a.implementation_quality * 100, 4)
     state["optimism_pct"] = round(a.optimism_penalty * 100, 4)
     return state
+
+
+def _scenario_to_state(scenario: Scenario) -> dict:
+    """Map a scenario preset onto the sidebar widgets' session-state keys."""
+    return _inputs_to_state(
+        scenario.revenue_levers, scenario.investment_levers, scenario.assumptions
+    )
 
 st.title("🇬🇧 UK Policy Sandbox")
 st.caption(
@@ -149,6 +161,117 @@ except ScoringError as exc:
     st.stop()
 
 profile_ids = list(WEIGHTING_PROFILES)
+
+# --- Saved models (EPIC-004 / v1.0) --------------------------------------
+# A file-backed store of user-created, named models with version history.
+store = ModelStore(SAVED_MODELS_PATH)
+
+
+def _set_models_msg(level: str, text: str) -> None:
+    """Stash a message for the saved-models panel (callbacks cannot render)."""
+    st.session_state["_models_msg"] = (level, text)
+
+
+def _current_inputs():
+    """Read the live controls as engine-native inputs (canonical lever keys)."""
+    rev = {key: st.session_state[key] for key, *_ in REVENUE_LEVER_SPECS}
+    inv = {key: st.session_state[key] for key, *_ in INVESTMENT_LEVER_SPECS}
+    a = FeedbackAssumptions(
+        years=st.session_state["years"],
+        growth_baseline=st.session_state["growth_pct"] / 100,
+        revenue_feedback_rate=st.session_state["rev_fb_pct"] / 100,
+        cost_reduction_rate=st.session_state["cost_red_pct"] / 100,
+        lag_years=st.session_state["lag_years"],
+        implementation_quality=st.session_state["impl_quality_pct"] / 100,
+        optimism_penalty=st.session_state["optimism_pct"] / 100,
+    )
+    return rev, inv, a
+
+
+def _cb_save_new_model() -> None:
+    name = (st.session_state.get("new_model_name") or "").strip()
+    if not name:
+        _set_models_msg("warning", "Enter a name to save the current scenario.")
+        return
+    try:
+        rev, inv, a = _current_inputs()
+        model = store.create(name, rev, inv, a, note=(st.session_state.get("model_note") or "").strip())
+    except (ModelStoreError, AssumptionError) as exc:
+        _set_models_msg("error", f"Could not save: {exc}")
+        return
+    st.session_state["saved_model_select"] = model.id
+    st.session_state["new_model_name"] = ""
+    _set_models_msg("success", f"Saved '{model.name}' (v{model.current.version}).")
+
+
+def _cb_load_selected_model() -> None:
+    mid = st.session_state.get("saved_model_select")
+    if not mid:
+        return
+    try:
+        model = store.get(mid)
+    except ModelStoreError as exc:
+        _set_models_msg("error", f"Could not load: {exc}")
+        return
+    cur = model.current
+    for key, value in _inputs_to_state(
+        cur.revenue_levers, cur.investment_levers, cur.assumptions
+    ).items():
+        st.session_state[key] = value
+    _set_models_msg("success", f"Loaded '{model.name}' (v{cur.version}).")
+
+
+def _cb_update_selected_model() -> None:
+    mid = st.session_state.get("saved_model_select")
+    if not mid:
+        return
+    try:
+        rev, inv, a = _current_inputs()
+        model = store.update(mid, rev, inv, a, note=(st.session_state.get("model_note") or "").strip())
+    except (ModelStoreError, AssumptionError) as exc:
+        _set_models_msg("error", f"Could not update: {exc}")
+        return
+    _set_models_msg("success", f"Updated '{model.name}' to v{model.current.version}.")
+
+
+def _cb_clone_selected_model() -> None:
+    mid = st.session_state.get("saved_model_select")
+    if not mid:
+        return
+    try:
+        source = store.get(mid)
+        clone = store.clone(mid, f"{source.name} copy")
+    except ModelStoreError as exc:
+        _set_models_msg("error", f"Could not clone: {exc}")
+        return
+    st.session_state["saved_model_select"] = clone.id
+    _set_models_msg("success", f"Cloned to '{clone.name}'.")
+
+
+def _cb_delete_selected_model() -> None:
+    mid = st.session_state.get("saved_model_select")
+    if not mid:
+        return
+    try:
+        name = store.get(mid).name
+        store.delete(mid)
+    except ModelStoreError as exc:
+        _set_models_msg("error", f"Could not delete: {exc}")
+        return
+    st.session_state.pop("saved_model_select", None)
+    _set_models_msg("success", f"Deleted '{name}'.")
+
+
+try:
+    saved_models = store.list_models()
+except ModelStoreError as exc:
+    st.error(
+        f"Could not read saved models from `{SAVED_MODELS_PATH.name}`.\n\n"
+        f"**{exc}**\n\nFix or remove the file and reload."
+    )
+    st.stop()
+saved_model_ids = [m.id for m in saved_models]
+saved_models_by_id = {m.id: m for m in saved_models}
 
 
 def _apply_selected_scenario() -> None:
@@ -246,6 +369,44 @@ selected_profile_id = st.sidebar.selectbox(
 )
 selected_profile = WEIGHTING_PROFILES[selected_profile_id]
 st.sidebar.caption(selected_profile.summary)
+
+# --- Saved models panel ---------------------------------------------------
+st.sidebar.subheader("Saved models")
+
+_models_msg = st.session_state.pop("_models_msg", None)
+if _models_msg:
+    getattr(st.sidebar, _models_msg[0], st.sidebar.info)(_models_msg[1])
+
+st.sidebar.text_input("New model name", key="new_model_name", placeholder="e.g. My reform plan")
+st.sidebar.text_input("Note (optional)", key="model_note", placeholder="what changed / why")
+st.sidebar.button(
+    "💾 Save current as new model",
+    on_click=_cb_save_new_model,
+    use_container_width=True,
+)
+
+if saved_model_ids:
+    st.sidebar.selectbox(
+        "Saved model",
+        saved_model_ids,
+        format_func=lambda i: saved_models_by_id[i].name,
+        key="saved_model_select",
+    )
+    mc1, mc2 = st.sidebar.columns(2)
+    mc1.button("📂 Load", on_click=_cb_load_selected_model, use_container_width=True)
+    mc2.button("⬆️ Update", on_click=_cb_update_selected_model, use_container_width=True)
+    mc3, mc4 = st.sidebar.columns(2)
+    mc3.button("⧉ Clone", on_click=_cb_clone_selected_model, use_container_width=True)
+    mc4.button("🗑 Delete", on_click=_cb_delete_selected_model, use_container_width=True)
+
+    _sel = saved_models_by_id.get(st.session_state.get("saved_model_select"))
+    if _sel is not None:
+        with st.sidebar.expander(f"History — {_sel.name} ({len(_sel.versions)} version(s))"):
+            for v in reversed(_sel.versions):
+                note = f" — {v.note}" if v.note else ""
+                st.caption(f"**v{v.version}** · {v.saved_at}{note}")
+else:
+    st.sidebar.caption("No saved models yet. Save the current scenario to start.")
 
 # The sidebar sliders are bounded to valid ranges, so this should not normally
 # fail; guard anyway so a bad assumption surfaces clearly rather than crashing.
