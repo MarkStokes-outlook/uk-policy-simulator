@@ -33,6 +33,13 @@ from .scoring import (
     load_weighting_profiles,
     score_categories,
 )
+from .saved_models import (
+    SAVED_MODELS_SCHEMA_VERSION,
+    ModelStore,
+    ModelStoreError,
+    ModelVersion,
+    SavedModel,
+)
 
 __all__ = [
     "AssumptionError",
@@ -64,4 +71,10 @@ __all__ = [
     "build_scorecard",
     "load_weighting_profiles",
     "score_categories",
+    # Saved models (EPIC-004)
+    "SAVED_MODELS_SCHEMA_VERSION",
+    "ModelStore",
+    "ModelStoreError",
+    "ModelVersion",
+    "SavedModel",
 ]

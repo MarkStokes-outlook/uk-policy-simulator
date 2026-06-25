@@ -65,6 +65,20 @@ Scoring logic lives in [`model/scoring.py`](model/scoring.py), profiles in
 [`weighting_profiles.yaml`](weighting_profiles.yaml) (versioned, validated), and
 the full method is documented in [`docs/scoring.md`](docs/scoring.md).
 
+## Saved models
+
+From v1.0 you can **save the current scenario as a named model** that persists
+across sessions, with full **version history**:
+
+- **Save** the live controls as a new model, **Load** one back, **Update** it
+  (appends a new version — history is never overwritten), **Clone** it into a
+  fresh model, or **Delete** it.
+- Models are **local user data**, stored in `saved_models.json` (gitignored).
+  Multi-user accounts and sharing come later in the roadmap.
+
+The store (`model/saved_models.py`) is Streamlit-free, versioned and validated;
+the full behaviour is documented in [`docs/saved-models.md`](docs/saved-models.md).
+
 ## Important caveat
 
 This is not an official macroeconomic model. It is a transparent scenario sandbox for exploring assumptions.

@@ -2,7 +2,7 @@
 
 ## Product Vision & Long-Term Roadmap
 
-Version: 0.3  
+Version: 1.0  
 Status: Living Document  
 Last Updated: June 2026
 
@@ -300,6 +300,12 @@ Features:
 Goal:
 
 Create persistent policy proposals.
+
+Status:
+
+Shipped in v1.0. File-backed `ModelStore` with save / load / clone / delete and
+append-only version history; models persist locally as gitignored user data.
+See [`saved-models.md`](saved-models.md).
 
 ---
 

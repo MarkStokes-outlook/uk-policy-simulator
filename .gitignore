@@ -73,3 +73,6 @@ dist/
 
 # OS / editor noise
 .DS_Store
+
+# User-created saved models (runtime data, not source)
+saved_models.json
