@@ -1,0 +1,96 @@
+# UK Policy Sandbox — scoring weighting profiles
+#
+# A weighting profile says how much each of the seven scoring categories matters
+# when combining them into a single overall score. The category *scores* are
+# objective and deterministic (see model/scoring.py); the *weights* here are
+# where subjective priorities live.
+#
+# IMPORTANT: no profile is "objectively correct". They are deliberately diverse
+# starting points so users can see how the overall score shifts with priorities,
+# and build their own. Weights may be any non-negative numbers (they are
+# normalised at apply time); here they are 0-5 importance ratings.
+#
+# Categories (all seven required in every profile):
+#   fiscal_sustainability, economic_growth, poverty_reduction,
+#   housing_affordability, nhs_demand_impact, income_equality,
+#   implementation_complexity
+#
+# Schema is versioned (see model/scoring.py WEIGHTING_SCHEMA_VERSION).
+
+schema_version: 1
+
+profiles:
+  - id: balanced
+    name: Balanced
+    summary: >
+      Every category weighted equally. The neutral default: it makes no claim
+      about which priorities are right, and is the fairest way to compare
+      scenarios before you choose a point of view.
+    weights:
+      fiscal_sustainability: 1
+      economic_growth: 1
+      poverty_reduction: 1
+      housing_affordability: 1
+      nhs_demand_impact: 1
+      income_equality: 1
+      implementation_complexity: 1
+
+  - id: fiscal_conservative
+    name: Fiscal Conservative
+    summary: >
+      Prioritises a sustainable deficit, economic growth and keeping reforms
+      simple to deliver. Distributional categories still count, but less. One
+      legitimate lens among several — not an endorsement.
+    weights:
+      fiscal_sustainability: 5
+      economic_growth: 4
+      poverty_reduction: 1
+      housing_affordability: 2
+      nhs_demand_impact: 1
+      income_equality: 1
+      implementation_complexity: 4
+
+  - id: social_democratic
+    name: Social Democratic
+    summary: >
+      Prioritises poverty reduction, income equality and public-service demand
+      (NHS), while still valuing fiscal sustainability. One legitimate lens among
+      several — not an endorsement.
+    weights:
+      fiscal_sustainability: 2
+      economic_growth: 2
+      poverty_reduction: 5
+      housing_affordability: 3
+      nhs_demand_impact: 4
+      income_equality: 5
+      implementation_complexity: 1
+
+  - id: green_investment
+    name: Green Investment
+    summary: >
+      Prioritises growth-enabling investment, housing and NHS prevention as
+      long-run capacity, accepting more delivery complexity. One legitimate lens
+      among several — not an endorsement.
+    weights:
+      fiscal_sustainability: 2
+      economic_growth: 5
+      poverty_reduction: 3
+      housing_affordability: 4
+      nhs_demand_impact: 3
+      income_equality: 2
+      implementation_complexity: 1
+
+  - id: libertarian
+    name: Libertarian
+    summary: >
+      Prioritises fiscal sustainability, growth and minimal, simple intervention;
+      places little weight on redistribution. One legitimate lens among several —
+      not an endorsement.
+    weights:
+      fiscal_sustainability: 5
+      economic_growth: 4
+      poverty_reduction: 1
+      housing_affordability: 1
+      nhs_demand_impact: 1
+      income_equality: 0
+      implementation_complexity: 5

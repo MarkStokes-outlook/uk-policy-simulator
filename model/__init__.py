@@ -19,6 +19,20 @@ from .scenarios import (
     ScenarioError,
     load_scenarios,
 )
+from .scoring import (
+    CATEGORY_DIRECTIONS,
+    CATEGORY_LABELS,
+    CONTRIBUTIONS,
+    SCORE_CATEGORIES,
+    WEIGHTING_SCHEMA_VERSION,
+    CategoryScore,
+    ScoreCard,
+    ScoringError,
+    WeightingProfile,
+    build_scorecard,
+    load_weighting_profiles,
+    score_categories,
+)
 
 __all__ = [
     "AssumptionError",
@@ -37,4 +51,17 @@ __all__ = [
     "Scenario",
     "ScenarioError",
     "load_scenarios",
+    # Deterministic scoring (EPIC-003)
+    "CATEGORY_DIRECTIONS",
+    "CATEGORY_LABELS",
+    "CONTRIBUTIONS",
+    "SCORE_CATEGORIES",
+    "WEIGHTING_SCHEMA_VERSION",
+    "CategoryScore",
+    "ScoreCard",
+    "ScoringError",
+    "WeightingProfile",
+    "build_scorecard",
+    "load_weighting_profiles",
+    "score_categories",
 ]

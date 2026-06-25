@@ -42,6 +42,27 @@ Presets are reference points for exploration — **not** endorsements, forecasts
 or recommendations. They live in [`scenarios.yaml`](scenarios.yaml) (a versioned,
 validated schema) and are documented in [`docs/scenarios.md`](docs/scenarios.md).
 
+## Deterministic scoring
+
+Every scenario is scored against **seven policy categories** — Fiscal
+Sustainability, Economic Growth, Poverty Reduction, Housing Affordability, NHS
+Demand Impact, Income Equality and Implementation Complexity — on a 0–100 scale,
+then combined into a single **overall** score using a **weighting profile**.
+
+- Scoring is **deterministic and AI-free**: identical inputs give identical
+  scores. The category scores are objective and directional; subjective
+  priorities live only in the weighting profiles.
+- Outcome categories use a **published per-£bn contribution matrix** so every
+  score is explainable lever by lever; Fiscal Sustainability comes straight from
+  the engine's deficit/GDP.
+- Five diverse weighting profiles ship out of the box (**Balanced** (default),
+  **Fiscal Conservative**, **Social Democratic**, **Green Investment**,
+  **Libertarian**). **No profile is treated as objectively correct.**
+
+Scoring logic lives in [`model/scoring.py`](model/scoring.py), profiles in
+[`weighting_profiles.yaml`](weighting_profiles.yaml) (versioned, validated), and
+the full method is documented in [`docs/scoring.md`](docs/scoring.md).
+
 ## Important caveat
 
 This is not an official macroeconomic model. It is a transparent scenario sandbox for exploring assumptions.
@@ -84,4 +105,4 @@ pytest
 - Add household distribution modelling by income decile.
 - Add age cohorts and lifetime earnings effects.
 - Add uncertainty bands / Monte Carlo simulation.
-- Add deterministic scoring across the policy categories (EPIC-003 / v0.3).
+- Calibrate the scoring contribution matrix against published research.
