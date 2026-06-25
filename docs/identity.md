@@ -136,10 +136,43 @@ rule (unit-tested directly):
 existed — and anything saved while signed out — have `owner_user_id is None` and
 remain visible to *everyone* on the device, signed in or not. This is an explicit
 choice so that turning on accounts never hides a user's pre-existing local data.
-Legacy models therefore behave like the shared, single-user store did before
-v1.1; they remain loadable, updatable and clonable. Per-owner *authorisation*
-(restricting who may edit/delete someone else's model) is a sharing/visibility
-concern deferred to EPIC-006.
+Legacy models remain **loadable and clonable** by anyone (see the mutation policy
+below for why they are *not* editable in place).
+
+### Authorisation: who may mutate a model
+
+Visibility (what you see) and authorisation (what you may change) are separate.
+**Filtering is a UX convenience, not the security boundary.** Every in-place
+mutation is gated by an explicit, pure policy in
+[`model/saved_models.py`](../model/saved_models.py) — `can_mutate()` /
+`authorize_mutation()` — which the app calls *before* updating or deleting,
+against the model fetched **from the store** (never from the filtered list):
+
+| Model `owner_user_id` | Update / Delete in place | Load (read) | Clone |
+| --- | --- | --- | --- |
+| equals the actor's `user_id` | ✅ owner only | ✅ | ✅ |
+| another user's id | ❌ | ✅* | ✅* |
+| `None` (legacy/unowned) | ❌ **read-only** | ✅ | ✅ |
+| actor is a guest (`None`) | ❌ (for any owned model) | ✅ | ✅ |
+
+\* In practice the UI filter means a user never selects another user's model;
+who may *read/clone* another user's model is a sharing concern (EPIC-006). The
+authorisation boundary here governs **mutation**.
+
+**Legacy/unowned models are read-only.** Nobody may update or delete them in
+place. A signed-in user *claims* one by **cloning** it — clone never touches the
+source and produces a new model owned by the cloner. This combines both options
+considered for legacy handling: legacy models can only be cloned, and signing in
+lets you claim a copy without overwriting the shared original.
+
+**Enforcement, not filtering.** `ModelAuthorizationError` subclasses
+`ModelStoreError` as defence in depth: even a mutation path that forgot to
+authorise would fail safe through existing error handling rather than mutating.
+In the UI the Update/Delete buttons are disabled when `can_mutate()` is false,
+but that is only a hint — the callbacks re-check via `authorize_mutation()`.
+
+Per-owner authorisation of *reads* (restricting who may view/clone another user's
+model), roles and admin override are deferred to EPIC-006 and beyond.
 
 ## Where data lives
 

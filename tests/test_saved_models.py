@@ -14,9 +14,13 @@ from model.fiscal_model import FeedbackAssumptions
 from model.scenarios import INVESTMENT_LEVER_KEYS, REVENUE_LEVER_KEYS
 from model.saved_models import (
     SAVED_MODELS_SCHEMA_VERSION,
+    ModelAuthorizationError,
     ModelStore,
     ModelStoreError,
+    ModelVersion,
     SavedModel,
+    authorize_mutation,
+    can_mutate,
     filter_visible_models,
 )
 
@@ -417,3 +421,82 @@ def test_filter_can_exclude_legacy(tmp_path):
     assert visible == {"alice-plan"}
     # A guest with legacy excluded sees nothing.
     assert filter_visible_models(models, None, include_legacy=False) == []
+
+
+# --- Ownership authorisation policy (EPIC-005) ----------------------------
+
+def _model(owner):
+    """A minimal SavedModel carrying just the owner — enough for authz tests."""
+    v = ModelVersion(
+        version=1,
+        saved_at="2026-01-01T12:00:00+00:00",
+        note="",
+        revenue_levers=_rev(),
+        investment_levers=_inv(),
+        assumptions=ASSUMPTIONS,
+    )
+    return SavedModel(
+        id="m",
+        name="M",
+        created_at="2026-01-01T12:00:00+00:00",
+        updated_at="2026-01-01T12:00:00+00:00",
+        versions=(v,),
+        owner_user_id=owner,
+    )
+
+
+def test_owner_may_mutate_own_model():
+    m = _model("user-alice")
+    assert can_mutate(m, "user-alice") is True
+    authorize_mutation(m, "user-alice")  # does not raise
+
+
+def test_other_user_may_not_mutate():
+    m = _model("user-alice")
+    assert can_mutate(m, "user-bob") is False
+    with pytest.raises(ModelAuthorizationError, match="belongs to another user"):
+        authorize_mutation(m, "user-bob")
+
+
+def test_guest_may_not_mutate_owned_model():
+    m = _model("user-alice")
+    assert can_mutate(m, None) is False
+    with pytest.raises(ModelAuthorizationError, match="belongs to another user"):
+        authorize_mutation(m, None)
+
+
+def test_legacy_model_is_read_only_for_everyone():
+    m = _model(None)
+    assert can_mutate(m, None) is False
+    assert can_mutate(m, "user-alice") is False
+    for actor in (None, "user-alice"):
+        with pytest.raises(ModelAuthorizationError, match="read-only"):
+            authorize_mutation(m, actor)
+
+
+def test_authorization_error_is_a_store_error():
+    # Defence in depth: any `except ModelStoreError` path catches authz failures.
+    assert issubclass(ModelAuthorizationError, ModelStoreError)
+
+
+# --- Authorisation enforced over a real store (app-path shape) ------------
+
+def test_store_mutation_denied_for_non_owner_then_allowed_for_owner(tmp_path):
+    store = _store(tmp_path)
+    store.create("Alice plan", _rev(), _inv(), ASSUMPTIONS, owner_user_id="user-alice")
+
+    # Bob and a guest are refused before any store mutation happens.
+    target = store.get("alice-plan")
+    with pytest.raises(ModelAuthorizationError):
+        authorize_mutation(target, "user-bob")
+    with pytest.raises(ModelAuthorizationError):
+        authorize_mutation(target, None)
+
+    # The model is untouched (still a single version) after refused attempts.
+    assert len(store.get("alice-plan").versions) == 1
+
+    # The owner is authorised and the mutation goes through.
+    authorize_mutation(store.get("alice-plan"), "user-alice")
+    updated = store.update("alice-plan", _rev(wealth_property=5.0), _inv(), ASSUMPTIONS)
+    assert len(updated.versions) == 2
+    assert updated.owner_user_id == "user-alice"

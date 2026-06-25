@@ -9,12 +9,15 @@ from model import (
     AssumptionError,
     BaselineError,
     FeedbackAssumptions,
+    ModelAuthorizationError,
     ModelStore,
     ModelStoreError,
     Scenario,
     ScenarioError,
     ScoringError,
+    authorize_mutation,
     build_scorecard,
+    can_mutate,
     compute_fiscal,
     filter_visible_models,
     load_baseline,
@@ -299,8 +302,15 @@ def _cb_update_selected_model() -> None:
     if not mid:
         return
     try:
+        # Authorise against the model as it exists in the store — never against
+        # the UI-filtered list — so filtering is not the security boundary.
+        target = store.get(mid)
+        authorize_mutation(target, current_user_id(st.session_state))
         rev, inv, a = _current_inputs()
         model = store.update(mid, rev, inv, a, note=(st.session_state.get("model_note") or "").strip())
+    except ModelAuthorizationError as exc:  # subclass of ModelStoreError; catch first
+        _set_models_msg("error", str(exc))
+        return
     except (ModelStoreError, AssumptionError) as exc:
         _set_models_msg("error", f"Could not update: {exc}")
         return
@@ -330,8 +340,13 @@ def _cb_delete_selected_model() -> None:
     if not mid:
         return
     try:
-        name = store.get(mid).name
+        target = store.get(mid)
+        authorize_mutation(target, current_user_id(st.session_state))
+        name = target.name
         store.delete(mid)
+    except ModelAuthorizationError as exc:  # subclass of ModelStoreError; catch first
+        _set_models_msg("error", str(exc))
+        return
     except ModelStoreError as exc:
         _set_models_msg("error", f"Could not delete: {exc}")
         return
@@ -506,14 +521,39 @@ if saved_model_ids:
         format_func=lambda i: saved_models_by_id[i].name,
         key="saved_model_select",
     )
+    # Update/Delete are gated by ownership. Disabling here is a UX hint only;
+    # the authoritative check is authorize_mutation() inside the callbacks.
+    _sel = saved_models_by_id.get(st.session_state.get("saved_model_select"))
+    _can_mutate_sel = _sel is not None and can_mutate(_sel, current_user_id(st.session_state))
+
     mc1, mc2 = st.sidebar.columns(2)
     mc1.button("📂 Load", on_click=_cb_load_selected_model, use_container_width=True)
-    mc2.button("⬆️ Update", on_click=_cb_update_selected_model, use_container_width=True)
+    mc2.button(
+        "⬆️ Update",
+        on_click=_cb_update_selected_model,
+        disabled=not _can_mutate_sel,
+        use_container_width=True,
+    )
     mc3, mc4 = st.sidebar.columns(2)
     mc3.button("⧉ Clone", on_click=_cb_clone_selected_model, use_container_width=True)
-    mc4.button("🗑 Delete", on_click=_cb_delete_selected_model, use_container_width=True)
+    mc4.button(
+        "🗑 Delete",
+        on_click=_cb_delete_selected_model,
+        disabled=not _can_mutate_sel,
+        use_container_width=True,
+    )
 
-    _sel = saved_models_by_id.get(st.session_state.get("saved_model_select"))
+    if _sel is not None and not _can_mutate_sel:
+        if _sel.owner_user_id is None:
+            st.sidebar.caption(
+                "🔒 Legacy/unowned model — **read-only**. Load or clone it; "
+                "cloning makes an editable copy you own."
+            )
+        else:
+            st.sidebar.caption(
+                "🔒 You can load or clone this model, but only its owner can update or delete it."
+            )
+
     if _sel is not None:
         with st.sidebar.expander(f"History — {_sel.name} ({len(_sel.versions)} version(s))"):
             for v in reversed(_sel.versions):

@@ -35,10 +35,13 @@ from .scoring import (
 )
 from .saved_models import (
     SAVED_MODELS_SCHEMA_VERSION,
+    ModelAuthorizationError,
     ModelStore,
     ModelStoreError,
     ModelVersion,
     SavedModel,
+    authorize_mutation,
+    can_mutate,
     filter_visible_models,
 )
 
@@ -79,4 +82,8 @@ __all__ = [
     "ModelVersion",
     "SavedModel",
     "filter_visible_models",
+    # Ownership authorisation (EPIC-005)
+    "ModelAuthorizationError",
+    "can_mutate",
+    "authorize_mutation",
 ]

@@ -48,6 +48,17 @@ class ModelStoreError(Exception):
     """
 
 
+class ModelAuthorizationError(ModelStoreError):
+    """Raised when an actor attempts a model mutation they may not perform.
+
+    Subclasses :class:`ModelStoreError` deliberately, as defence in depth: any
+    mutation path that forgets to authorise explicitly still fails *safe* through
+    existing ``except ModelStoreError`` handling rather than surfacing a raw
+    traceback. The authorisation policy itself lives in :func:`can_mutate` /
+    :func:`authorize_mutation`; see ``docs/identity.md`` for the rules.
+    """
+
+
 @dataclass(frozen=True)
 class ModelVersion:
     """One immutable snapshot of a saved model's engine inputs.
@@ -290,6 +301,45 @@ def filter_visible_models(
         elif m.owner_user_id == viewer_user_id:
             visible.append(m)
     return visible
+
+
+def can_mutate(model: SavedModel, acting_user_id: str | None) -> bool:
+    """Return ``True`` iff ``acting_user_id`` may update or delete ``model`` in place.
+
+    Authorisation policy for the EPIC-005 ownership-enforcement slice (pure and
+    Streamlit-free, so it is the testable security boundary — independent of any
+    UI filtering):
+
+    - **Legacy/unowned** models (``owner_user_id is None``) are **read-only**:
+      nobody may mutate them in place. A signed-in user claims an editable copy
+      by cloning (clone creates a new, owned model and never touches the source).
+    - An **owned** model may be mutated **only by its owner**.
+    - **Guests** (``acting_user_id is None``) may not mutate any owned model.
+
+    Reads (load) and clone are not mutations and are not gated here; who may
+    *see* another user's model is a sharing/visibility concern (EPIC-006).
+    """
+    if model.owner_user_id is None:
+        return False  # legacy: read-only, clone-to-claim
+    return acting_user_id is not None and acting_user_id == model.owner_user_id
+
+
+def authorize_mutation(model: SavedModel, acting_user_id: str | None) -> None:
+    """Raise :class:`ModelAuthorizationError` unless ``acting_user_id`` may mutate ``model``.
+
+    Call this immediately before an in-place ``update``/``delete``, passing the
+    model fetched *from the store* (never from a UI-filtered collection).
+    """
+    if can_mutate(model, acting_user_id):
+        return
+    if model.owner_user_id is None:
+        raise ModelAuthorizationError(
+            f"'{model.name}' is a legacy/unowned model and is read-only. "
+            "Clone it to create an editable copy you own."
+        )
+    raise ModelAuthorizationError(
+        f"You can only modify models you own — '{model.name}' belongs to another user."
+    )
 
 
 class ModelStore:
