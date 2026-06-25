@@ -221,9 +221,16 @@ both Streamlit-free:
   tokens are rejected.
 - **Old password invalidated.** Completing a reset re-hashes the password, so the
   previous one immediately stops working.
-- **Anti-enumeration.** `request_password_reset` does the same observable work
-  and returns nothing whether or not the email is registered; the UI always shows
-  the same "if an account exists…" message.
+- **Anti-enumeration.** `request_password_reset` performs the *same shape* of
+  work for every request — normalise the email, mint and hash a token, and write
+  to the token store — and always returns `None`. A real, active account gets a
+  token bound to it and a reset email; an unknown/inactive email runs the same
+  token generation and a *bounded dummy* store write against a reserved,
+  non-resolvable user id that is then undone (no redeemable token, no store
+  growth, and no email to an unrecognised address). Return value, exceptions and
+  the UI message ("if an account exists…") are identical in all cases.
+  *Residual:* a real account also triggers a synchronous email send, so a
+  network-timing side channel can remain when SMTP is slow — see "Deferred".
 - **Uniform failure.** Unknown, used and expired tokens all raise the same
   `InvalidResetTokenError`.
 
@@ -259,4 +266,7 @@ reset link is a normal app URL carrying the token as a query parameter
 
 External OAuth/OIDC · social login · sharing & visibility (EPIC-006) ·
 leaderboards (EPIC-007) · encrypted per-user AI keys (EPIC-009) ·
-durable/secure session & cookie handling at scale.
+durable/secure session & cookie handling at scale ·
+**out-of-band (queued) reset-email delivery** so a real account's synchronous
+SMTP send no longer adds response latency — the remaining reset-path timing side
+channel noted under "Anti-enumeration".

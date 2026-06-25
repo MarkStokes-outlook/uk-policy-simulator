@@ -48,8 +48,14 @@ class ResetToken:
     expires_at: str
 
     def is_expired(self, now: datetime) -> bool:
-        """True if ``now`` (an aware datetime) is at/after the expiry instant."""
-        return now >= datetime.fromisoformat(self.expires_at)
+        """True if ``now`` (an aware datetime) is at/after the expiry instant.
+
+        Parsing goes through :func:`_parse_timestamp`, so a corrupt stored
+        ``expires_at`` surfaces as a controlled :class:`UserStoreError` rather
+        than a raw ``ValueError`` — keeping the reset flow on its uniform failure
+        path even if it is handed a token built from bad data.
+        """
+        return now >= _parse_timestamp(self.expires_at, "expires_at")
 
 
 @runtime_checkable
@@ -74,6 +80,37 @@ def _require(condition: bool, message: str) -> None:
         raise UserStoreError(message)
 
 
+def _parse_timestamp(value: str, field_name: str) -> datetime:
+    """Parse a timezone-aware ISO-8601 timestamp, converting bad data to a
+    controlled error.
+
+    Stored reset-token timestamps must be **timezone-aware** ISO strings. Two
+    classes of corrupt ``reset_tokens.json`` data are rejected here as
+    :class:`UserStoreError` so callers keep their uniform-failure guarantees:
+
+    * unparseable strings (e.g. ``"not-a-date"``), and
+    * ISO-parseable but **offset-naive** timestamps (e.g.
+      ``"2026-01-01T00:00:00"``). A naive datetime cannot be compared against the
+      provider's aware UTC ``now`` and would otherwise escape as a raw
+      ``TypeError`` from :meth:`ResetToken.is_expired`, bypassing the auth error
+      path. We reject rather than normalise: the schema requires an explicit
+      offset, so a missing one is corrupt stored data, not a value to guess at.
+    """
+    try:
+        parsed = datetime.fromisoformat(value)
+    except (ValueError, TypeError) as exc:
+        raise UserStoreError(
+            f"Reset token field '{field_name}' is not a valid ISO-8601 datetime "
+            f"(got {value!r})."
+        ) from exc
+    if parsed.tzinfo is None or parsed.tzinfo.utcoffset(parsed) is None:
+        raise UserStoreError(
+            f"Reset token field '{field_name}' must be a timezone-aware ISO-8601 "
+            f"datetime (got offset-naive {value!r})."
+        )
+    return parsed
+
+
 def _token_to_dict(t: ResetToken) -> dict[str, object]:
     return {
         "token_hash": t.token_hash,
@@ -92,6 +129,11 @@ def _token_from_dict(raw: object) -> ResetToken:
             isinstance(value, str) and value != "",
             f"Reset token is missing '{field_name}'.",
         )
+    # Validate-on-read: timestamps must be *parseable*, not merely non-empty
+    # strings, so corrupt data is rejected here (as UserStoreError) rather than
+    # exploding later as a raw ValueError inside ResetToken.is_expired().
+    _parse_timestamp(raw["created_at"], "created_at")
+    _parse_timestamp(raw["expires_at"], "expires_at")
     return ResetToken(
         token_hash=raw["token_hash"],
         user_id=raw["user_id"],

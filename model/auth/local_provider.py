@@ -49,6 +49,12 @@ class LocalAuthProvider(PasswordAuthProvider):
 
     provider_name = "local"
 
+    # Reserved, non-resolvable user id used to route anti-enumeration "dummy" work
+    # through the real token-store code paths. The NUL byte guarantees it can never
+    # collide with a genuine id (UUID hex or caller-supplied ids never contain it),
+    # so a dummy token is unredeemable even before it is cleaned up.
+    _DUMMY_USER_ID = "\x00anti-enumeration"
+
     def __init__(
         self,
         store: UserStore,
@@ -204,30 +210,55 @@ class LocalAuthProvider(PasswordAuthProvider):
     def request_password_reset(self, email: str) -> None:
         """Begin a reset: issue a single-use, time-limited token and email it.
 
-        **Anti-enumeration:** always returns ``None`` and does the same observable
-        work whether or not the email is registered, so a caller cannot use this
-        to discover which emails have accounts. Any prior outstanding tokens for
-        the user are invalidated, so only the most recent link is valid.
+        **Anti-enumeration (US-005).** This method performs the *same shape* of
+        work and returns ``None`` for every request, so it cannot be used as an
+        oracle for which emails are registered. For *every* request we normalise
+        the email, generate and hash a token, and write to the token store:
+
+        - **Real, active account** — the token is bound to the user (invalidating
+          any prior outstanding tokens, so only the latest link is valid) and a
+          reset email is sent.
+        - **Unknown / inactive email** — the identical token generation and store
+          write happen against a reserved, non-resolvable :data:`_DUMMY_USER_ID`,
+          then that bounded dummy write is immediately undone. No redeemable token
+          is left behind, no junk accumulates, and — deliberately — no email is
+          sent to an address we do not recognise.
+
+        Return value, raised exceptions and the caller-visible result are
+        therefore independent of account existence.
+
+        Residual limitation: a real account additionally incurs a synchronous
+        email send, so a *network-timing* side channel can remain when SMTP is
+        slow. Fully closing that requires out-of-band (queued) delivery; it is
+        documented as deferred in ``docs/identity.md`` rather than papered over
+        with a sleep.
         """
         self._require_reset_configured()
         assert self._token_store is not None and self._mailer is not None
         user = self._store.get_by_email(normalize_email(email))
-        if user is None or not user.is_active:
-            return  # reveal nothing
-        self._token_store.invalidate_for_user(user.user_id)
+        is_real = user is not None and user.is_active
+
+        # Always do the same work: mint + hash a token and write it to the store.
         raw_token = self._token_factory()
         now = self._now()
+        target_user_id = user.user_id if is_real else self._DUMMY_USER_ID
+        self._token_store.invalidate_for_user(target_user_id)
         self._token_store.add(
             ResetToken(
                 token_hash=hash_token(raw_token),
-                user_id=user.user_id,
+                user_id=target_user_id,
                 created_at=now.replace(microsecond=0).isoformat(),
                 expires_at=(now + timedelta(seconds=self._reset_ttl_seconds))
                 .replace(microsecond=0)
                 .isoformat(),
             )
         )
-        self._mailer.send_password_reset(user.email, raw_token)
+        if is_real:
+            self._mailer.send_password_reset(user.email, raw_token)
+        else:
+            # Undo the bounded dummy write: nothing redeemable persists, and the
+            # store does not grow with one orphan token per unknown request.
+            self._token_store.invalidate_for_user(self._DUMMY_USER_ID)
 
     def reset_password(self, token: str, new_password: str) -> User:
         """Complete a reset: set a new password if ``token`` is valid.

@@ -472,6 +472,174 @@ def test_stored_reset_token_is_hashed_not_raw(tmp_path):
     assert stored == hash_token(raw)  # only its hash is
 
 
+# --- Reset anti-enumeration (High finding) --------------------------------
+
+def test_reset_request_same_result_for_known_unknown_and_inactive(tmp_path):
+    import dataclasses
+
+    provider, mailer = _reset_provider(tmp_path)
+    provider.register("alice@example.com", "old-password-1")
+    provider.register("dormant@example.com", "pw-inactive-1")
+    dormant = provider._store.get_by_email("dormant@example.com")
+    provider._store.update(dataclasses.replace(dormant, is_active=False))
+
+    # Same public result (None) and no raised exception for every category — the
+    # provider boundary must not expose which emails are registered.
+    assert provider.request_password_reset("alice@example.com") is None      # known active
+    assert provider.request_password_reset("nobody@example.com") is None     # unknown
+    assert provider.request_password_reset("dormant@example.com") is None    # inactive
+
+    # Email is only ever sent to the genuine, active account.
+    assert [to for to, _ in mailer.sent] == ["alice@example.com"]
+
+
+def test_reset_request_unknown_creates_no_usable_token(tmp_path):
+    import json
+
+    provider, mailer = _reset_provider(tmp_path)
+    provider.request_password_reset("nobody@example.com")
+
+    # No email, and the bounded dummy work leaves no redeemable token behind.
+    assert mailer.sent == []
+    doc = json.loads((tmp_path / "reset_tokens.json").read_text(encoding="utf-8"))
+    assert doc["tokens"] == []
+
+
+def test_reset_request_inactive_creates_no_usable_token(tmp_path):
+    import dataclasses
+    import json
+
+    provider, mailer = _reset_provider(tmp_path)
+    provider.register("dormant@example.com", "pw-inactive-1")
+    dormant = provider._store.get_by_email("dormant@example.com")
+    provider._store.update(dataclasses.replace(dormant, is_active=False))
+
+    provider.request_password_reset("dormant@example.com")
+    assert mailer.sent == []
+    doc = json.loads((tmp_path / "reset_tokens.json").read_text(encoding="utf-8"))
+    assert doc["tokens"] == []
+
+
+def test_reset_request_known_active_creates_exactly_one_token(tmp_path):
+    import json
+
+    provider, mailer = _reset_provider(tmp_path)
+    provider.register("alice@example.com", "old-password-1")
+    provider.request_password_reset("alice@example.com")
+
+    # The dummy-work path for other categories never leaves stray tokens behind.
+    assert len(mailer.sent) == 1
+    doc = json.loads((tmp_path / "reset_tokens.json").read_text(encoding="utf-8"))
+    assert len(doc["tokens"]) == 1
+
+
+# --- Corrupt reset-token timestamps (Medium finding) ----------------------
+
+def test_reset_token_store_rejects_unparseable_timestamp_on_read(tmp_path):
+    import json
+
+    from model.auth import RESET_TOKENS_SCHEMA_VERSION, JsonResetTokenStore
+
+    path = tmp_path / "reset_tokens.json"
+    path.write_text(
+        json.dumps(
+            {
+                "schema_version": RESET_TOKENS_SCHEMA_VERSION,
+                "tokens": [
+                    {
+                        "token_hash": "deadbeef",
+                        "user_id": "user-0001",
+                        "created_at": "2026-01-01T12:00:00+00:00",
+                        "expires_at": "not-a-date",
+                    }
+                ],
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    # Validate-on-read: a corrupt timestamp fails as a controlled UserStoreError,
+    # never as a raw ValueError.
+    with pytest.raises(UserStoreError):
+        JsonResetTokenStore(path).get_by_hash("deadbeef")
+
+
+def test_reset_token_store_rejects_offset_naive_timestamp_on_read(tmp_path):
+    import json
+
+    from model.auth import RESET_TOKENS_SCHEMA_VERSION, JsonResetTokenStore
+
+    path = tmp_path / "reset_tokens.json"
+    path.write_text(
+        json.dumps(
+            {
+                "schema_version": RESET_TOKENS_SCHEMA_VERSION,
+                "tokens": [
+                    {
+                        "token_hash": "deadbeef",
+                        "user_id": "user-0001",
+                        "created_at": "2026-01-01T12:00:00+00:00",
+                        # ISO-parseable but offset-naive: would otherwise raise a
+                        # raw TypeError when compared to the provider's aware UTC
+                        # now, bypassing the controlled auth-error path.
+                        "expires_at": "2026-01-01T00:00:00",
+                    }
+                ],
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    # Stored timestamps must be timezone-aware; a naive one is corrupt data and
+    # fails as a controlled UserStoreError, never as a raw TypeError.
+    with pytest.raises(UserStoreError):
+        JsonResetTokenStore(path).get_by_hash("deadbeef")
+
+
+def test_reset_token_is_expired_raises_controlled_error_on_corrupt_expiry():
+    from model.auth import ResetToken
+
+    token = ResetToken(
+        token_hash="x",
+        user_id="u",
+        created_at="2026-01-01T12:00:00+00:00",
+        expires_at="garbage",
+    )
+    # Belt-and-braces: even a token built from bad data does not leak ValueError.
+    with pytest.raises(UserStoreError):
+        token.is_expired(datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc))
+
+
+def test_reset_password_surfaces_controlled_error_for_corrupt_token_store(tmp_path):
+    import json
+
+    from model.auth import RESET_TOKENS_SCHEMA_VERSION, hash_token
+
+    provider, _ = _reset_provider(tmp_path)
+    provider.register("alice@example.com", "old-password-1")
+    (tmp_path / "reset_tokens.json").write_text(
+        json.dumps(
+            {
+                "schema_version": RESET_TOKENS_SCHEMA_VERSION,
+                "tokens": [
+                    {
+                        "token_hash": hash_token("whatever"),
+                        "user_id": "user-0001",
+                        "created_at": "2026-01-01T12:00:00+00:00",
+                        "expires_at": "garbage",
+                    }
+                ],
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    # app.py wraps reset_password in `except AuthError`; UserStoreError is an
+    # AuthError, so the corrupt store fails on the uniform path, not via ValueError.
+    with pytest.raises(AuthError):
+        provider.reset_password("whatever", "new-password-2")
+
+
 # --- Session helpers (framework-agnostic) ---------------------------------
 
 def test_session_login_current_logout_with_plain_dict():
