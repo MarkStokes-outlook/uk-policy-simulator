@@ -195,15 +195,26 @@ def _set_auth_msg(level: str, text: str) -> None:
     st.session_state["_auth_msg"] = (level, text)
 
 
+# Sign-in and registration use *separate* input widgets (distinct keys) so the
+# two flows never share fields — see the account panel below.
 def _clear_auth_inputs() -> None:
-    for key in ("auth_email", "auth_password", "auth_display_name"):
+    for key in (
+        "auth_login_email",
+        "auth_login_password",
+        "auth_reg_email",
+        "auth_reg_password",
+        "auth_reg_display_name",
+    ):
         st.session_state.pop(key, None)
 
 
 def _cb_register() -> None:
-    email = (st.session_state.get("auth_email") or "").strip()
-    password = st.session_state.get("auth_password") or ""
-    display_name = (st.session_state.get("auth_display_name") or "").strip()
+    email = (st.session_state.get("auth_reg_email") or "").strip()
+    password = st.session_state.get("auth_reg_password") or ""
+    display_name = (st.session_state.get("auth_reg_display_name") or "").strip()
+    if not email or not password:
+        _set_auth_msg("error", "Enter an email and a password to create an account.")
+        return
     try:
         user = auth_provider.register(email, password, display_name=display_name or None)
     except AuthError as exc:
@@ -216,8 +227,11 @@ def _cb_register() -> None:
 
 
 def _cb_login() -> None:
-    email = (st.session_state.get("auth_email") or "").strip()
-    password = st.session_state.get("auth_password") or ""
+    email = (st.session_state.get("auth_login_email") or "").strip()
+    password = st.session_state.get("auth_login_password") or ""
+    if not email or not password:
+        _set_auth_msg("error", "Enter your email and password to sign in.")
+        return
     try:
         session = auth_provider.authenticate(email, password)
     except AuthError:
@@ -412,13 +426,20 @@ else:
         "models saved as a guest are unowned and visible to everyone on this device."
     )
     with st.sidebar.expander("Sign in / Create account", expanded=False):
-        st.text_input("Email", key="auth_email", placeholder="you@example.com")
-        st.text_input("Password", type="password", key="auth_password")
-        st.button("Sign in", on_click=_cb_login, use_container_width=True)
-        st.divider()
-        st.caption("New here? Add a display name (optional) and create an account.")
-        st.text_input("Display name", key="auth_display_name", placeholder="optional")
-        st.button("Create account", on_click=_cb_register, use_container_width=True)
+        # Two tabs, each with their OWN email/password fields, so the sign-in and
+        # registration flows never share inputs (which previously made it look
+        # like an account could be created from a display name alone).
+        _login_tab, _register_tab = st.tabs(["Sign in", "Create account"])
+        with _login_tab:
+            st.text_input("Email", key="auth_login_email", placeholder="you@example.com")
+            st.text_input("Password", type="password", key="auth_login_password")
+            st.button("Sign in", on_click=_cb_login, use_container_width=True)
+        with _register_tab:
+            st.caption("Email and password are required. Display name is optional.")
+            st.text_input("Email", key="auth_reg_email", placeholder="you@example.com")
+            st.text_input("Password", type="password", key="auth_reg_password")
+            st.text_input("Display name", key="auth_reg_display_name", placeholder="optional")
+            st.button("Create account", on_click=_cb_register, use_container_width=True)
 
 st.sidebar.divider()
 
