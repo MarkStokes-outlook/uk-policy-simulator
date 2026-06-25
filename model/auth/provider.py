@@ -80,3 +80,18 @@ class PasswordAuthProvider(AuthProvider, Protocol):
     ) -> User:
         """Edit a user's profile fields, leaving the canonical ``user_id`` intact."""
         ...
+
+    def request_password_reset(self, email: str) -> None:
+        """Begin a forgotten-password reset (issue + deliver a token).
+
+        Must not reveal whether the email is registered (anti-enumeration).
+        """
+        ...
+
+    def reset_password(self, token: str, new_password: str) -> User:
+        """Complete a reset with a valid single-use token, setting a new password.
+
+        Raises :class:`model.auth.types.InvalidResetTokenError` if the token is
+        unknown, used or expired.
+        """
+        ...

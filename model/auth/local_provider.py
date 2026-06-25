@@ -14,16 +14,20 @@ so a user can change their email without changing identity.
 from __future__ import annotations
 
 import dataclasses
-from datetime import datetime, timezone
+import secrets
+from datetime import datetime, timedelta, timezone
 from typing import Callable
 from uuid import uuid4
 
 from . import password as password_utils
+from .email import Mailer
 from .provider import PasswordAuthProvider
+from .tokens import ResetToken, ResetTokenStore, hash_token
 from .types import (
     AuthError,
     AuthSession,
     InvalidCredentialsError,
+    InvalidResetTokenError,
     User,
     UserExistsError,
     UserNotFoundError,
@@ -31,9 +35,17 @@ from .types import (
 )
 from .user_store import UserStore
 
+# Default lifetime of a password-reset token.
+DEFAULT_RESET_TTL_SECONDS = 3600
+
 
 class LocalAuthProvider(PasswordAuthProvider):
-    """Email/password identity backed by a :class:`UserStore`."""
+    """Email/password identity backed by a :class:`UserStore`.
+
+    Password reset (US-005) is optional: pass ``token_store`` and ``mailer`` to
+    enable it. Both are abstractions, so the file-backed token store and the
+    console/SMTP mailer can be swapped without touching this class.
+    """
 
     provider_name = "local"
 
@@ -41,14 +53,23 @@ class LocalAuthProvider(PasswordAuthProvider):
         self,
         store: UserStore,
         *,
+        token_store: ResetTokenStore | None = None,
+        mailer: Mailer | None = None,
         now: Callable[[], datetime] | None = None,
         id_factory: Callable[[], str] | None = None,
+        token_factory: Callable[[], str] | None = None,
+        reset_ttl_seconds: int = DEFAULT_RESET_TTL_SECONDS,
         hash_password: Callable[[str], str] | None = None,
         verify_password: Callable[[str, str], bool] | None = None,
     ) -> None:
         self._store = store
+        self._token_store = token_store
+        self._mailer = mailer
         self._now = now or (lambda: datetime.now(timezone.utc))
         self._id_factory = id_factory or (lambda: uuid4().hex)
+        # 32 bytes -> 256 bits of entropy, URL-safe (suitable for a reset link).
+        self._token_factory = token_factory or (lambda: secrets.token_urlsafe(32))
+        self._reset_ttl_seconds = reset_ttl_seconds
         self._hash = hash_password or password_utils.hash_password
         self._verify = verify_password or password_utils.verify_password
 
@@ -172,4 +193,67 @@ class LocalAuthProvider(PasswordAuthProvider):
         changes["updated_at"] = self._timestamp()
         updated = dataclasses.replace(user, **changes)
         self._store.update(updated)  # raises if the new email collides
+        return updated
+
+    # --- forgotten-password reset (US-005) -------------------------------
+
+    def _require_reset_configured(self) -> None:
+        if self._token_store is None or self._mailer is None:
+            raise AuthError("Password reset is not configured.")
+
+    def request_password_reset(self, email: str) -> None:
+        """Begin a reset: issue a single-use, time-limited token and email it.
+
+        **Anti-enumeration:** always returns ``None`` and does the same observable
+        work whether or not the email is registered, so a caller cannot use this
+        to discover which emails have accounts. Any prior outstanding tokens for
+        the user are invalidated, so only the most recent link is valid.
+        """
+        self._require_reset_configured()
+        assert self._token_store is not None and self._mailer is not None
+        user = self._store.get_by_email(normalize_email(email))
+        if user is None or not user.is_active:
+            return  # reveal nothing
+        self._token_store.invalidate_for_user(user.user_id)
+        raw_token = self._token_factory()
+        now = self._now()
+        self._token_store.add(
+            ResetToken(
+                token_hash=hash_token(raw_token),
+                user_id=user.user_id,
+                created_at=now.replace(microsecond=0).isoformat(),
+                expires_at=(now + timedelta(seconds=self._reset_ttl_seconds))
+                .replace(microsecond=0)
+                .isoformat(),
+            )
+        )
+        self._mailer.send_password_reset(user.email, raw_token)
+
+    def reset_password(self, token: str, new_password: str) -> User:
+        """Complete a reset: set a new password if ``token`` is valid.
+
+        The token must be known, unexpired and unused. On success the password is
+        re-hashed (invalidating the old one) and **all** of the user's reset
+        tokens are deleted, so the link cannot be replayed (single-use). Raises
+        :class:`InvalidResetTokenError` for any invalid/expired token.
+        """
+        self._require_reset_configured()
+        assert self._token_store is not None
+        if not isinstance(new_password, str) or new_password == "":
+            raise AuthError("A new password is required.")
+        record = self._token_store.get_by_hash(hash_token(token or ""))
+        if record is None or record.is_expired(self._now()):
+            raise InvalidResetTokenError("This reset link is invalid or has expired.")
+        user = self._store.get_by_id(record.user_id)
+        if user is None:
+            # The account vanished after the token was issued; fail uniformly.
+            self._token_store.invalidate_for_user(record.user_id)
+            raise InvalidResetTokenError("This reset link is invalid or has expired.")
+        updated = dataclasses.replace(
+            user,
+            password_hash=self._hash(new_password),
+            updated_at=self._timestamp(),
+        )
+        self._store.update(updated)
+        self._token_store.invalidate_for_user(user.user_id)  # single-use: burn all
         return updated

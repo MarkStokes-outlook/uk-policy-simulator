@@ -47,6 +47,14 @@ class UserNotFoundError(AuthError):
     """Raised when a lookup by ``user_id`` finds nothing."""
 
 
+class InvalidResetTokenError(AuthError):
+    """Raised when a password-reset token is unknown, already used or expired.
+
+    Like :class:`InvalidCredentialsError`, the message is uniform so a caller
+    cannot distinguish "no such token" from "expired token".
+    """
+
+
 def normalize_email(email: str) -> str:
     """Return a canonical form of ``email`` for storage and lookup.
 

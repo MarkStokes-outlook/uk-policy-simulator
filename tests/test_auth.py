@@ -16,6 +16,7 @@ from model.auth import (
     AuthError,
     AuthSession,
     InvalidCredentialsError,
+    InvalidResetTokenError,
     JsonUserStore,
     LocalAuthProvider,
     User,
@@ -339,6 +340,136 @@ def test_update_profile_noop_when_nothing_passed(tmp_path):
     user = provider.register("alice@example.com", "pw-12345678")
     same = provider.update_profile(user.user_id)
     assert same == user
+
+
+# --- Password reset (US-005) ----------------------------------------------
+
+class _RecordingMailer:
+    """Captures the (email, token) of each reset message instead of sending."""
+
+    def __init__(self):
+        self.sent = []
+
+    def send_password_reset(self, to_email, token):
+        self.sent.append((to_email, token))
+
+    @property
+    def last_token(self):
+        return self.sent[-1][1]
+
+
+def _reset_provider(tmp_path, *, now=None, ttl=3600):
+    from model.auth import JsonResetTokenStore
+
+    mailer = _RecordingMailer()
+    provider = LocalAuthProvider(
+        JsonUserStore(tmp_path / "users.json"),
+        token_store=JsonResetTokenStore(tmp_path / "reset_tokens.json"),
+        mailer=mailer,
+        now=now or _clock(),
+        id_factory=_ids(),
+        reset_ttl_seconds=ttl,
+    )
+    return provider, mailer
+
+
+def test_reset_flow_sets_new_password_and_invalidates_old(tmp_path):
+    provider, mailer = _reset_provider(tmp_path)
+    provider.register("alice@example.com", "old-password-1")
+
+    provider.request_password_reset("ALICE@example.com")  # case-insensitive
+    assert len(mailer.sent) == 1
+    assert mailer.sent[0][0] == "alice@example.com"
+    token = mailer.last_token
+
+    provider.reset_password(token, "new-password-2")
+    # New password works; old one does not.
+    assert provider.authenticate("alice@example.com", "new-password-2").email == "alice@example.com"
+    with pytest.raises(InvalidCredentialsError):
+        provider.authenticate("alice@example.com", "old-password-1")
+
+
+def test_reset_token_is_single_use(tmp_path):
+    provider, mailer = _reset_provider(tmp_path)
+    provider.register("alice@example.com", "old-password-1")
+    provider.request_password_reset("alice@example.com")
+    token = mailer.last_token
+
+    provider.reset_password(token, "new-password-2")
+    # Re-using the same token fails (it was burned on completion).
+    with pytest.raises(InvalidResetTokenError):
+        provider.reset_password(token, "another-password-3")
+
+
+def test_reset_token_expires(tmp_path):
+    # A clock we control. Calls in order: register, request_password_reset, then
+    # reset_password's expiry check — which lands just past the 1h TTL.
+    times = iter(
+        [
+            datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc),  # register
+            datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc),  # request (issues token)
+            datetime(2026, 1, 1, 13, 0, 1, tzinfo=timezone.utc),  # reset: just past expiry
+        ]
+    )
+    provider, mailer = _reset_provider(tmp_path, now=lambda: next(times), ttl=3600)
+    provider.register("alice@example.com", "old-password-1")
+    provider.request_password_reset("alice@example.com")
+    with pytest.raises(InvalidResetTokenError):
+        provider.reset_password(mailer.last_token, "new-password-2")
+
+
+def test_request_reset_is_silent_for_unknown_email(tmp_path):
+    provider, mailer = _reset_provider(tmp_path)
+    # No account: must not raise and must not send (anti-enumeration).
+    provider.request_password_reset("nobody@example.com")
+    assert mailer.sent == []
+
+
+def test_requesting_again_invalidates_the_previous_token(tmp_path):
+    provider, mailer = _reset_provider(tmp_path)
+    provider.register("alice@example.com", "old-password-1")
+    provider.request_password_reset("alice@example.com")
+    first_token = mailer.last_token
+    provider.request_password_reset("alice@example.com")
+    second_token = mailer.last_token
+    assert first_token != second_token
+
+    # Only the most recent token works.
+    with pytest.raises(InvalidResetTokenError):
+        provider.reset_password(first_token, "x-password-123")
+    provider.reset_password(second_token, "new-password-2")
+
+
+def test_reset_rejects_garbage_token(tmp_path):
+    provider, _ = _reset_provider(tmp_path)
+    provider.register("alice@example.com", "old-password-1")
+    with pytest.raises(InvalidResetTokenError):
+        provider.reset_password("not-a-real-token", "new-password-2")
+
+
+def test_reset_not_configured_raises(tmp_path):
+    # A provider without token_store/mailer cannot do resets.
+    provider = _provider(tmp_path)
+    with pytest.raises(AuthError):
+        provider.request_password_reset("alice@example.com")
+    with pytest.raises(AuthError):
+        provider.reset_password("tok", "new-password-2")
+
+
+def test_stored_reset_token_is_hashed_not_raw(tmp_path):
+    import json
+
+    from model.auth import hash_token
+
+    provider, mailer = _reset_provider(tmp_path)
+    provider.register("alice@example.com", "old-password-1")
+    provider.request_password_reset("alice@example.com")
+    raw = mailer.last_token
+
+    doc = json.loads((tmp_path / "reset_tokens.json").read_text(encoding="utf-8"))
+    stored = doc["tokens"][0]["token_hash"]
+    assert stored != raw  # raw token never persisted
+    assert stored == hash_token(raw)  # only its hash is
 
 
 # --- Session helpers (framework-agnostic) ---------------------------------

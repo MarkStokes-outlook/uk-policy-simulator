@@ -17,10 +17,11 @@ it deliberately does *not* do yet.
 > 3. *Ownership authorisation* — enforced mutation policy (below).
 > 4. *Account self-management* — change password (US-006) and edit profile
 >    (US-007): display name and email, with the canonical `user_id` unchanged.
+> 5. *Password reset* (US-005) — single-use, time-limited, hashed reset tokens
+>    delivered through a pluggable mailer (console for dev, SMTP for deployment).
 >
-> Still deferred: **password reset for a forgotten password (US-005)** — it
-> needs email/token infrastructure not yet scoped — plus external OAuth/OIDC,
-> social login, sharing/visibility (EPIC-006), leaderboards and encrypted AI keys.
+> Still deferred: external OAuth/OIDC, social login, sharing/visibility
+> (EPIC-006), leaderboards and encrypted AI keys.
 
 ## Why auth is provider-abstracted
 
@@ -197,17 +198,65 @@ untouched):
 These are domain-layer methods on `LocalAuthProvider` (Streamlit-free); the
 sidebar forms only collect input and call them.
 
+## Forgotten-password reset (US-005)
+
+A user who cannot sign in requests a reset by email; they receive a single-use,
+time-limited link and choose a new password. Two provider methods drive it,
+both Streamlit-free:
+
+- **`request_password_reset(email)`** — issues a token and emails a link.
+- **`reset_password(token, new_password)`** — validates the token and sets the
+  new password.
+
+### Security properties
+
+- **Tokens are hashed at rest.** The raw token (256 bits from
+  `secrets.token_urlsafe`) goes only in the email/link; the store keeps just its
+  SHA-256 (`model/auth/tokens.py`). A leaked token store cannot be used to reset
+  anyone's password. SHA-256 (not Argon2id) is correct here precisely *because*
+  the token is high-entropy — the slow KDF is for low-entropy passwords.
+- **Single-use.** On completion, all of the user's reset tokens are deleted, so
+  a link cannot be replayed. Requesting a new link invalidates any previous one.
+- **Time-limited.** Tokens carry an `expires_at` (default 1 hour); expired
+  tokens are rejected.
+- **Old password invalidated.** Completing a reset re-hashes the password, so the
+  previous one immediately stops working.
+- **Anti-enumeration.** `request_password_reset` does the same observable work
+  and returns nothing whether or not the email is registered; the UI always shows
+  the same "if an account exists…" message.
+- **Uniform failure.** Unknown, used and expired tokens all raise the same
+  `InvalidResetTokenError`.
+
+### Email delivery is pluggable (and SMTP is a deployment concern)
+
+Delivery is hidden behind the `Mailer` protocol (`model/auth/email.py`), mirroring
+the auth-provider abstraction:
+
+- **`ConsoleMailer`** — the safe default when no SMTP server is configured (local
+  / dev): it prints the reset link to the **server console** so the flow is fully
+  exercisable offline. Read the console to get the link.
+- **`SmtpMailer`** — sends real email over SMTP (STARTTLS), wired in at deployment.
+
+`app.py` chooses between them by configuration: if `SMTP_HOST` is set it builds an
+`SmtpMailer` from env vars (`SMTP_PORT`, `SMTP_SENDER`, `SMTP_USERNAME`,
+`SMTP_PASSWORD`, `SMTP_USE_TLS`, `APP_BASE_URL`); otherwise it uses the
+`ConsoleMailer`. A live deployment is expected to provide an SMTP server. The
+reset link is a normal app URL carrying the token as a query parameter
+(`…/?reset_token=…`); opening it shows the "set a new password" form.
+
 ## Where data lives
 
 - Local users: `users.json` (default app dir). It contains **password hashes**,
   so it is runtime data/secrets — **gitignored**, never committed (alongside
   `saved_models.json`).
-- Versioned schema (`AUTH_SCHEMA_VERSION`); validate-on-read; atomic temp-file
-  writes — the same contract as the saved-models store.
+- Reset tokens: `reset_tokens.json` (default app dir). It holds **token hashes**
+  and is likewise runtime secrets data — **gitignored**.
+- Versioned schemas (`AUTH_SCHEMA_VERSION`, `RESET_TOKENS_SCHEMA_VERSION`);
+  validate-on-read; atomic temp-file writes — the same contract as the
+  saved-models store.
 
-## Deferred (not in this slice)
+## Deferred (later epics)
 
-Password reset for a forgotten password (US-005 — needs email/token infra) ·
-external OAuth/OIDC · social login · sharing & visibility (EPIC-006) ·
+External OAuth/OIDC · social login · sharing & visibility (EPIC-006) ·
 leaderboards (EPIC-007) · encrypted per-user AI keys (EPIC-009) ·
 durable/secure session & cookie handling at scale.

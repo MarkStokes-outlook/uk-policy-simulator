@@ -7,7 +7,8 @@ depends on a *concrete* backend: callers depend on :class:`AuthProvider` /
 implementation. See ``docs/identity.md`` for the rationale.
 """
 
-from .local_provider import LocalAuthProvider
+from .email import ConsoleMailer, Mailer, SmtpMailer
+from .local_provider import DEFAULT_RESET_TTL_SECONDS, LocalAuthProvider
 from .password import hash_password, needs_rehash, verify_password
 from .provider import AuthProvider, PasswordAuthProvider
 from .session import (
@@ -18,10 +19,18 @@ from .session import (
     login,
     logout,
 )
+from .tokens import (
+    RESET_TOKENS_SCHEMA_VERSION,
+    JsonResetTokenStore,
+    ResetToken,
+    ResetTokenStore,
+    hash_token,
+)
 from .types import (
     AuthError,
     AuthSession,
     InvalidCredentialsError,
+    InvalidResetTokenError,
     User,
     UserExistsError,
     UserNotFoundError,
@@ -39,6 +48,7 @@ __all__ = [
     "UserExistsError",
     "InvalidCredentialsError",
     "UserNotFoundError",
+    "InvalidResetTokenError",
     "normalize_email",
     # Password utilities
     "hash_password",
@@ -52,6 +62,16 @@ __all__ = [
     "UserStore",
     "JsonUserStore",
     "AUTH_SCHEMA_VERSION",
+    # Password reset (US-005)
+    "ResetToken",
+    "ResetTokenStore",
+    "JsonResetTokenStore",
+    "RESET_TOKENS_SCHEMA_VERSION",
+    "hash_token",
+    "DEFAULT_RESET_TTL_SECONDS",
+    "Mailer",
+    "ConsoleMailer",
+    "SmtpMailer",
     # Session helpers
     "SESSION_KEY",
     "login",

@@ -1,4 +1,5 @@
 
+import os
 from pathlib import Path
 
 import streamlit as st
@@ -28,8 +29,11 @@ from model import (
 from model.auth import (
     AuthError,
     AuthSession,
+    ConsoleMailer,
+    JsonResetTokenStore,
     JsonUserStore,
     LocalAuthProvider,
+    SmtpMailer,
     current_session,
     current_user_id,
     login,
@@ -49,6 +53,8 @@ WEIGHTING_PATH = Path(__file__).parent / "weighting_profiles.yaml"
 SAVED_MODELS_PATH = Path(__file__).parent / "saved_models.json"
 # Local user accounts (password hashes) persist here (gitignored — secrets).
 USERS_PATH = Path(__file__).parent / "users.json"
+# Single-use password-reset tokens (hashes) persist here (gitignored — secrets).
+RESET_TOKENS_PATH = Path(__file__).parent / "reset_tokens.json"
 
 # Lever display metadata, keyed by the canonical scenario key so presets,
 # sliders and the engine all agree. Tuple: (key, label, min, max, step).
@@ -183,11 +189,35 @@ profile_ids = list(WEIGHTING_PROFILES)
 store = ModelStore(SAVED_MODELS_PATH)
 
 # --- Identity (EPIC-005 / v1.1) ------------------------------------------
-# Local email/password auth behind the provider abstraction. The provider and
-# user store are Streamlit-free; this module is the only place Streamlit and the
-# auth layer meet, via the framework-agnostic session helpers operating on
-# st.session_state. Swapping in OIDC later means swapping this one instance.
-auth_provider = LocalAuthProvider(JsonUserStore(USERS_PATH))
+# Local email/password auth behind the provider abstraction. The provider, user
+# store, token store and mailer are all Streamlit-free; this module is the only
+# place Streamlit and the auth layer meet, via the framework-agnostic session
+# helpers operating on st.session_state. Swapping in OIDC later means swapping
+# this one instance.
+#
+# Email delivery for password resets is config-driven: if SMTP_HOST is set we
+# send real email via SMTP; otherwise we fall back to the ConsoleMailer, which
+# prints the reset link to the server console (safe for local/dev use). A live
+# deployment is expected to provide an SMTP server.
+_RESET_URL_BASE = os.environ.get("APP_BASE_URL", "http://localhost:8501")
+if os.environ.get("SMTP_HOST"):
+    _mailer = SmtpMailer(
+        host=os.environ["SMTP_HOST"],
+        port=int(os.environ.get("SMTP_PORT", "587")),
+        sender=os.environ.get("SMTP_SENDER", "no-reply@uk-policy-sandbox.local"),
+        reset_url_base=_RESET_URL_BASE,
+        username=os.environ.get("SMTP_USERNAME"),
+        password=os.environ.get("SMTP_PASSWORD"),
+        use_tls=os.environ.get("SMTP_USE_TLS", "true").lower() != "false",
+    )
+else:
+    _mailer = ConsoleMailer(reset_url_base=_RESET_URL_BASE)
+
+auth_provider = LocalAuthProvider(
+    JsonUserStore(USERS_PATH),
+    token_store=JsonResetTokenStore(RESET_TOKENS_PATH),
+    mailer=_mailer,
+)
 
 
 def _set_auth_msg(level: str, text: str) -> None:
@@ -302,6 +332,43 @@ def _cb_change_password() -> None:
     for key in ("acct_pw_current", "acct_pw_new", "acct_pw_confirm"):
         st.session_state.pop(key, None)
     _set_auth_msg("success", "Password changed.")
+
+
+def _cb_request_reset() -> None:
+    email = (st.session_state.get("auth_reset_email") or "").strip()
+    if not email:
+        _set_auth_msg("error", "Enter your email to request a reset link.")
+        return
+    try:
+        auth_provider.request_password_reset(email)
+    except AuthError as exc:
+        _set_auth_msg("error", f"Could not process request: {exc}")
+        return
+    st.session_state.pop("auth_reset_email", None)
+    # Deliberately generic — never reveal whether the email is registered.
+    _set_auth_msg("info", "If an account exists for that email, a reset link has been sent.")
+
+
+def _cb_complete_reset() -> None:
+    token = st.query_params.get("reset_token") or ""
+    new = st.session_state.get("auth_reset_new") or ""
+    confirm = st.session_state.get("auth_reset_confirm") or ""
+    if not new:
+        _set_auth_msg("error", "Enter a new password.")
+        return
+    if new != confirm:
+        _set_auth_msg("error", "New password and confirmation do not match.")
+        return
+    try:
+        auth_provider.reset_password(token, new)
+    except AuthError as exc:
+        _set_auth_msg("error", f"Could not reset password: {exc}")
+        return
+    for key in ("auth_reset_new", "auth_reset_confirm"):
+        st.session_state.pop(key, None)
+    # Drop the (now-spent) token from the URL so a refresh can't replay it.
+    st.query_params.clear()
+    _set_auth_msg("success", "Password reset. Please sign in with your new password.")
 
 
 def _set_models_msg(level: str, text: str) -> None:
@@ -472,8 +539,17 @@ _auth_msg = st.session_state.pop("_auth_msg", None)
 if _auth_msg:
     getattr(st.sidebar, _auth_msg[0], st.sidebar.info)(_auth_msg[1])
 
+# A reset link (…/?reset_token=…) takes priority: show the "set new password"
+# form and nothing else, so the user finishes the reset they came to do.
+_reset_token = st.query_params.get("reset_token")
 _session = current_session(st.session_state)
-if _session is not None:
+if _reset_token:
+    st.sidebar.info("**Reset your password**")
+    st.sidebar.text_input("New password", type="password", key="auth_reset_new")
+    st.sidebar.text_input("Confirm new password", type="password", key="auth_reset_confirm")
+    st.sidebar.button("Set new password", on_click=_cb_complete_reset, use_container_width=True)
+    st.sidebar.caption("This single-use link expires shortly. Didn't request it? Ignore it.")
+elif _session is not None:
     st.sidebar.caption(f"Signed in as **{_session.display_name}**")
     # Seed editable profile fields from the current principal (only when unset,
     # so an in-progress edit is preserved across reruns; cleared on sign-out).
@@ -505,6 +581,10 @@ else:
             st.text_input("Email", key="auth_login_email", placeholder="you@example.com")
             st.text_input("Password", type="password", key="auth_login_password")
             st.button("Sign in", on_click=_cb_login, use_container_width=True)
+            st.divider()
+            st.caption("Forgot your password? We'll email you a reset link.")
+            st.text_input("Account email", key="auth_reset_email", placeholder="you@example.com")
+            st.button("Email me a reset link", on_click=_cb_request_reset, use_container_width=True)
         with _register_tab:
             st.caption("Email and password are required. Display name is optional.")
             st.text_input("Email", key="auth_reg_email", placeholder="you@example.com")
