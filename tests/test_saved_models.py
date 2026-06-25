@@ -205,6 +205,68 @@ def test_corrupt_json_raises(tmp_path):
         ModelStore(p).list_models()
 
 
+def _write_store_with_assumptions(tmp_path, **assumption_overrides):
+    """Write a structurally-valid store whose assumptions can be tampered with."""
+    import json
+
+    assumptions = {
+        "years": 10,
+        "growth_baseline": 0.035,
+        "revenue_feedback_rate": 0.3,
+        "cost_reduction_rate": 0.2,
+        "lag_years": 2,
+        "implementation_quality": 0.7,
+        "optimism_penalty": 0.2,
+    }
+    assumptions.update(assumption_overrides)
+    doc = {
+        "schema_version": SAVED_MODELS_SCHEMA_VERSION,
+        "models": [
+            {
+                "id": "hand-edited",
+                "name": "Hand edited",
+                "created_at": "2026-01-01T12:00:00+00:00",
+                "updated_at": "2026-01-01T12:00:00+00:00",
+                "versions": [
+                    {
+                        "version": 1,
+                        "saved_at": "2026-01-01T12:00:00+00:00",
+                        "note": "",
+                        "revenue_levers": _rev(),
+                        "investment_levers": _inv(),
+                        "assumptions": assumptions,
+                    }
+                ],
+            }
+        ],
+    }
+    p = tmp_path / "saved_models.json"
+    p.write_text(json.dumps(doc), encoding="utf-8")
+    return p
+
+
+@pytest.mark.parametrize(
+    "field, value",
+    [
+        ("years", 10.5),       # fractional
+        ("lag_years", 2.5),    # fractional
+        ("years", True),       # boolean masquerading as int
+        ("lag_years", False),  # boolean masquerading as int
+    ],
+)
+def test_corrupt_store_rejects_non_integer_year_fields(tmp_path, field, value):
+    p = _write_store_with_assumptions(tmp_path, **{field: value})
+    with pytest.raises(ModelStoreError, match=f"'{field}' must be an integer"):
+        ModelStore(p).list_models()
+
+
+def test_hand_edited_store_with_valid_integers_still_loads(tmp_path):
+    # Sanity check the helper isn't rejecting everything.
+    p = _write_store_with_assumptions(tmp_path)
+    models = ModelStore(p).list_models()
+    assert models[0].current.assumptions.years == 10
+
+
 def test_schema_version_is_written(tmp_path):
     import json
 

@@ -138,6 +138,16 @@ def _assumptions_from_dict(raw: Any, model_id: str) -> FeedbackAssumptions:
     unknown = sorted(set(raw) - set(ASSUMPTION_KEYS))
     _require(not missing, f"Model '{model_id}': assumptions missing: {', '.join(missing)}.")
     _require(not unknown, f"Model '{model_id}': unknown assumptions: {', '.join(unknown)}.")
+    # years / lag_years must be whole numbers: FeedbackAssumptions only
+    # range-validates, so without this a hand-edited store with years: 10.5 would
+    # load and then feed a fractional value into integer sliders. Match the
+    # stricter scenario-loader contract and reject non-int / bool here.
+    for key in ("years", "lag_years"):
+        value = raw[key]
+        _require(
+            isinstance(value, int) and not isinstance(value, bool),
+            f"Model '{model_id}': assumption '{key}' must be an integer (got {value!r}).",
+        )
     try:
         return FeedbackAssumptions(
             years=raw["years"],
