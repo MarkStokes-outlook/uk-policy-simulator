@@ -26,7 +26,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Mapping
+from typing import Any, Callable, Iterable, Mapping
 
 from .fiscal_model import AssumptionError, FeedbackAssumptions
 from .scenarios import (
@@ -259,6 +259,37 @@ def _model_to_dict(m: SavedModel) -> dict[str, Any]:
         "owner_user_id": m.owner_user_id,
         "versions": [_version_to_dict(v) for v in m.versions],
     }
+
+
+def filter_visible_models(
+    models: Iterable[SavedModel],
+    viewer_user_id: str | None,
+    *,
+    include_legacy: bool = True,
+) -> list[SavedModel]:
+    """Return the subset of ``models`` a viewer may see in "my saved models".
+
+    Visibility policy for the EPIC-005 auth slice (Streamlit-free so it is unit
+    tested directly):
+
+    - A model owned by ``viewer_user_id`` is visible to that viewer.
+    - A **legacy/unowned** model (``owner_user_id is None``) is visible when
+      ``include_legacy`` is True. These pre-identity models existed before
+      ownership, so they stay reachable — upgrading the app must never hide a
+      user's existing local data.
+    - A model owned by a *different* user is hidden.
+
+    When ``viewer_user_id`` is ``None`` (guest / not signed in) only
+    legacy/unowned models are visible, because a guest owns nothing.
+    """
+    visible: list[SavedModel] = []
+    for m in models:
+        if m.owner_user_id is None:
+            if include_legacy:
+                visible.append(m)
+        elif m.owner_user_id == viewer_user_id:
+            visible.append(m)
+    return visible
 
 
 class ModelStore:

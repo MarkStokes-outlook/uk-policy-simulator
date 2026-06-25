@@ -5,11 +5,19 @@ platform. This document explains the **identity foundation** introduced in
 EPIC-005 — the architecture, not a user guide — and, just as importantly, what
 it deliberately does *not* do yet.
 
-> **Scope of this slice.** This is the lowest-risk foundation only: provider
-> interfaces, a local user store, password hashing, register/authenticate, and
-> owner association on saved models. There is **no auth UI yet**. Password reset
-> email, external OAuth/OIDC, social login, the full profile screen, sharing and
-> encrypted AI keys are intentionally deferred to later stories.
+> **Scope so far.** Two slices have landed:
+>
+> 1. *Foundation* — provider interfaces, local user store, password hashing,
+>    register/authenticate, owner association on saved models (domain layer, no
+>    UI).
+> 2. *Auth UI & ownership wiring* — a Streamlit account panel
+>    (register / sign in / sign out), the signed-in user bound into session
+>    state, saved models stamped with the owner, and "my saved models" filtered
+>    to the current user (with legacy models preserved).
+>
+> Still deferred: password reset email, external OAuth/OIDC, social login, the
+> full profile screen, sharing/visibility (EPIC-006), leaderboards and encrypted
+> AI keys.
 
 ## Why auth is provider-abstracted
 
@@ -99,8 +107,39 @@ Saved models gain an optional `owner_user_id`
 - `update` preserves ownership; `clone` inherits the source owner by default and
   can re-own the copy.
 
-Wiring the live app to stamp the current user onto saves (and to gate actions by
-owner) arrives with the auth UI story — see *Deferred* below.
+### Ownership wiring in the app
+
+`app.py` now stamps ownership and scopes visibility:
+
+- **Saving** stamps the new model with the signed-in user's `user_id`
+  (`current_user_id(st.session_state)`); a guest save passes `None` and creates a
+  legacy/unowned model.
+- **Cloning** gives the copy to the signed-in user (so you own copies you make,
+  even of a legacy model); a guest's clone inherits the source owner and stays
+  unowned.
+- **Visibility** — the saved-models panel lists only what
+  `filter_visible_models()` returns for the current viewer.
+
+### Visibility policy (and how legacy access is preserved)
+
+`filter_visible_models(models, viewer_user_id, include_legacy=True)` in
+[`model/saved_models.py`](../model/saved_models.py) is the single, Streamlit-free
+rule (unit-tested directly):
+
+| Model `owner_user_id` | Signed-in user sees it? | Guest sees it? |
+| --- | --- | --- |
+| equals the viewer's `user_id` | ✅ | — |
+| another user's id | ❌ | ❌ |
+| `None` (legacy/unowned) | ✅ (when `include_legacy`) | ✅ (when `include_legacy`) |
+
+**Legacy access is preserved deliberately.** Models created before identity
+existed — and anything saved while signed out — have `owner_user_id is None` and
+remain visible to *everyone* on the device, signed in or not. This is an explicit
+choice so that turning on accounts never hides a user's pre-existing local data.
+Legacy models therefore behave like the shared, single-user store did before
+v1.1; they remain loadable, updatable and clonable. Per-owner *authorisation*
+(restricting who may edit/delete someone else's model) is a sharing/visibility
+concern deferred to EPIC-006.
 
 ## Where data lives
 
@@ -113,6 +152,6 @@ owner) arrives with the auth UI story — see *Deferred* below.
 ## Deferred (not in this slice)
 
 Password reset email flow · external OAuth/OIDC · social login · full profile UI ·
-login/registration UI · binding `owner_user_id` to the live app's current user ·
-sharing & visibility (EPIC-006) · leaderboards (EPIC-007) · encrypted per-user AI
-keys (EPIC-009) · durable/secure session & cookie handling at scale.
+per-owner authorisation of edit/delete (legacy & cross-user) · sharing &
+visibility (EPIC-006) · leaderboards (EPIC-007) · encrypted per-user AI keys
+(EPIC-009) · durable/secure session & cookie handling at scale.

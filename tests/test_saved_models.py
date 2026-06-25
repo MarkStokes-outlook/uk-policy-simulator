@@ -17,6 +17,7 @@ from model.saved_models import (
     ModelStore,
     ModelStoreError,
     SavedModel,
+    filter_visible_models,
 )
 
 ASSUMPTIONS = FeedbackAssumptions(
@@ -385,3 +386,34 @@ def test_owner_user_id_must_be_string_or_null(tmp_path):
     p.write_text(json.dumps(doc), encoding="utf-8")
     with pytest.raises(ModelStoreError, match="owner_user_id"):
         ModelStore(p).list_models()
+
+
+# --- Ownership visibility filtering (EPIC-005 auth slice) -----------------
+
+def _seed_mixed_owners(tmp_path):
+    """A store with a legacy/unowned model and one per two distinct owners."""
+    store = _store(tmp_path)
+    store.create("Legacy", _rev(), _inv(), ASSUMPTIONS)  # owner None
+    store.create("Alice plan", _rev(), _inv(), ASSUMPTIONS, owner_user_id="user-alice")
+    store.create("Bob plan", _rev(), _inv(), ASSUMPTIONS, owner_user_id="user-bob")
+    return store.list_models()
+
+
+def test_filter_shows_owned_plus_legacy_for_a_user(tmp_path):
+    models = _seed_mixed_owners(tmp_path)
+    visible = {m.id for m in filter_visible_models(models, "user-alice")}
+    assert visible == {"alice-plan", "legacy"}  # own + legacy, not Bob's
+
+
+def test_filter_guest_sees_only_legacy(tmp_path):
+    models = _seed_mixed_owners(tmp_path)
+    visible = {m.id for m in filter_visible_models(models, None)}
+    assert visible == {"legacy"}
+
+
+def test_filter_can_exclude_legacy(tmp_path):
+    models = _seed_mixed_owners(tmp_path)
+    visible = {m.id for m in filter_visible_models(models, "user-alice", include_legacy=False)}
+    assert visible == {"alice-plan"}
+    # A guest with legacy excluded sees nothing.
+    assert filter_visible_models(models, None, include_legacy=False) == []

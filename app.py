@@ -16,10 +16,21 @@ from model import (
     ScoringError,
     build_scorecard,
     compute_fiscal,
+    filter_visible_models,
     load_baseline,
     load_scenarios,
     load_weighting_profiles,
     score_categories,
+)
+from model.auth import (
+    AuthError,
+    AuthSession,
+    JsonUserStore,
+    LocalAuthProvider,
+    current_session,
+    current_user_id,
+    login,
+    logout,
 )
 
 st.set_page_config(
@@ -33,6 +44,8 @@ SCENARIOS_PATH = Path(__file__).parent / "scenarios.yaml"
 WEIGHTING_PATH = Path(__file__).parent / "weighting_profiles.yaml"
 # User-created saved models persist here (gitignored — it is user data).
 SAVED_MODELS_PATH = Path(__file__).parent / "saved_models.json"
+# Local user accounts (password hashes) persist here (gitignored — secrets).
+USERS_PATH = Path(__file__).parent / "users.json"
 
 # Lever display metadata, keyed by the canonical scenario key so presets,
 # sliders and the engine all agree. Tuple: (key, label, min, max, step).
@@ -166,6 +179,57 @@ profile_ids = list(WEIGHTING_PROFILES)
 # A file-backed store of user-created, named models with version history.
 store = ModelStore(SAVED_MODELS_PATH)
 
+# --- Identity (EPIC-005 / v1.1) ------------------------------------------
+# Local email/password auth behind the provider abstraction. The provider and
+# user store are Streamlit-free; this module is the only place Streamlit and the
+# auth layer meet, via the framework-agnostic session helpers operating on
+# st.session_state. Swapping in OIDC later means swapping this one instance.
+auth_provider = LocalAuthProvider(JsonUserStore(USERS_PATH))
+
+
+def _set_auth_msg(level: str, text: str) -> None:
+    """Stash a message for the account panel (callbacks cannot render)."""
+    st.session_state["_auth_msg"] = (level, text)
+
+
+def _clear_auth_inputs() -> None:
+    for key in ("auth_email", "auth_password", "auth_display_name"):
+        st.session_state.pop(key, None)
+
+
+def _cb_register() -> None:
+    email = (st.session_state.get("auth_email") or "").strip()
+    password = st.session_state.get("auth_password") or ""
+    display_name = (st.session_state.get("auth_display_name") or "").strip()
+    try:
+        user = auth_provider.register(email, password, display_name=display_name or None)
+    except AuthError as exc:
+        _set_auth_msg("error", f"Could not create account: {exc}")
+        return
+    # Sign the new user straight in (no need to re-verify the password we just set).
+    login(st.session_state, AuthSession.from_user(user))
+    _clear_auth_inputs()
+    _set_auth_msg("success", f"Account created — welcome, {user.display_name}.")
+
+
+def _cb_login() -> None:
+    email = (st.session_state.get("auth_email") or "").strip()
+    password = st.session_state.get("auth_password") or ""
+    try:
+        session = auth_provider.authenticate(email, password)
+    except AuthError:
+        # Uniform message: never reveal whether the email exists.
+        _set_auth_msg("error", "Invalid email or password.")
+        return
+    login(st.session_state, session)
+    _clear_auth_inputs()
+    _set_auth_msg("success", f"Signed in as {session.display_name}.")
+
+
+def _cb_logout() -> None:
+    logout(st.session_state)
+    _set_auth_msg("info", "Signed out.")
+
 
 def _set_models_msg(level: str, text: str) -> None:
     """Stash a message for the saved-models panel (callbacks cannot render)."""
@@ -195,7 +259,16 @@ def _cb_save_new_model() -> None:
         return
     try:
         rev, inv, a = _current_inputs()
-        model = store.create(name, rev, inv, a, note=(st.session_state.get("model_note") or "").strip())
+        # Stamp the model with the signed-in user (None when browsing as guest,
+        # which creates a legacy/unowned model — see docs/identity.md).
+        model = store.create(
+            name,
+            rev,
+            inv,
+            a,
+            note=(st.session_state.get("model_note") or "").strip(),
+            owner_user_id=current_user_id(st.session_state),
+        )
     except (ModelStoreError, AssumptionError) as exc:
         _set_models_msg("error", f"Could not save: {exc}")
         return
@@ -240,7 +313,11 @@ def _cb_clone_selected_model() -> None:
         return
     try:
         source = store.get(mid)
-        clone = store.clone(mid, f"{source.name} copy")
+        # A signed-in user owns the copy they make (even when cloning a legacy
+        # model); a guest's clone stays unowned by inheriting the source owner.
+        clone = store.clone(
+            mid, f"{source.name} copy", owner_user_id=current_user_id(st.session_state)
+        )
     except ModelStoreError as exc:
         _set_models_msg("error", f"Could not clone: {exc}")
         return
@@ -263,15 +340,23 @@ def _cb_delete_selected_model() -> None:
 
 
 try:
-    saved_models = store.list_models()
+    all_models = store.list_models()
 except ModelStoreError as exc:
     st.error(
         f"Could not read saved models from `{SAVED_MODELS_PATH.name}`.\n\n"
         f"**{exc}**\n\nFix or remove the file and reload."
     )
     st.stop()
+# Show only the signed-in user's models plus legacy/unowned ones (guests see
+# legacy/unowned only). Filtering lives in the Streamlit-free model layer.
+saved_models = filter_visible_models(all_models, current_user_id(st.session_state))
 saved_model_ids = [m.id for m in saved_models]
 saved_models_by_id = {m.id: m for m in saved_models}
+
+# Drop a selection that is no longer visible (e.g. after signing out), so the
+# saved-model selectbox does not error on a stale session-state value.
+if st.session_state.get("saved_model_select") not in saved_models_by_id:
+    st.session_state.pop("saved_model_select", None)
 
 
 def _apply_selected_scenario() -> None:
@@ -292,6 +377,35 @@ if "scenario_select" not in st.session_state:
     st.session_state["scenario_select"] = scenario_ids[0]
     for _k, _v in _scenario_to_state(SCENARIOS[scenario_ids[0]]).items():
         st.session_state[_k] = _v
+
+# --- Account panel (EPIC-005 / v1.1) -------------------------------------
+# All Streamlit lives here; the auth layer stays framework-free. Saved models
+# are owner-scoped, so signing in changes which models the panel below shows.
+st.sidebar.header("Account")
+
+_auth_msg = st.session_state.pop("_auth_msg", None)
+if _auth_msg:
+    getattr(st.sidebar, _auth_msg[0], st.sidebar.info)(_auth_msg[1])
+
+_session = current_session(st.session_state)
+if _session is not None:
+    st.sidebar.caption(f"Signed in as **{_session.display_name}**")
+    st.sidebar.button("Sign out", on_click=_cb_logout, use_container_width=True)
+else:
+    st.sidebar.caption(
+        "Browsing as **guest**. Sign in to keep saved models under your account; "
+        "models saved as a guest are unowned and visible to everyone on this device."
+    )
+    with st.sidebar.expander("Sign in / Create account", expanded=False):
+        st.text_input("Email", key="auth_email", placeholder="you@example.com")
+        st.text_input("Password", type="password", key="auth_password")
+        st.button("Sign in", on_click=_cb_login, use_container_width=True)
+        st.divider()
+        st.caption("New here? Add a display name (optional) and create an account.")
+        st.text_input("Display name", key="auth_display_name", placeholder="optional")
+        st.button("Create account", on_click=_cb_register, use_container_width=True)
+
+st.sidebar.divider()
 
 st.sidebar.header("Scenario controls")
 

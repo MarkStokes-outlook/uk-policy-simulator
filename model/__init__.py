@@ -39,6 +39,7 @@ from .saved_models import (
     ModelStoreError,
     ModelVersion,
     SavedModel,
+    filter_visible_models,
 )
 
 __all__ = [
@@ -77,4 +78,5 @@ __all__ = [
     "ModelStoreError",
     "ModelVersion",
     "SavedModel",
+    "filter_visible_models",
 ]

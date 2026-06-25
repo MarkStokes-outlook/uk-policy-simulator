@@ -272,3 +272,48 @@ def test_session_login_current_logout_with_plain_dict():
 def test_login_rejects_non_session():
     with pytest.raises(TypeError):
         login({}, "not-a-session")
+
+
+# --- Save-stamping + filtering integration --------------------------------
+# Exercises the exact path app.py uses (session helpers -> current_user_id ->
+# store.create(owner_user_id=...) -> filter_visible_models) with a plain dict
+# standing in for st.session_state, so the wiring is covered without Streamlit.
+
+def test_signed_in_save_is_stamped_and_filtered_to_owner(tmp_path):
+    from model.fiscal_model import FeedbackAssumptions
+    from model.saved_models import ModelStore, filter_visible_models
+    from model.scenarios import INVESTMENT_LEVER_KEYS, REVENUE_LEVER_KEYS
+
+    rev = {k: 0.0 for k in REVENUE_LEVER_KEYS}
+    inv = {k: 0.0 for k in INVESTMENT_LEVER_KEYS}
+    assumptions = FeedbackAssumptions(
+        years=10,
+        growth_baseline=0.035,
+        revenue_feedback_rate=0.3,
+        cost_reduction_rate=0.2,
+        lag_years=2,
+        implementation_quality=0.7,
+        optimism_penalty=0.2,
+    )
+    store = ModelStore(tmp_path / "saved_models.json")
+
+    # A guest save (no session) is unowned/legacy.
+    guest_state: dict = {}
+    store.create("Guest plan", rev, inv, assumptions, owner_user_id=current_user_id(guest_state))
+
+    # An authenticated save is stamped with the user's canonical id.
+    provider = _provider(tmp_path)
+    user = provider.register("alice@example.com", "pw-12345678")
+    state: dict = {}
+    login(state, provider.authenticate("alice@example.com", "pw-12345678"))
+    store.create("Alice plan", rev, inv, assumptions, owner_user_id=current_user_id(state))
+
+    by_id = {m.id: m for m in store.list_models()}
+    assert by_id["guest-plan"].owner_user_id is None
+    assert by_id["alice-plan"].owner_user_id == user.user_id
+
+    # Alice sees her model + the legacy guest model; a guest sees only legacy.
+    alice_visible = {m.id for m in filter_visible_models(store.list_models(), current_user_id(state))}
+    guest_visible = {m.id for m in filter_visible_models(store.list_models(), current_user_id(guest_state))}
+    assert alice_visible == {"alice-plan", "guest-plan"}
+    assert guest_visible == {"guest-plan"}
