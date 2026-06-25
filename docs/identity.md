@@ -5,7 +5,7 @@ platform. This document explains the **identity foundation** introduced in
 EPIC-005 — the architecture, not a user guide — and, just as importantly, what
 it deliberately does *not* do yet.
 
-> **Scope so far.** Two slices have landed:
+> **Scope so far.** Landed:
 >
 > 1. *Foundation* — provider interfaces, local user store, password hashing,
 >    register/authenticate, owner association on saved models (domain layer, no
@@ -14,10 +14,13 @@ it deliberately does *not* do yet.
 >    (register / sign in / sign out), the signed-in user bound into session
 >    state, saved models stamped with the owner, and "my saved models" filtered
 >    to the current user (with legacy models preserved).
+> 3. *Ownership authorisation* — enforced mutation policy (below).
+> 4. *Account self-management* — change password (US-006) and edit profile
+>    (US-007): display name and email, with the canonical `user_id` unchanged.
 >
-> Still deferred: password reset email, external OAuth/OIDC, social login, the
-> full profile screen, sharing/visibility (EPIC-006), leaderboards and encrypted
-> AI keys.
+> Still deferred: **password reset for a forgotten password (US-005)** — it
+> needs email/token infrastructure not yet scoped — plus external OAuth/OIDC,
+> social login, sharing/visibility (EPIC-006), leaderboards and encrypted AI keys.
 
 ## Why auth is provider-abstracted
 
@@ -174,6 +177,26 @@ but that is only a hint — the callbacks re-check via `authorize_mutation()`.
 Per-owner authorisation of *reads* (restricting who may view/clone another user's
 model), roles and admin override are deferred to EPIC-006 and beyond.
 
+## Account self-management
+
+A signed-in user manages their own account from the sidebar **Account settings**
+panel, backed by two provider methods (both leave the canonical `user_id`
+untouched):
+
+- **Change password** (`change_password`, US-006) — requires the **current**
+  password (verified against the stored Argon2id hash), validates the new one and
+  re-hashes it. The old password stops working immediately; the session stays
+  signed in.
+- **Edit profile** (`update_profile`, US-007) — edit **display name** and
+  **email**. Email is normalised and must stay unique (the store rejects a
+  clash). Changing the email changes the *login identifier* but **not** the
+  `user_id`, which is exactly why identity is keyed on an internal id — see
+  *Why the internal `user_id` is canonical* above. The in-session principal is
+  refreshed after a successful edit.
+
+These are domain-layer methods on `LocalAuthProvider` (Streamlit-free); the
+sidebar forms only collect input and call them.
+
 ## Where data lives
 
 - Local users: `users.json` (default app dir). It contains **password hashes**,
@@ -184,7 +207,7 @@ model), roles and admin override are deferred to EPIC-006 and beyond.
 
 ## Deferred (not in this slice)
 
-Password reset email flow · external OAuth/OIDC · social login · full profile UI ·
-per-owner authorisation of edit/delete (legacy & cross-user) · sharing &
-visibility (EPIC-006) · leaderboards (EPIC-007) · encrypted per-user AI keys
-(EPIC-009) · durable/secure session & cookie handling at scale.
+Password reset for a forgotten password (US-005 — needs email/token infra) ·
+external OAuth/OIDC · social login · sharing & visibility (EPIC-006) ·
+leaderboards (EPIC-007) · encrypted per-user AI keys (EPIC-009) ·
+durable/secure session & cookie handling at scale.

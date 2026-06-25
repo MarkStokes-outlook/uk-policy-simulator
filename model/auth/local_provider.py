@@ -13,6 +13,7 @@ so a user can change their email without changing identity.
 
 from __future__ import annotations
 
+import dataclasses
 from datetime import datetime, timezone
 from typing import Callable
 from uuid import uuid4
@@ -20,10 +21,12 @@ from uuid import uuid4
 from . import password as password_utils
 from .provider import PasswordAuthProvider
 from .types import (
+    AuthError,
     AuthSession,
     InvalidCredentialsError,
     User,
     UserExistsError,
+    UserNotFoundError,
     normalize_email,
 )
 from .user_store import UserStore
@@ -104,3 +107,69 @@ class LocalAuthProvider(PasswordAuthProvider):
         if user is None or not password_ok or not user.is_active:
             raise InvalidCredentialsError("Invalid email or password.")
         return AuthSession.from_user(user)
+
+    # --- account self-management (US-006, US-007) ------------------------
+
+    def _get_or_raise(self, user_id: str) -> User:
+        user = self._store.get_by_id(user_id)
+        if user is None:
+            raise UserNotFoundError(f"No user with id '{user_id}'.")
+        return user
+
+    def change_password(
+        self, user_id: str, current_password: str, new_password: str
+    ) -> User:
+        """Change a user's password after verifying the current one (US-006).
+
+        The change requires the correct ``current_password`` (raising
+        :class:`InvalidCredentialsError` otherwise) and the ``new_password`` is
+        validated and Argon2id-hashed. The user's canonical ``user_id`` and all
+        other fields are unchanged; ``updated_at`` advances.
+        """
+        user = self._get_or_raise(user_id)
+        if not user.password_hash or not self._verify(user.password_hash, current_password):
+            raise InvalidCredentialsError("Current password is incorrect.")
+        if not isinstance(new_password, str) or new_password == "":
+            raise AuthError("A new password is required.")
+        updated = dataclasses.replace(
+            user,
+            password_hash=self._hash(new_password),
+            updated_at=self._timestamp(),
+        )
+        self._store.update(updated)
+        return updated
+
+    def update_profile(
+        self,
+        user_id: str,
+        *,
+        display_name: str | None = None,
+        email: str | None = None,
+    ) -> User:
+        """Edit a user's profile fields (US-007).
+
+        Only the fields passed are changed. Email is normalised and must remain
+        unique (the store raises on a clash); changing it does **not** change the
+        canonical ``user_id`` — that is the whole point of keeping the internal id
+        independent of the login identifier. For the local provider the
+        ``provider_subject`` tracks the (normalised) email.
+        """
+        user = self._get_or_raise(user_id)
+        changes: dict[str, object] = {}
+        if display_name is not None:
+            name = display_name.strip()
+            if name == "":
+                raise AuthError("Display name cannot be empty.")
+            changes["display_name"] = name
+        if email is not None:
+            normalised = normalize_email(email)
+            if normalised == "":
+                raise AuthError("A valid email is required.")
+            changes["email"] = normalised
+            changes["provider_subject"] = normalised
+        if not changes:
+            return user
+        changes["updated_at"] = self._timestamp()
+        updated = dataclasses.replace(user, **changes)
+        self._store.update(updated)  # raises if the new email collides
+        return updated

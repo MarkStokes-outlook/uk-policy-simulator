@@ -13,12 +13,14 @@ import pytest
 
 from model.auth import (
     AUTH_SCHEMA_VERSION,
+    AuthError,
     AuthSession,
     InvalidCredentialsError,
     JsonUserStore,
     LocalAuthProvider,
     User,
     UserExistsError,
+    UserNotFoundError,
     UserStoreError,
     current_session,
     current_user_id,
@@ -246,6 +248,97 @@ def test_get_user_round_trips(tmp_path):
     user = provider.register("alice@example.com", "pw-12345678")
     assert provider.get_user(user.user_id).email == "alice@example.com"
     assert provider.get_user("missing") is None
+
+
+# --- Password change (US-006) ---------------------------------------------
+
+def test_change_password_requires_correct_current(tmp_path):
+    provider = _provider(tmp_path)
+    user = provider.register("alice@example.com", "old-password-1")
+    with pytest.raises(InvalidCredentialsError):
+        provider.change_password(user.user_id, "wrong-current", "new-password-2")
+    # The stored password is unchanged after a failed attempt.
+    assert provider.authenticate("alice@example.com", "old-password-1").user_id == user.user_id
+
+
+def test_change_password_sets_new_and_invalidates_old(tmp_path):
+    provider = _provider(tmp_path)
+    user = provider.register("alice@example.com", "old-password-1")
+    updated = provider.change_password(user.user_id, "old-password-1", "new-password-2")
+
+    # Identity is stable; only the hash (and updated_at) change.
+    assert updated.user_id == user.user_id
+    assert updated.email == user.email
+    assert updated.password_hash != user.password_hash
+
+    # New password works; the old one no longer does.
+    assert provider.authenticate("alice@example.com", "new-password-2").user_id == user.user_id
+    with pytest.raises(InvalidCredentialsError):
+        provider.authenticate("alice@example.com", "old-password-1")
+
+
+def test_change_password_rejects_empty_new(tmp_path):
+    provider = _provider(tmp_path)
+    user = provider.register("alice@example.com", "old-password-1")
+    with pytest.raises(AuthError):
+        provider.change_password(user.user_id, "old-password-1", "")
+
+
+def test_change_password_unknown_user_raises(tmp_path):
+    provider = _provider(tmp_path)
+    with pytest.raises(UserNotFoundError):
+        provider.change_password("ghost", "x", "y")
+
+
+# --- Profile management (US-007) ------------------------------------------
+
+def test_update_profile_changes_display_name(tmp_path):
+    provider = _provider(tmp_path)
+    user = provider.register("alice@example.com", "pw-12345678", display_name="Alice")
+    updated = provider.update_profile(user.user_id, display_name="Alice Cooper")
+    assert updated.display_name == "Alice Cooper"
+    assert updated.user_id == user.user_id
+    assert provider.get_user(user.user_id).display_name == "Alice Cooper"
+
+
+def test_update_profile_email_change_keeps_user_id_canonical(tmp_path):
+    provider = _provider(tmp_path)
+    user = provider.register("alice@example.com", "pw-12345678")
+    updated = provider.update_profile(user.user_id, email="ALICE.NEW@example.com")
+
+    # The canonical id is unchanged even though the login email changed.
+    assert updated.user_id == user.user_id
+    assert updated.email == "alice.new@example.com"  # normalised
+    assert updated.provider_subject == "alice.new@example.com"
+
+    # Login follows the new email; the old email no longer resolves.
+    assert provider.authenticate("alice.new@example.com", "pw-12345678").user_id == user.user_id
+    with pytest.raises(InvalidCredentialsError):
+        provider.authenticate("alice@example.com", "pw-12345678")
+
+
+def test_update_profile_rejects_email_collision(tmp_path):
+    provider = _provider(tmp_path)
+    provider.register("taken@example.com", "pw-12345678")
+    mover = provider.register("mover@example.com", "pw-12345678")
+    with pytest.raises(AuthError):  # UserStoreError is an AuthError
+        provider.update_profile(mover.user_id, email="taken@example.com")
+
+
+def test_update_profile_rejects_blank_fields(tmp_path):
+    provider = _provider(tmp_path)
+    user = provider.register("alice@example.com", "pw-12345678")
+    with pytest.raises(AuthError):
+        provider.update_profile(user.user_id, display_name="   ")
+    with pytest.raises(AuthError):
+        provider.update_profile(user.user_id, email="   ")
+
+
+def test_update_profile_noop_when_nothing_passed(tmp_path):
+    provider = _provider(tmp_path)
+    user = provider.register("alice@example.com", "pw-12345678")
+    same = provider.update_profile(user.user_id)
+    assert same == user
 
 
 # --- Session helpers (framework-agnostic) ---------------------------------

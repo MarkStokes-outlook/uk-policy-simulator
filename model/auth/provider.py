@@ -60,3 +60,23 @@ class PasswordAuthProvider(AuthProvider, Protocol):
         which, to avoid account enumeration.
         """
         ...
+
+    def change_password(
+        self, user_id: str, current_password: str, new_password: str
+    ) -> User:
+        """Change a user's password, verifying ``current_password`` first.
+
+        Raises :class:`model.auth.types.InvalidCredentialsError` if the current
+        password is wrong.
+        """
+        ...
+
+    def update_profile(
+        self,
+        user_id: str,
+        *,
+        display_name: str | None = None,
+        email: str | None = None,
+    ) -> User:
+        """Edit a user's profile fields, leaving the canonical ``user_id`` intact."""
+        ...

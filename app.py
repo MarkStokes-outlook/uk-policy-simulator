@@ -243,9 +243,65 @@ def _cb_login() -> None:
     _set_auth_msg("success", f"Signed in as {session.display_name}.")
 
 
+# Account-settings widget keys (cleared on sign-out so they re-seed per user).
+_ACCOUNT_KEYS = (
+    "acct_display_name",
+    "acct_email",
+    "acct_pw_current",
+    "acct_pw_new",
+    "acct_pw_confirm",
+)
+
+
 def _cb_logout() -> None:
     logout(st.session_state)
+    for key in _ACCOUNT_KEYS:
+        st.session_state.pop(key, None)
     _set_auth_msg("info", "Signed out.")
+
+
+def _cb_update_profile() -> None:
+    session = current_session(st.session_state)
+    if session is None:
+        return
+    name = (st.session_state.get("acct_display_name") or "").strip()
+    email = (st.session_state.get("acct_email") or "").strip()
+    if not name or not email:
+        _set_auth_msg("error", "Display name and email are both required.")
+        return
+    try:
+        user = auth_provider.update_profile(session.user_id, display_name=name, email=email)
+    except AuthError as exc:
+        _set_auth_msg("error", f"Could not save profile: {exc}")
+        return
+    # Refresh the in-session principal and the seeded fields with saved values.
+    login(st.session_state, AuthSession.from_user(user))
+    st.session_state["acct_display_name"] = user.display_name
+    st.session_state["acct_email"] = user.email
+    _set_auth_msg("success", "Profile updated.")
+
+
+def _cb_change_password() -> None:
+    session = current_session(st.session_state)
+    if session is None:
+        return
+    current = st.session_state.get("acct_pw_current") or ""
+    new = st.session_state.get("acct_pw_new") or ""
+    confirm = st.session_state.get("acct_pw_confirm") or ""
+    if not current or not new:
+        _set_auth_msg("error", "Enter your current password and a new password.")
+        return
+    if new != confirm:
+        _set_auth_msg("error", "New password and confirmation do not match.")
+        return
+    try:
+        auth_provider.change_password(session.user_id, current, new)
+    except AuthError as exc:
+        _set_auth_msg("error", f"Could not change password: {exc}")
+        return
+    for key in ("acct_pw_current", "acct_pw_new", "acct_pw_confirm"):
+        st.session_state.pop(key, None)
+    _set_auth_msg("success", "Password changed.")
 
 
 def _set_models_msg(level: str, text: str) -> None:
@@ -419,6 +475,21 @@ if _auth_msg:
 _session = current_session(st.session_state)
 if _session is not None:
     st.sidebar.caption(f"Signed in as **{_session.display_name}**")
+    # Seed editable profile fields from the current principal (only when unset,
+    # so an in-progress edit is preserved across reruns; cleared on sign-out).
+    st.session_state.setdefault("acct_display_name", _session.display_name)
+    st.session_state.setdefault("acct_email", _session.email)
+    with st.sidebar.expander("Account settings", expanded=False):
+        st.caption("Profile")
+        st.text_input("Display name", key="acct_display_name")
+        st.text_input("Email", key="acct_email")
+        st.button("Save profile", on_click=_cb_update_profile, use_container_width=True)
+        st.divider()
+        st.caption("Change password")
+        st.text_input("Current password", type="password", key="acct_pw_current")
+        st.text_input("New password", type="password", key="acct_pw_new")
+        st.text_input("Confirm new password", type="password", key="acct_pw_confirm")
+        st.button("Change password", on_click=_cb_change_password, use_container_width=True)
     st.sidebar.button("Sign out", on_click=_cb_logout, use_container_width=True)
 else:
     st.sidebar.caption(
