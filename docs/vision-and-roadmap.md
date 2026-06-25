@@ -2,7 +2,7 @@
 
 ## Product Vision & Long-Term Roadmap
 
-Version: 0.2 Reviewed  
+Version: 0.3  
 Status: Living Document  
 Last Updated: June 2026
 
@@ -274,6 +274,12 @@ Subjective concepts such as fairness, desirability, or political acceptability s
 Goal:
 
 Provide objective scoring without AI dependency.
+
+Status:
+
+Shipped in v0.3. Deterministic 0–100 scores across all seven categories, a
+published per-lever contribution matrix, and five configurable weighting
+profiles (no profile treated as correct). See [`scoring.md`](scoring.md).
 
 ---
 

@@ -11,9 +11,13 @@ from model import (
     FeedbackAssumptions,
     Scenario,
     ScenarioError,
+    ScoringError,
+    build_scorecard,
     compute_fiscal,
     load_baseline,
     load_scenarios,
+    load_weighting_profiles,
+    score_categories,
 )
 
 st.set_page_config(
@@ -24,6 +28,7 @@ st.set_page_config(
 
 BASELINE_PATH = Path(__file__).parent / "baseline.csv"
 SCENARIOS_PATH = Path(__file__).parent / "scenarios.yaml"
+WEIGHTING_PATH = Path(__file__).parent / "weighting_profiles.yaml"
 
 # Lever display metadata, keyed by the canonical scenario key so presets,
 # sliders and the engine all agree. Tuple: (key, label, min, max, step).
@@ -130,6 +135,21 @@ except ScenarioError as exc:
 
 scenario_ids = list(SCENARIOS)
 
+# --- Weighting profiles (EPIC-003) ---------------------------------------
+# weighting_profiles.yaml is validated on load; fail clearly rather than scoring
+# against a broken or missing set of priorities.
+try:
+    WEIGHTING_PROFILES = load_weighting_profiles(WEIGHTING_PATH)
+except ScoringError as exc:
+    st.error(
+        f"Could not load weighting profiles from `{WEIGHTING_PATH.name}`.\n\n"
+        f"**{exc}**\n\n"
+        "Fix the weighting file and reload."
+    )
+    st.stop()
+
+profile_ids = list(WEIGHTING_PROFILES)
+
 
 def _apply_selected_scenario() -> None:
     """Populate every slider's session-state from the chosen preset.
@@ -217,6 +237,16 @@ with st.sidebar.expander("About this scenario", expanded=True):
         "endorsements, forecasts or recommendations."
     )
 
+st.sidebar.subheader("Scoring")
+selected_profile_id = st.sidebar.selectbox(
+    "Weighting profile",
+    profile_ids,
+    format_func=lambda i: WEIGHTING_PROFILES[i].name,
+    key="weighting_select",
+)
+selected_profile = WEIGHTING_PROFILES[selected_profile_id]
+st.sidebar.caption(selected_profile.summary)
+
 # The sidebar sliders are bounded to valid ranges, so this should not normally
 # fail; guard anyway so a bad assumption surfaces clearly rather than crashing.
 try:
@@ -236,6 +266,19 @@ except AssumptionError as exc:
 result = compute_fiscal(baseline, revenue_levers, investment_levers, assumptions)
 projection = pd.DataFrame(result.projection)
 
+# Deterministic scoring (EPIC-003). Scores need lever values keyed by the
+# canonical scenario keys, which are exactly the session-state slider keys.
+scoring_revenue = {key: st.session_state[key] for key, *_ in REVENUE_LEVER_SPECS}
+scoring_investment = {key: st.session_state[key] for key, *_ in INVESTMENT_LEVER_SPECS}
+category_scores = score_categories(
+    baseline, result, scoring_revenue, scoring_investment
+)
+try:
+    scorecard = build_scorecard(category_scores, selected_profile)
+except ScoringError as exc:
+    st.error(f"Could not score this scenario: **{exc}**")
+    st.stop()
+
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("Baseline deficit", f"£{baseline.deficit:,.0f}bn")
 c2.metric("Static reform revenue", f"£{result.revenue_static:,.0f}bn")
@@ -252,6 +295,52 @@ d1.metric(f"Year {years} deficit", f"£{last['Deficit (£bn)']:,.0f}bn")
 d2.metric(f"Year {years} deficit / GDP", f"{last['Deficit % GDP']:.1f}%")
 d3.metric(f"Year {years} revenue feedback", f"£{last['Revenue feedback (£bn)']:,.0f}bn")
 d4.metric(f"Year {years} cost reduction", f"£{last['Cost reduction (£bn)']:,.0f}bn")
+
+st.divider()
+
+st.subheader("Policy scores")
+st.caption(
+    f"Deterministic 0–100 scores (higher = more favourable on each axis), combined "
+    f"into an overall using the **{selected_profile.name}** weighting profile. "
+    "Scores are deterministic, transparent heuristics for exploration, not forecasts: "
+    "the category formulas are fixed and directionally defined, but the underlying "
+    "coefficients and penalties are human-curated model assumptions. The weighting "
+    "profile carries the priorities."
+)
+
+s_overall, s_chart = st.columns([1, 3])
+with s_overall:
+    st.metric("Overall (weighted)", f"{scorecard.overall:.0f}/100")
+    st.caption(f"Profile: **{selected_profile.name}**")
+with s_chart:
+    score_df = pd.DataFrame(
+        [{"Category": c.label, "Score": c.score} for c in category_scores.values()]
+    )
+    score_chart = alt.Chart(score_df).mark_bar().encode(
+        x=alt.X("Score:Q", scale=alt.Scale(domain=[0, 100]), title="Score (0–100)"),
+        y=alt.Y("Category:N", sort=None, title=None),
+        tooltip=["Category", alt.Tooltip("Score:Q", format=".0f")],
+    ).properties(height=240)
+    st.altair_chart(score_chart, use_container_width=True)
+
+with st.expander("How each score was calculated", expanded=False):
+    breakdown = pd.DataFrame(
+        [
+            {
+                "Category": c.label,
+                "Score": round(c.score, 1),
+                "What 100 means": c.direction,
+                "Why this score": c.rationale,
+            }
+            for c in category_scores.values()
+        ]
+    )
+    st.dataframe(breakdown, use_container_width=True, hide_index=True)
+    st.caption(
+        "Outcome categories use a published per-£bn contribution matrix "
+        "(`model/scoring.py`); Fiscal Sustainability comes straight from the "
+        "engine's final-year deficit/GDP. No AI is involved."
+    )
 
 st.divider()
 
@@ -298,9 +387,27 @@ lever_rows += [("Investment", name, value) for name, value in investment_levers.
 lever_df = pd.DataFrame(lever_rows, columns=["Type", "Lever", "£bn"])
 st.dataframe(lever_df, use_container_width=True)
 
-st.download_button(
+dl1, dl2 = st.columns(2)
+dl1.download_button(
     "Download projection CSV",
     data=projection.to_csv(index=False).encode("utf-8"),
     file_name="uk_policy_sandbox_projection.csv",
+    mime="text/csv",
+)
+score_export = pd.DataFrame(
+    [
+        {
+            "Category": c.label,
+            "Score": round(c.score, 1),
+            "Weight": selected_profile.weights[c.key],
+            "Rationale": c.rationale,
+        }
+        for c in category_scores.values()
+    ]
+)
+dl2.download_button(
+    f"Download scores CSV ({selected_profile.name})",
+    data=score_export.to_csv(index=False).encode("utf-8"),
+    file_name="uk_policy_sandbox_scores.csv",
     mime="text/csv",
 )
