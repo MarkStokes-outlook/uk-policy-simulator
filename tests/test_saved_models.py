@@ -275,3 +275,113 @@ def test_schema_version_is_written(tmp_path):
     doc = json.loads((tmp_path / "saved_models.json").read_text(encoding="utf-8"))
     assert doc["schema_version"] == SAVED_MODELS_SCHEMA_VERSION
     assert len(doc["models"]) == 1
+
+
+# --- Ownership (EPIC-005) -------------------------------------------------
+
+def test_create_without_owner_is_unowned(tmp_path):
+    store = _store(tmp_path)
+    model = store.create("Plan", _rev(), _inv(), ASSUMPTIONS)
+    assert model.owner_user_id is None
+
+
+def test_create_with_owner_persists_and_round_trips(tmp_path):
+    store = _store(tmp_path)
+    store.create("Owned", _rev(), _inv(), ASSUMPTIONS, owner_user_id="user-0001")
+    reloaded = ModelStore(tmp_path / "saved_models.json").get("owned")
+    assert reloaded.owner_user_id == "user-0001"
+
+
+def test_update_preserves_owner(tmp_path):
+    store = _store(tmp_path)
+    store.create("Owned", _rev(), _inv(), ASSUMPTIONS, owner_user_id="user-0001")
+    updated = store.update("owned", _rev(wealth_property=5.0), _inv(), ASSUMPTIONS)
+    assert updated.owner_user_id == "user-0001"
+
+
+def test_clone_inherits_owner_by_default_and_can_reassign(tmp_path):
+    store = _store(tmp_path)
+    store.create("Src", _rev(), _inv(), ASSUMPTIONS, owner_user_id="user-0001")
+    inherited = store.clone("src", "Inherited copy")
+    assert inherited.owner_user_id == "user-0001"
+    reassigned = store.clone("src", "Reassigned copy", owner_user_id="user-0002")
+    assert reassigned.owner_user_id == "user-0002"
+
+
+def test_legacy_model_without_owner_key_loads_as_unowned(tmp_path):
+    """A store file written before EPIC-005 omits owner_user_id entirely."""
+    import json
+
+    doc = {
+        "schema_version": SAVED_MODELS_SCHEMA_VERSION,
+        "models": [
+            {
+                "id": "legacy",
+                "name": "Legacy",
+                "created_at": "2026-01-01T12:00:00+00:00",
+                "updated_at": "2026-01-01T12:00:00+00:00",
+                # NOTE: no owner_user_id key at all
+                "versions": [
+                    {
+                        "version": 1,
+                        "saved_at": "2026-01-01T12:00:00+00:00",
+                        "note": "",
+                        "revenue_levers": _rev(),
+                        "investment_levers": _inv(),
+                        "assumptions": {
+                            "years": 10,
+                            "growth_baseline": 0.035,
+                            "revenue_feedback_rate": 0.3,
+                            "cost_reduction_rate": 0.2,
+                            "lag_years": 2,
+                            "implementation_quality": 0.7,
+                            "optimism_penalty": 0.2,
+                        },
+                    }
+                ],
+            }
+        ],
+    }
+    p = tmp_path / "saved_models.json"
+    p.write_text(json.dumps(doc), encoding="utf-8")
+    model = ModelStore(p).get("legacy")
+    assert model.owner_user_id is None
+
+
+def test_owner_user_id_must_be_string_or_null(tmp_path):
+    import json
+
+    doc = {
+        "schema_version": SAVED_MODELS_SCHEMA_VERSION,
+        "models": [
+            {
+                "id": "bad",
+                "name": "Bad owner",
+                "created_at": "2026-01-01T12:00:00+00:00",
+                "updated_at": "2026-01-01T12:00:00+00:00",
+                "owner_user_id": "   ",  # blank string is not a valid owner
+                "versions": [
+                    {
+                        "version": 1,
+                        "saved_at": "2026-01-01T12:00:00+00:00",
+                        "note": "",
+                        "revenue_levers": _rev(),
+                        "investment_levers": _inv(),
+                        "assumptions": {
+                            "years": 10,
+                            "growth_baseline": 0.035,
+                            "revenue_feedback_rate": 0.3,
+                            "cost_reduction_rate": 0.2,
+                            "lag_years": 2,
+                            "implementation_quality": 0.7,
+                            "optimism_penalty": 0.2,
+                        },
+                    }
+                ],
+            }
+        ],
+    }
+    p = tmp_path / "saved_models.json"
+    p.write_text(json.dumps(doc), encoding="utf-8")
+    with pytest.raises(ModelStoreError, match="owner_user_id"):
+        ModelStore(p).list_models()

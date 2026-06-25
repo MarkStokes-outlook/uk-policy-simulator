@@ -70,6 +70,12 @@ class SavedModel:
     """A named, persistent policy model with full version history.
 
     ``versions`` is ordered oldest-first; :attr:`current` is the latest.
+
+    ``owner_user_id`` links a model to the identity that owns it (EPIC-005). It
+    is optional: models created before identity existed — and any created while
+    no user is signed in — have ``owner_user_id is None`` and are treated as
+    legacy/unowned. The canonical owner key is the auth layer's internal
+    ``user_id`` (never an email); see ``model/auth/types.py``.
     """
 
     id: str
@@ -77,6 +83,7 @@ class SavedModel:
     created_at: str
     updated_at: str
     versions: tuple[ModelVersion, ...]
+    owner_user_id: str | None = None
 
     @property
     def current(self) -> ModelVersion:
@@ -225,12 +232,21 @@ def _model_from_dict(raw: Any) -> SavedModel:
         f"Model '{model_id}': must have a non-empty 'versions' list.",
     )
     versions = tuple(_version_from_dict(v, model_id) for v in raw_versions)
+    # Ownership is optional and backward-compatible: a file written before
+    # EPIC-005 simply omits the key and loads as unowned (None). When present it
+    # must be a non-empty string (the auth layer's canonical user_id).
+    owner_user_id = raw.get("owner_user_id")
+    _require(
+        owner_user_id is None or (isinstance(owner_user_id, str) and owner_user_id.strip() != ""),
+        f"Model '{model_id}': 'owner_user_id' must be a non-empty string or null.",
+    )
     return SavedModel(
         id=model_id,
         name=name,
         created_at=raw["created_at"],
         updated_at=raw["updated_at"],
         versions=versions,
+        owner_user_id=owner_user_id,
     )
 
 
@@ -240,6 +256,7 @@ def _model_to_dict(m: SavedModel) -> dict[str, Any]:
         "name": m.name,
         "created_at": m.created_at,
         "updated_at": m.updated_at,
+        "owner_user_id": m.owner_user_id,
         "versions": [_version_to_dict(v) for v in m.versions],
     }
 
@@ -336,8 +353,13 @@ class ModelStore:
         investment_levers: Mapping[str, float],
         assumptions: FeedbackAssumptions,
         note: str = "",
+        owner_user_id: str | None = None,
     ) -> SavedModel:
-        """Create a new saved model at version 1 and persist it."""
+        """Create a new saved model at version 1 and persist it.
+
+        ``owner_user_id`` (EPIC-005) stamps the model with its owner; leave it
+        ``None`` for an unowned/legacy model (e.g. when no user is signed in).
+        """
         _require(
             isinstance(name, str) and name.strip() != "",
             "A saved model needs a non-empty name.",
@@ -356,7 +378,12 @@ class ModelStore:
             assumptions=assumptions,
         )
         model = SavedModel(
-            id=model_id, name=name.strip(), created_at=ts, updated_at=ts, versions=(version,)
+            id=model_id,
+            name=name.strip(),
+            created_at=ts,
+            updated_at=ts,
+            versions=(version,),
+            owner_user_id=owner_user_id,
         )
         models[model_id] = model
         self._write(models)
@@ -391,13 +418,24 @@ class ModelStore:
             created_at=existing.created_at,
             updated_at=ts,
             versions=existing.versions + (new_version,),
+            owner_user_id=existing.owner_user_id,  # ownership is stable across updates
         )
         models[model_id] = updated
         self._write(models)
         return updated
 
-    def clone(self, model_id: str, new_name: str, note: str = "") -> SavedModel:
-        """Copy a model's current version into a brand-new model at version 1."""
+    def clone(
+        self,
+        model_id: str,
+        new_name: str,
+        note: str = "",
+        owner_user_id: str | None = None,
+    ) -> SavedModel:
+        """Copy a model's current version into a brand-new model at version 1.
+
+        By default the clone inherits the source's ``owner_user_id``; pass an
+        explicit value (e.g. the current user) to re-own the copy.
+        """
         _require(
             isinstance(new_name, str) and new_name.strip() != "",
             "A cloned model needs a non-empty name.",
@@ -410,6 +448,7 @@ class ModelStore:
             cur.investment_levers,
             cur.assumptions,
             note=note or f"Cloned from '{source.name}' (v{cur.version}).",
+            owner_user_id=owner_user_id if owner_user_id is not None else source.owner_user_id,
         )
 
     def delete(self, model_id: str) -> None:
