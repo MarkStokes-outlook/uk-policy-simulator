@@ -2,8 +2,9 @@
 #
 # A weighting profile says how much each of the seven scoring categories matters
 # when combining them into a single overall score. The category *scores* are
-# objective and deterministic (see model/scoring.py); the *weights* here are
-# where subjective priorities live.
+# deterministic and transparent (see model/scoring.py), though the contribution
+# matrix and complexity penalties behind them are human-curated model
+# assumptions; the *weights* here are where subjective priorities live.
 #
 # IMPORTANT: no profile is "objectively correct". They are deliberately diverse
 # starting points so users can see how the overall score shifts with priorities,

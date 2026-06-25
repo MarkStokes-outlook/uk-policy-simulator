@@ -7,8 +7,11 @@ on a 0–100 scale, then combines them into a single **overall** score using a
 > **These scores are transparent heuristics for exploration — not forecasts,
 > costings or recommendations.** There is no AI and no randomness in the scoring
 > path: identical inputs always produce identical scores. The category scores
-> are *objective and directional*; the *priorities* (which categories matter,
-> and how much) live entirely in configurable weighting profiles.
+> are *deterministic, transparent and directionally defined* — but the
+> contribution coefficients and complexity penalties behind them are themselves
+> human-curated model assumptions, not calibrated measurement. The *priorities*
+> (which categories matter, and how much) live entirely in configurable
+> weighting profiles.
 
 ## The seven categories
 

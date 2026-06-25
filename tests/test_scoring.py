@@ -202,6 +202,33 @@ def test_build_scorecard_rejects_zero_weights():
         build_scorecard(scores, profile)
 
 
+def _full_weights(**overrides) -> dict:
+    weights = {c: 1.0 for c in SCORE_CATEGORIES}
+    weights.update(overrides)
+    return weights
+
+
+@pytest.mark.parametrize(
+    "weights, match",
+    [
+        # Missing a category (manually built, not via the validated loader).
+        ({c: 1.0 for c in SCORE_CATEGORIES if c != "income_equality"}, "missing"),
+        # Negative weight that would otherwise pass because the sum stays positive.
+        (_full_weights(income_equality=-1.0), ">= 0"),
+        # Non-finite weight.
+        (_full_weights(economic_growth=float("inf")), "finite"),
+        # Unknown category key.
+        ({**_full_weights(), "made_up": 1.0}, "unknown"),
+    ],
+)
+def test_build_scorecard_rejects_invalid_manual_profiles(weights, match):
+    rev, inv = _zero_levers()
+    scores = _score(rev, inv)
+    profile = WeightingProfile(id="manual", name="Manual", summary="x", weights=weights)
+    with pytest.raises(ScoringError, match=match):
+        build_scorecard(scores, profile)
+
+
 # --- Weighting-profile loading -------------------------------------------
 
 def test_canonical_weighting_file_loads_all_profiles():

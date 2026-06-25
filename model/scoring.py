@@ -10,11 +10,14 @@ Design principles (see ``docs/scoring.md`` and the roadmap's trust framework):
 - **No black-box scoring.** Every outcome category is driven by a *published,
   signed contribution matrix* (:data:`CONTRIBUTIONS`) — points per £bn of each
   lever — so any score can be explained lever by lever.
-- **Objective scores, subjective weights.** The category scores are factual,
-  directional indicators ("how much does this advance the named dimension?").
-  How much each dimension *matters* is never baked in here — it lives in
-  configurable :class:`WeightingProfile` data (``weighting_profiles.yaml``).
-  The platform deliberately ships several profiles and treats none as correct.
+- **Deterministic scores, subjective weights.** The category scores are
+  deterministic, transparent and directionally defined ("how much does this
+  advance the named dimension?"), but the contribution coefficients and
+  complexity penalties are themselves human-curated model assumptions — not
+  calibrated measurement. How much each dimension *matters* is never baked in
+  here — it lives in configurable :class:`WeightingProfile` data
+  (``weighting_profiles.yaml``). The platform deliberately ships several
+  profiles and treats none as correct.
 - **Uniform direction.** Every category is defined so that **100 is the more
   favourable end of that axis**. For Implementation Complexity that means
   100 = easy to deliver (low complexity), 0 = very complex.
@@ -364,15 +367,16 @@ def build_scorecard(
             + "."
         )
 
-    total_weight = float(sum(profile.weights[c] for c in SCORE_CATEGORIES))
-    if total_weight <= 0:
-        raise ScoringError(
-            f"Weighting profile '{profile.id}' weights must sum to a positive "
-            f"number (got {total_weight})."
-        )
+    # Validate the profile's weights through the same contract as the loader, so
+    # a manually-constructed WeightingProfile cannot bypass validation. This
+    # turns missing / unknown / non-numeric / non-finite / negative / zero-sum
+    # weights into an actionable ScoringError instead of a raw KeyError or a
+    # silently-accepted bad weight.
+    weights = _coerce_weights(profile.weights, profile.id)
 
+    total_weight = float(sum(weights[c] for c in SCORE_CATEGORIES))
     overall = sum(
-        categories[c].score * profile.weights[c] for c in SCORE_CATEGORIES
+        categories[c].score * weights[c] for c in SCORE_CATEGORIES
     ) / total_weight
 
     return ScoreCard(

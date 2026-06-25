@@ -302,8 +302,10 @@ st.subheader("Policy scores")
 st.caption(
     f"Deterministic 0–100 scores (higher = more favourable on each axis), combined "
     f"into an overall using the **{selected_profile.name}** weighting profile. "
-    "Scores are transparent heuristics for exploration, not forecasts; the category "
-    "scores are objective, while the weighting profile carries the priorities."
+    "Scores are deterministic, transparent heuristics for exploration, not forecasts: "
+    "the category formulas are fixed and directionally defined, but the underlying "
+    "coefficients and penalties are human-curated model assumptions. The weighting "
+    "profile carries the priorities."
 )
 
 s_overall, s_chart = st.columns([1, 3])

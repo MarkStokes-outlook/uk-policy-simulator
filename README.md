@@ -50,7 +50,9 @@ Demand Impact, Income Equality and Implementation Complexity — on a 0–100 sc
 then combined into a single **overall** score using a **weighting profile**.
 
 - Scoring is **deterministic and AI-free**: identical inputs give identical
-  scores. The category scores are objective and directional; subjective
+  scores. The category scores are deterministic, transparent and directionally
+  defined — but the contribution matrix and complexity penalties behind them are
+  human-curated model assumptions, not calibrated measurement. Subjective
   priorities live only in the weighting profiles.
 - Outcome categories use a **published per-£bn contribution matrix** so every
   score is explainable lever by lever; Fiscal Sustainability comes straight from
