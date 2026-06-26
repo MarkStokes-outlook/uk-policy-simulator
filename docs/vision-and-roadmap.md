@@ -341,6 +341,13 @@ This milestone represents the transition from a standalone simulation tool to a 
 
 Platform architecture should be reviewed before implementation to ensure future support for persistence, sharing, collaboration, and scale.
 
+Status:
+
+Shipped in v1.1. Provider-agnostic authentication (registration, login,
+password reset, profile management) behind a pluggable provider abstraction
+ready for external IdPs, with saved-model ownership enforced. Reset tokens are
+hashed, single-use, and time-limited. See [`identity.md`](identity.md).
+
 ---
 
 ### v1.2
