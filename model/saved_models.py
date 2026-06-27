@@ -26,7 +26,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Mapping
+from typing import Any, Callable, Iterable, Mapping
 
 from .fiscal_model import AssumptionError, FeedbackAssumptions
 from .scenarios import (
@@ -45,6 +45,17 @@ class ModelStoreError(Exception):
 
     Messages are written to be actionable in the UI and CI: they name the
     offending model/field wherever possible.
+    """
+
+
+class ModelAuthorizationError(ModelStoreError):
+    """Raised when an actor attempts a model mutation they may not perform.
+
+    Subclasses :class:`ModelStoreError` deliberately, as defence in depth: any
+    mutation path that forgets to authorise explicitly still fails *safe* through
+    existing ``except ModelStoreError`` handling rather than surfacing a raw
+    traceback. The authorisation policy itself lives in :func:`can_mutate` /
+    :func:`authorize_mutation`; see ``docs/identity.md`` for the rules.
     """
 
 
@@ -70,6 +81,12 @@ class SavedModel:
     """A named, persistent policy model with full version history.
 
     ``versions`` is ordered oldest-first; :attr:`current` is the latest.
+
+    ``owner_user_id`` links a model to the identity that owns it (EPIC-005). It
+    is optional: models created before identity existed — and any created while
+    no user is signed in — have ``owner_user_id is None`` and are treated as
+    legacy/unowned. The canonical owner key is the auth layer's internal
+    ``user_id`` (never an email); see ``model/auth/types.py``.
     """
 
     id: str
@@ -77,6 +94,7 @@ class SavedModel:
     created_at: str
     updated_at: str
     versions: tuple[ModelVersion, ...]
+    owner_user_id: str | None = None
 
     @property
     def current(self) -> ModelVersion:
@@ -225,12 +243,21 @@ def _model_from_dict(raw: Any) -> SavedModel:
         f"Model '{model_id}': must have a non-empty 'versions' list.",
     )
     versions = tuple(_version_from_dict(v, model_id) for v in raw_versions)
+    # Ownership is optional and backward-compatible: a file written before
+    # EPIC-005 simply omits the key and loads as unowned (None). When present it
+    # must be a non-empty string (the auth layer's canonical user_id).
+    owner_user_id = raw.get("owner_user_id")
+    _require(
+        owner_user_id is None or (isinstance(owner_user_id, str) and owner_user_id.strip() != ""),
+        f"Model '{model_id}': 'owner_user_id' must be a non-empty string or null.",
+    )
     return SavedModel(
         id=model_id,
         name=name,
         created_at=raw["created_at"],
         updated_at=raw["updated_at"],
         versions=versions,
+        owner_user_id=owner_user_id,
     )
 
 
@@ -240,8 +267,79 @@ def _model_to_dict(m: SavedModel) -> dict[str, Any]:
         "name": m.name,
         "created_at": m.created_at,
         "updated_at": m.updated_at,
+        "owner_user_id": m.owner_user_id,
         "versions": [_version_to_dict(v) for v in m.versions],
     }
+
+
+def filter_visible_models(
+    models: Iterable[SavedModel],
+    viewer_user_id: str | None,
+    *,
+    include_legacy: bool = True,
+) -> list[SavedModel]:
+    """Return the subset of ``models`` a viewer may see in "my saved models".
+
+    Visibility policy for the EPIC-005 auth slice (Streamlit-free so it is unit
+    tested directly):
+
+    - A model owned by ``viewer_user_id`` is visible to that viewer.
+    - A **legacy/unowned** model (``owner_user_id is None``) is visible when
+      ``include_legacy`` is True. These pre-identity models existed before
+      ownership, so they stay reachable — upgrading the app must never hide a
+      user's existing local data.
+    - A model owned by a *different* user is hidden.
+
+    When ``viewer_user_id`` is ``None`` (guest / not signed in) only
+    legacy/unowned models are visible, because a guest owns nothing.
+    """
+    visible: list[SavedModel] = []
+    for m in models:
+        if m.owner_user_id is None:
+            if include_legacy:
+                visible.append(m)
+        elif m.owner_user_id == viewer_user_id:
+            visible.append(m)
+    return visible
+
+
+def can_mutate(model: SavedModel, acting_user_id: str | None) -> bool:
+    """Return ``True`` iff ``acting_user_id`` may update or delete ``model`` in place.
+
+    Authorisation policy for the EPIC-005 ownership-enforcement slice (pure and
+    Streamlit-free, so it is the testable security boundary — independent of any
+    UI filtering):
+
+    - **Legacy/unowned** models (``owner_user_id is None``) are **read-only**:
+      nobody may mutate them in place. A signed-in user claims an editable copy
+      by cloning (clone creates a new, owned model and never touches the source).
+    - An **owned** model may be mutated **only by its owner**.
+    - **Guests** (``acting_user_id is None``) may not mutate any owned model.
+
+    Reads (load) and clone are not mutations and are not gated here; who may
+    *see* another user's model is a sharing/visibility concern (EPIC-006).
+    """
+    if model.owner_user_id is None:
+        return False  # legacy: read-only, clone-to-claim
+    return acting_user_id is not None and acting_user_id == model.owner_user_id
+
+
+def authorize_mutation(model: SavedModel, acting_user_id: str | None) -> None:
+    """Raise :class:`ModelAuthorizationError` unless ``acting_user_id`` may mutate ``model``.
+
+    Call this immediately before an in-place ``update``/``delete``, passing the
+    model fetched *from the store* (never from a UI-filtered collection).
+    """
+    if can_mutate(model, acting_user_id):
+        return
+    if model.owner_user_id is None:
+        raise ModelAuthorizationError(
+            f"'{model.name}' is a legacy/unowned model and is read-only. "
+            "Clone it to create an editable copy you own."
+        )
+    raise ModelAuthorizationError(
+        f"You can only modify models you own — '{model.name}' belongs to another user."
+    )
 
 
 class ModelStore:
@@ -336,8 +434,13 @@ class ModelStore:
         investment_levers: Mapping[str, float],
         assumptions: FeedbackAssumptions,
         note: str = "",
+        owner_user_id: str | None = None,
     ) -> SavedModel:
-        """Create a new saved model at version 1 and persist it."""
+        """Create a new saved model at version 1 and persist it.
+
+        ``owner_user_id`` (EPIC-005) stamps the model with its owner; leave it
+        ``None`` for an unowned/legacy model (e.g. when no user is signed in).
+        """
         _require(
             isinstance(name, str) and name.strip() != "",
             "A saved model needs a non-empty name.",
@@ -356,7 +459,12 @@ class ModelStore:
             assumptions=assumptions,
         )
         model = SavedModel(
-            id=model_id, name=name.strip(), created_at=ts, updated_at=ts, versions=(version,)
+            id=model_id,
+            name=name.strip(),
+            created_at=ts,
+            updated_at=ts,
+            versions=(version,),
+            owner_user_id=owner_user_id,
         )
         models[model_id] = model
         self._write(models)
@@ -391,13 +499,24 @@ class ModelStore:
             created_at=existing.created_at,
             updated_at=ts,
             versions=existing.versions + (new_version,),
+            owner_user_id=existing.owner_user_id,  # ownership is stable across updates
         )
         models[model_id] = updated
         self._write(models)
         return updated
 
-    def clone(self, model_id: str, new_name: str, note: str = "") -> SavedModel:
-        """Copy a model's current version into a brand-new model at version 1."""
+    def clone(
+        self,
+        model_id: str,
+        new_name: str,
+        note: str = "",
+        owner_user_id: str | None = None,
+    ) -> SavedModel:
+        """Copy a model's current version into a brand-new model at version 1.
+
+        By default the clone inherits the source's ``owner_user_id``; pass an
+        explicit value (e.g. the current user) to re-own the copy.
+        """
         _require(
             isinstance(new_name, str) and new_name.strip() != "",
             "A cloned model needs a non-empty name.",
@@ -410,6 +529,7 @@ class ModelStore:
             cur.investment_levers,
             cur.assumptions,
             note=note or f"Cloned from '{source.name}' (v{cur.version}).",
+            owner_user_id=owner_user_id if owner_user_id is not None else source.owner_user_id,
         )
 
     def delete(self, model_id: str) -> None:

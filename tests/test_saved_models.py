@@ -14,9 +14,14 @@ from model.fiscal_model import FeedbackAssumptions
 from model.scenarios import INVESTMENT_LEVER_KEYS, REVENUE_LEVER_KEYS
 from model.saved_models import (
     SAVED_MODELS_SCHEMA_VERSION,
+    ModelAuthorizationError,
     ModelStore,
     ModelStoreError,
+    ModelVersion,
     SavedModel,
+    authorize_mutation,
+    can_mutate,
+    filter_visible_models,
 )
 
 ASSUMPTIONS = FeedbackAssumptions(
@@ -275,3 +280,223 @@ def test_schema_version_is_written(tmp_path):
     doc = json.loads((tmp_path / "saved_models.json").read_text(encoding="utf-8"))
     assert doc["schema_version"] == SAVED_MODELS_SCHEMA_VERSION
     assert len(doc["models"]) == 1
+
+
+# --- Ownership (EPIC-005) -------------------------------------------------
+
+def test_create_without_owner_is_unowned(tmp_path):
+    store = _store(tmp_path)
+    model = store.create("Plan", _rev(), _inv(), ASSUMPTIONS)
+    assert model.owner_user_id is None
+
+
+def test_create_with_owner_persists_and_round_trips(tmp_path):
+    store = _store(tmp_path)
+    store.create("Owned", _rev(), _inv(), ASSUMPTIONS, owner_user_id="user-0001")
+    reloaded = ModelStore(tmp_path / "saved_models.json").get("owned")
+    assert reloaded.owner_user_id == "user-0001"
+
+
+def test_update_preserves_owner(tmp_path):
+    store = _store(tmp_path)
+    store.create("Owned", _rev(), _inv(), ASSUMPTIONS, owner_user_id="user-0001")
+    updated = store.update("owned", _rev(wealth_property=5.0), _inv(), ASSUMPTIONS)
+    assert updated.owner_user_id == "user-0001"
+
+
+def test_clone_inherits_owner_by_default_and_can_reassign(tmp_path):
+    store = _store(tmp_path)
+    store.create("Src", _rev(), _inv(), ASSUMPTIONS, owner_user_id="user-0001")
+    inherited = store.clone("src", "Inherited copy")
+    assert inherited.owner_user_id == "user-0001"
+    reassigned = store.clone("src", "Reassigned copy", owner_user_id="user-0002")
+    assert reassigned.owner_user_id == "user-0002"
+
+
+def test_legacy_model_without_owner_key_loads_as_unowned(tmp_path):
+    """A store file written before EPIC-005 omits owner_user_id entirely."""
+    import json
+
+    doc = {
+        "schema_version": SAVED_MODELS_SCHEMA_VERSION,
+        "models": [
+            {
+                "id": "legacy",
+                "name": "Legacy",
+                "created_at": "2026-01-01T12:00:00+00:00",
+                "updated_at": "2026-01-01T12:00:00+00:00",
+                # NOTE: no owner_user_id key at all
+                "versions": [
+                    {
+                        "version": 1,
+                        "saved_at": "2026-01-01T12:00:00+00:00",
+                        "note": "",
+                        "revenue_levers": _rev(),
+                        "investment_levers": _inv(),
+                        "assumptions": {
+                            "years": 10,
+                            "growth_baseline": 0.035,
+                            "revenue_feedback_rate": 0.3,
+                            "cost_reduction_rate": 0.2,
+                            "lag_years": 2,
+                            "implementation_quality": 0.7,
+                            "optimism_penalty": 0.2,
+                        },
+                    }
+                ],
+            }
+        ],
+    }
+    p = tmp_path / "saved_models.json"
+    p.write_text(json.dumps(doc), encoding="utf-8")
+    model = ModelStore(p).get("legacy")
+    assert model.owner_user_id is None
+
+
+def test_owner_user_id_must_be_string_or_null(tmp_path):
+    import json
+
+    doc = {
+        "schema_version": SAVED_MODELS_SCHEMA_VERSION,
+        "models": [
+            {
+                "id": "bad",
+                "name": "Bad owner",
+                "created_at": "2026-01-01T12:00:00+00:00",
+                "updated_at": "2026-01-01T12:00:00+00:00",
+                "owner_user_id": "   ",  # blank string is not a valid owner
+                "versions": [
+                    {
+                        "version": 1,
+                        "saved_at": "2026-01-01T12:00:00+00:00",
+                        "note": "",
+                        "revenue_levers": _rev(),
+                        "investment_levers": _inv(),
+                        "assumptions": {
+                            "years": 10,
+                            "growth_baseline": 0.035,
+                            "revenue_feedback_rate": 0.3,
+                            "cost_reduction_rate": 0.2,
+                            "lag_years": 2,
+                            "implementation_quality": 0.7,
+                            "optimism_penalty": 0.2,
+                        },
+                    }
+                ],
+            }
+        ],
+    }
+    p = tmp_path / "saved_models.json"
+    p.write_text(json.dumps(doc), encoding="utf-8")
+    with pytest.raises(ModelStoreError, match="owner_user_id"):
+        ModelStore(p).list_models()
+
+
+# --- Ownership visibility filtering (EPIC-005 auth slice) -----------------
+
+def _seed_mixed_owners(tmp_path):
+    """A store with a legacy/unowned model and one per two distinct owners."""
+    store = _store(tmp_path)
+    store.create("Legacy", _rev(), _inv(), ASSUMPTIONS)  # owner None
+    store.create("Alice plan", _rev(), _inv(), ASSUMPTIONS, owner_user_id="user-alice")
+    store.create("Bob plan", _rev(), _inv(), ASSUMPTIONS, owner_user_id="user-bob")
+    return store.list_models()
+
+
+def test_filter_shows_owned_plus_legacy_for_a_user(tmp_path):
+    models = _seed_mixed_owners(tmp_path)
+    visible = {m.id for m in filter_visible_models(models, "user-alice")}
+    assert visible == {"alice-plan", "legacy"}  # own + legacy, not Bob's
+
+
+def test_filter_guest_sees_only_legacy(tmp_path):
+    models = _seed_mixed_owners(tmp_path)
+    visible = {m.id for m in filter_visible_models(models, None)}
+    assert visible == {"legacy"}
+
+
+def test_filter_can_exclude_legacy(tmp_path):
+    models = _seed_mixed_owners(tmp_path)
+    visible = {m.id for m in filter_visible_models(models, "user-alice", include_legacy=False)}
+    assert visible == {"alice-plan"}
+    # A guest with legacy excluded sees nothing.
+    assert filter_visible_models(models, None, include_legacy=False) == []
+
+
+# --- Ownership authorisation policy (EPIC-005) ----------------------------
+
+def _model(owner):
+    """A minimal SavedModel carrying just the owner — enough for authz tests."""
+    v = ModelVersion(
+        version=1,
+        saved_at="2026-01-01T12:00:00+00:00",
+        note="",
+        revenue_levers=_rev(),
+        investment_levers=_inv(),
+        assumptions=ASSUMPTIONS,
+    )
+    return SavedModel(
+        id="m",
+        name="M",
+        created_at="2026-01-01T12:00:00+00:00",
+        updated_at="2026-01-01T12:00:00+00:00",
+        versions=(v,),
+        owner_user_id=owner,
+    )
+
+
+def test_owner_may_mutate_own_model():
+    m = _model("user-alice")
+    assert can_mutate(m, "user-alice") is True
+    authorize_mutation(m, "user-alice")  # does not raise
+
+
+def test_other_user_may_not_mutate():
+    m = _model("user-alice")
+    assert can_mutate(m, "user-bob") is False
+    with pytest.raises(ModelAuthorizationError, match="belongs to another user"):
+        authorize_mutation(m, "user-bob")
+
+
+def test_guest_may_not_mutate_owned_model():
+    m = _model("user-alice")
+    assert can_mutate(m, None) is False
+    with pytest.raises(ModelAuthorizationError, match="belongs to another user"):
+        authorize_mutation(m, None)
+
+
+def test_legacy_model_is_read_only_for_everyone():
+    m = _model(None)
+    assert can_mutate(m, None) is False
+    assert can_mutate(m, "user-alice") is False
+    for actor in (None, "user-alice"):
+        with pytest.raises(ModelAuthorizationError, match="read-only"):
+            authorize_mutation(m, actor)
+
+
+def test_authorization_error_is_a_store_error():
+    # Defence in depth: any `except ModelStoreError` path catches authz failures.
+    assert issubclass(ModelAuthorizationError, ModelStoreError)
+
+
+# --- Authorisation enforced over a real store (app-path shape) ------------
+
+def test_store_mutation_denied_for_non_owner_then_allowed_for_owner(tmp_path):
+    store = _store(tmp_path)
+    store.create("Alice plan", _rev(), _inv(), ASSUMPTIONS, owner_user_id="user-alice")
+
+    # Bob and a guest are refused before any store mutation happens.
+    target = store.get("alice-plan")
+    with pytest.raises(ModelAuthorizationError):
+        authorize_mutation(target, "user-bob")
+    with pytest.raises(ModelAuthorizationError):
+        authorize_mutation(target, None)
+
+    # The model is untouched (still a single version) after refused attempts.
+    assert len(store.get("alice-plan").versions) == 1
+
+    # The owner is authorised and the mutation goes through.
+    authorize_mutation(store.get("alice-plan"), "user-alice")
+    updated = store.update("alice-plan", _rev(wealth_property=5.0), _inv(), ASSUMPTIONS)
+    assert len(updated.versions) == 2
+    assert updated.owner_user_id == "user-alice"

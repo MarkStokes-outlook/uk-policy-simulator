@@ -2,3 +2,7 @@ streamlit==1.58.0
 pandas==2.2.3
 altair==6.2.1
 PyYAML==6.0.3
+# Password hashing for the identity layer (EPIC-005). Argon2id; we do not roll
+# our own. argon2-cffi pulls in argon2-cffi-bindings; both pinned for repro.
+argon2-cffi==25.1.0
+argon2-cffi-bindings==25.1.0

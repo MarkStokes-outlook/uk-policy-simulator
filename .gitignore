@@ -76,3 +76,9 @@ dist/
 
 # User-created saved models (runtime data, not source)
 saved_models.json
+
+# Local user store — contains password hashes; runtime data/secrets, never source
+users.json
+
+# Password-reset tokens (hashes) — runtime secrets data, never source
+reset_tokens.json

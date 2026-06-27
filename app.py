@@ -1,4 +1,5 @@
 
+import os
 from pathlib import Path
 
 import streamlit as st
@@ -9,17 +10,34 @@ from model import (
     AssumptionError,
     BaselineError,
     FeedbackAssumptions,
+    ModelAuthorizationError,
     ModelStore,
     ModelStoreError,
     Scenario,
     ScenarioError,
     ScoringError,
+    authorize_mutation,
     build_scorecard,
+    can_mutate,
     compute_fiscal,
+    filter_visible_models,
     load_baseline,
     load_scenarios,
     load_weighting_profiles,
     score_categories,
+)
+from model.auth import (
+    AuthError,
+    AuthSession,
+    ConsoleMailer,
+    JsonResetTokenStore,
+    JsonUserStore,
+    LocalAuthProvider,
+    SmtpMailer,
+    current_session,
+    current_user_id,
+    login,
+    logout,
 )
 
 st.set_page_config(
@@ -33,6 +51,10 @@ SCENARIOS_PATH = Path(__file__).parent / "scenarios.yaml"
 WEIGHTING_PATH = Path(__file__).parent / "weighting_profiles.yaml"
 # User-created saved models persist here (gitignored — it is user data).
 SAVED_MODELS_PATH = Path(__file__).parent / "saved_models.json"
+# Local user accounts (password hashes) persist here (gitignored — secrets).
+USERS_PATH = Path(__file__).parent / "users.json"
+# Single-use password-reset tokens (hashes) persist here (gitignored — secrets).
+RESET_TOKENS_PATH = Path(__file__).parent / "reset_tokens.json"
 
 # Lever display metadata, keyed by the canonical scenario key so presets,
 # sliders and the engine all agree. Tuple: (key, label, min, max, step).
@@ -166,6 +188,188 @@ profile_ids = list(WEIGHTING_PROFILES)
 # A file-backed store of user-created, named models with version history.
 store = ModelStore(SAVED_MODELS_PATH)
 
+# --- Identity (EPIC-005 / v1.1) ------------------------------------------
+# Local email/password auth behind the provider abstraction. The provider, user
+# store, token store and mailer are all Streamlit-free; this module is the only
+# place Streamlit and the auth layer meet, via the framework-agnostic session
+# helpers operating on st.session_state. Swapping in OIDC later means swapping
+# this one instance.
+#
+# Email delivery for password resets is config-driven: if SMTP_HOST is set we
+# send real email via SMTP; otherwise we fall back to the ConsoleMailer, which
+# prints the reset link to the server console (safe for local/dev use). A live
+# deployment is expected to provide an SMTP server.
+_RESET_URL_BASE = os.environ.get("APP_BASE_URL", "http://localhost:8501")
+if os.environ.get("SMTP_HOST"):
+    _mailer = SmtpMailer(
+        host=os.environ["SMTP_HOST"],
+        port=int(os.environ.get("SMTP_PORT", "587")),
+        sender=os.environ.get("SMTP_SENDER", "no-reply@uk-policy-sandbox.local"),
+        reset_url_base=_RESET_URL_BASE,
+        username=os.environ.get("SMTP_USERNAME"),
+        password=os.environ.get("SMTP_PASSWORD"),
+        use_tls=os.environ.get("SMTP_USE_TLS", "true").lower() != "false",
+    )
+else:
+    _mailer = ConsoleMailer(reset_url_base=_RESET_URL_BASE)
+
+auth_provider = LocalAuthProvider(
+    JsonUserStore(USERS_PATH),
+    token_store=JsonResetTokenStore(RESET_TOKENS_PATH),
+    mailer=_mailer,
+)
+
+
+def _set_auth_msg(level: str, text: str) -> None:
+    """Stash a message for the account panel (callbacks cannot render)."""
+    st.session_state["_auth_msg"] = (level, text)
+
+
+# Sign-in and registration use *separate* input widgets (distinct keys) so the
+# two flows never share fields — see the account panel below.
+def _clear_auth_inputs() -> None:
+    for key in (
+        "auth_login_email",
+        "auth_login_password",
+        "auth_reg_email",
+        "auth_reg_password",
+        "auth_reg_display_name",
+    ):
+        st.session_state.pop(key, None)
+
+
+def _cb_register() -> None:
+    email = (st.session_state.get("auth_reg_email") or "").strip()
+    password = st.session_state.get("auth_reg_password") or ""
+    display_name = (st.session_state.get("auth_reg_display_name") or "").strip()
+    if not email or not password:
+        _set_auth_msg("error", "Enter an email and a password to create an account.")
+        return
+    try:
+        user = auth_provider.register(email, password, display_name=display_name or None)
+    except AuthError as exc:
+        _set_auth_msg("error", f"Could not create account: {exc}")
+        return
+    # Sign the new user straight in (no need to re-verify the password we just set).
+    login(st.session_state, AuthSession.from_user(user))
+    _clear_auth_inputs()
+    _set_auth_msg("success", f"Account created — welcome, {user.display_name}.")
+
+
+def _cb_login() -> None:
+    email = (st.session_state.get("auth_login_email") or "").strip()
+    password = st.session_state.get("auth_login_password") or ""
+    if not email or not password:
+        _set_auth_msg("error", "Enter your email and password to sign in.")
+        return
+    try:
+        session = auth_provider.authenticate(email, password)
+    except AuthError:
+        # Uniform message: never reveal whether the email exists.
+        _set_auth_msg("error", "Invalid email or password.")
+        return
+    login(st.session_state, session)
+    _clear_auth_inputs()
+    _set_auth_msg("success", f"Signed in as {session.display_name}.")
+
+
+# Account-settings widget keys (cleared on sign-out so they re-seed per user).
+_ACCOUNT_KEYS = (
+    "acct_display_name",
+    "acct_email",
+    "acct_pw_current",
+    "acct_pw_new",
+    "acct_pw_confirm",
+)
+
+
+def _cb_logout() -> None:
+    logout(st.session_state)
+    for key in _ACCOUNT_KEYS:
+        st.session_state.pop(key, None)
+    _set_auth_msg("info", "Signed out.")
+
+
+def _cb_update_profile() -> None:
+    session = current_session(st.session_state)
+    if session is None:
+        return
+    name = (st.session_state.get("acct_display_name") or "").strip()
+    email = (st.session_state.get("acct_email") or "").strip()
+    if not name or not email:
+        _set_auth_msg("error", "Display name and email are both required.")
+        return
+    try:
+        user = auth_provider.update_profile(session.user_id, display_name=name, email=email)
+    except AuthError as exc:
+        _set_auth_msg("error", f"Could not save profile: {exc}")
+        return
+    # Refresh the in-session principal and the seeded fields with saved values.
+    login(st.session_state, AuthSession.from_user(user))
+    st.session_state["acct_display_name"] = user.display_name
+    st.session_state["acct_email"] = user.email
+    _set_auth_msg("success", "Profile updated.")
+
+
+def _cb_change_password() -> None:
+    session = current_session(st.session_state)
+    if session is None:
+        return
+    current = st.session_state.get("acct_pw_current") or ""
+    new = st.session_state.get("acct_pw_new") or ""
+    confirm = st.session_state.get("acct_pw_confirm") or ""
+    if not current or not new:
+        _set_auth_msg("error", "Enter your current password and a new password.")
+        return
+    if new != confirm:
+        _set_auth_msg("error", "New password and confirmation do not match.")
+        return
+    try:
+        auth_provider.change_password(session.user_id, current, new)
+    except AuthError as exc:
+        _set_auth_msg("error", f"Could not change password: {exc}")
+        return
+    for key in ("acct_pw_current", "acct_pw_new", "acct_pw_confirm"):
+        st.session_state.pop(key, None)
+    _set_auth_msg("success", "Password changed.")
+
+
+def _cb_request_reset() -> None:
+    email = (st.session_state.get("auth_reset_email") or "").strip()
+    if not email:
+        _set_auth_msg("error", "Enter your email to request a reset link.")
+        return
+    try:
+        auth_provider.request_password_reset(email)
+    except AuthError as exc:
+        _set_auth_msg("error", f"Could not process request: {exc}")
+        return
+    st.session_state.pop("auth_reset_email", None)
+    # Deliberately generic — never reveal whether the email is registered.
+    _set_auth_msg("info", "If an account exists for that email, a reset link has been sent.")
+
+
+def _cb_complete_reset() -> None:
+    token = st.query_params.get("reset_token") or ""
+    new = st.session_state.get("auth_reset_new") or ""
+    confirm = st.session_state.get("auth_reset_confirm") or ""
+    if not new:
+        _set_auth_msg("error", "Enter a new password.")
+        return
+    if new != confirm:
+        _set_auth_msg("error", "New password and confirmation do not match.")
+        return
+    try:
+        auth_provider.reset_password(token, new)
+    except AuthError as exc:
+        _set_auth_msg("error", f"Could not reset password: {exc}")
+        return
+    for key in ("auth_reset_new", "auth_reset_confirm"):
+        st.session_state.pop(key, None)
+    # Drop the (now-spent) token from the URL so a refresh can't replay it.
+    st.query_params.clear()
+    _set_auth_msg("success", "Password reset. Please sign in with your new password.")
+
 
 def _set_models_msg(level: str, text: str) -> None:
     """Stash a message for the saved-models panel (callbacks cannot render)."""
@@ -195,7 +399,16 @@ def _cb_save_new_model() -> None:
         return
     try:
         rev, inv, a = _current_inputs()
-        model = store.create(name, rev, inv, a, note=(st.session_state.get("model_note") or "").strip())
+        # Stamp the model with the signed-in user (None when browsing as guest,
+        # which creates a legacy/unowned model — see docs/identity.md).
+        model = store.create(
+            name,
+            rev,
+            inv,
+            a,
+            note=(st.session_state.get("model_note") or "").strip(),
+            owner_user_id=current_user_id(st.session_state),
+        )
     except (ModelStoreError, AssumptionError) as exc:
         _set_models_msg("error", f"Could not save: {exc}")
         return
@@ -226,8 +439,15 @@ def _cb_update_selected_model() -> None:
     if not mid:
         return
     try:
+        # Authorise against the model as it exists in the store — never against
+        # the UI-filtered list — so filtering is not the security boundary.
+        target = store.get(mid)
+        authorize_mutation(target, current_user_id(st.session_state))
         rev, inv, a = _current_inputs()
         model = store.update(mid, rev, inv, a, note=(st.session_state.get("model_note") or "").strip())
+    except ModelAuthorizationError as exc:  # subclass of ModelStoreError; catch first
+        _set_models_msg("error", str(exc))
+        return
     except (ModelStoreError, AssumptionError) as exc:
         _set_models_msg("error", f"Could not update: {exc}")
         return
@@ -240,7 +460,11 @@ def _cb_clone_selected_model() -> None:
         return
     try:
         source = store.get(mid)
-        clone = store.clone(mid, f"{source.name} copy")
+        # A signed-in user owns the copy they make (even when cloning a legacy
+        # model); a guest's clone stays unowned by inheriting the source owner.
+        clone = store.clone(
+            mid, f"{source.name} copy", owner_user_id=current_user_id(st.session_state)
+        )
     except ModelStoreError as exc:
         _set_models_msg("error", f"Could not clone: {exc}")
         return
@@ -253,8 +477,13 @@ def _cb_delete_selected_model() -> None:
     if not mid:
         return
     try:
-        name = store.get(mid).name
+        target = store.get(mid)
+        authorize_mutation(target, current_user_id(st.session_state))
+        name = target.name
         store.delete(mid)
+    except ModelAuthorizationError as exc:  # subclass of ModelStoreError; catch first
+        _set_models_msg("error", str(exc))
+        return
     except ModelStoreError as exc:
         _set_models_msg("error", f"Could not delete: {exc}")
         return
@@ -263,15 +492,23 @@ def _cb_delete_selected_model() -> None:
 
 
 try:
-    saved_models = store.list_models()
+    all_models = store.list_models()
 except ModelStoreError as exc:
     st.error(
         f"Could not read saved models from `{SAVED_MODELS_PATH.name}`.\n\n"
         f"**{exc}**\n\nFix or remove the file and reload."
     )
     st.stop()
+# Show only the signed-in user's models plus legacy/unowned ones (guests see
+# legacy/unowned only). Filtering lives in the Streamlit-free model layer.
+saved_models = filter_visible_models(all_models, current_user_id(st.session_state))
 saved_model_ids = [m.id for m in saved_models]
 saved_models_by_id = {m.id: m for m in saved_models}
+
+# Drop a selection that is no longer visible (e.g. after signing out), so the
+# saved-model selectbox does not error on a stale session-state value.
+if st.session_state.get("saved_model_select") not in saved_models_by_id:
+    st.session_state.pop("saved_model_select", None)
 
 
 def _apply_selected_scenario() -> None:
@@ -292,6 +529,70 @@ if "scenario_select" not in st.session_state:
     st.session_state["scenario_select"] = scenario_ids[0]
     for _k, _v in _scenario_to_state(SCENARIOS[scenario_ids[0]]).items():
         st.session_state[_k] = _v
+
+# --- Account panel (EPIC-005 / v1.1) -------------------------------------
+# All Streamlit lives here; the auth layer stays framework-free. Saved models
+# are owner-scoped, so signing in changes which models the panel below shows.
+st.sidebar.header("Account")
+
+_auth_msg = st.session_state.pop("_auth_msg", None)
+if _auth_msg:
+    getattr(st.sidebar, _auth_msg[0], st.sidebar.info)(_auth_msg[1])
+
+# A reset link (…/?reset_token=…) takes priority: show the "set new password"
+# form and nothing else, so the user finishes the reset they came to do.
+_reset_token = st.query_params.get("reset_token")
+_session = current_session(st.session_state)
+if _reset_token:
+    st.sidebar.info("**Reset your password**")
+    st.sidebar.text_input("New password", type="password", key="auth_reset_new")
+    st.sidebar.text_input("Confirm new password", type="password", key="auth_reset_confirm")
+    st.sidebar.button("Set new password", on_click=_cb_complete_reset, use_container_width=True)
+    st.sidebar.caption("This single-use link expires shortly. Didn't request it? Ignore it.")
+elif _session is not None:
+    st.sidebar.caption(f"Signed in as **{_session.display_name}**")
+    # Seed editable profile fields from the current principal (only when unset,
+    # so an in-progress edit is preserved across reruns; cleared on sign-out).
+    st.session_state.setdefault("acct_display_name", _session.display_name)
+    st.session_state.setdefault("acct_email", _session.email)
+    with st.sidebar.expander("Account settings", expanded=False):
+        st.caption("Profile")
+        st.text_input("Display name", key="acct_display_name")
+        st.text_input("Email", key="acct_email")
+        st.button("Save profile", on_click=_cb_update_profile, use_container_width=True)
+        st.divider()
+        st.caption("Change password")
+        st.text_input("Current password", type="password", key="acct_pw_current")
+        st.text_input("New password", type="password", key="acct_pw_new")
+        st.text_input("Confirm new password", type="password", key="acct_pw_confirm")
+        st.button("Change password", on_click=_cb_change_password, use_container_width=True)
+    st.sidebar.button("Sign out", on_click=_cb_logout, use_container_width=True)
+else:
+    st.sidebar.caption(
+        "Browsing as **guest**. Sign in to keep saved models under your account; "
+        "models saved as a guest are unowned and visible to everyone on this device."
+    )
+    with st.sidebar.expander("Sign in / Create account", expanded=False):
+        # Two tabs, each with their OWN email/password fields, so the sign-in and
+        # registration flows never share inputs (which previously made it look
+        # like an account could be created from a display name alone).
+        _login_tab, _register_tab = st.tabs(["Sign in", "Create account"])
+        with _login_tab:
+            st.text_input("Email", key="auth_login_email", placeholder="you@example.com")
+            st.text_input("Password", type="password", key="auth_login_password")
+            st.button("Sign in", on_click=_cb_login, use_container_width=True)
+            st.divider()
+            st.caption("Forgot your password? We'll email you a reset link.")
+            st.text_input("Account email", key="auth_reset_email", placeholder="you@example.com")
+            st.button("Email me a reset link", on_click=_cb_request_reset, use_container_width=True)
+        with _register_tab:
+            st.caption("Email and password are required. Display name is optional.")
+            st.text_input("Email", key="auth_reg_email", placeholder="you@example.com")
+            st.text_input("Password", type="password", key="auth_reg_password")
+            st.text_input("Display name", key="auth_reg_display_name", placeholder="optional")
+            st.button("Create account", on_click=_cb_register, use_container_width=True)
+
+st.sidebar.divider()
 
 st.sidebar.header("Scenario controls")
 
@@ -392,14 +693,39 @@ if saved_model_ids:
         format_func=lambda i: saved_models_by_id[i].name,
         key="saved_model_select",
     )
+    # Update/Delete are gated by ownership. Disabling here is a UX hint only;
+    # the authoritative check is authorize_mutation() inside the callbacks.
+    _sel = saved_models_by_id.get(st.session_state.get("saved_model_select"))
+    _can_mutate_sel = _sel is not None and can_mutate(_sel, current_user_id(st.session_state))
+
     mc1, mc2 = st.sidebar.columns(2)
     mc1.button("📂 Load", on_click=_cb_load_selected_model, use_container_width=True)
-    mc2.button("⬆️ Update", on_click=_cb_update_selected_model, use_container_width=True)
+    mc2.button(
+        "⬆️ Update",
+        on_click=_cb_update_selected_model,
+        disabled=not _can_mutate_sel,
+        use_container_width=True,
+    )
     mc3, mc4 = st.sidebar.columns(2)
     mc3.button("⧉ Clone", on_click=_cb_clone_selected_model, use_container_width=True)
-    mc4.button("🗑 Delete", on_click=_cb_delete_selected_model, use_container_width=True)
+    mc4.button(
+        "🗑 Delete",
+        on_click=_cb_delete_selected_model,
+        disabled=not _can_mutate_sel,
+        use_container_width=True,
+    )
 
-    _sel = saved_models_by_id.get(st.session_state.get("saved_model_select"))
+    if _sel is not None and not _can_mutate_sel:
+        if _sel.owner_user_id is None:
+            st.sidebar.caption(
+                "🔒 Legacy/unowned model — **read-only**. Load or clone it; "
+                "cloning makes an editable copy you own."
+            )
+        else:
+            st.sidebar.caption(
+                "🔒 You can load or clone this model, but only its owner can update or delete it."
+            )
+
     if _sel is not None:
         with st.sidebar.expander(f"History — {_sel.name} ({len(_sel.versions)} version(s))"):
             for v in reversed(_sel.versions):
